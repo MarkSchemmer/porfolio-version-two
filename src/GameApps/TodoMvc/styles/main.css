@@ -1,0 +1,17 @@
+
+
+.mvc-container {
+    margin: auto;
+}
+
+.todo-mvc-app {
+    width: 800px;
+    height: 100px;
+    border: 1px solid black;
+    margin: auto;
+    margin-top: 200px;
+}
+
+.todo-mvc-app:hover {
+    cursor: pointer;
+}
