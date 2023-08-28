@@ -4,12 +4,33 @@
     margin: auto;
 }
 
+.todo-mvc-app:before { 
+    content: attr(placeholder);
+    color: lightgray;
+    display: block;
+    position:absolute;
+    padding-left: 25px;
+    padding-top: 15px;    
+    font-family: "Campton", sans-serif;
+}
+
 .todo-mvc-app {
     width: 800px;
     height: 100px;
     border: 1px solid black;
     margin: auto;
     margin-top: 200px;
+    border-radius: 15px;
+    font-size: 70px;
+    justify-content: flex-end;
+}
+
+/* .todo-mvc-app:not([value=""]) {
+    
+} */
+
+.todo-mvc-app:focus {
+    
 }
 
 .todo-mvc-app:hover {

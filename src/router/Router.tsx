@@ -19,11 +19,11 @@ export default function Router() {
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NoPage />} /> */}
 
+          <Route path="/" element={<HomePage />} />
           {/*
                 Routes below are for me in developing my apps
           */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="todomvc" element={<TodoMVC />} />
+          <Route path="development/apps/todomvc" element={<TodoMVC />} />
       </Routes>
     </BrowserRouter>
         </div>
