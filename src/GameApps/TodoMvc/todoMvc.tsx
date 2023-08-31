@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 import "../TodoMvc/styles/main.css";
 import { replaceAll } from '../../Utils/Util';
 import { Todo } from './entities/Todo';
+import { TodoList } from './entities/TodoList';
+import state from './entities/StateComponents';
 
-let todoList: Todo[] = []
+
 
 function TodoMVC() {
-
-
-  const [list, setTodoList] = useState(todoList);
-
   const [mvctext, setText] = useState("");
   const [placeholderText, setPlaceHolderText] = useState("Todo MVC");
 
@@ -19,12 +17,14 @@ function TodoMVC() {
   }
 
   let setTextWrapper = (e:any) => {
-    let nextStr = e.target.value;
+    let nextStr: string = e.target.value;
     let isOnlyWhiteSpace = replaceAll(nextStr, " ", "", false).length > 0;
     console.log(isOnlyWhiteSpace);
 
     if (e.code === "Enter" && isOnlyWhiteSpace) 
     {
+      // Need to add Todo to List then clear
+      state.TodoListState.AddTodo(nextStr);
       clearTodoBar(e);
     }
     else 
@@ -52,6 +52,7 @@ function TodoMVC() {
       onKeyUp={(e: any) => {
         setTextWrapper(e);
       }} />
+      <TodoList />
     </div>
 
   );

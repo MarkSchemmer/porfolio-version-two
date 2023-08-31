@@ -23,6 +23,7 @@
     border-radius: 15px;
     font-size: 70px;
     justify-content: flex-end;
+    text-indent: 15px;
 }
 
 /* .todo-mvc-app:not([value=""]) {
