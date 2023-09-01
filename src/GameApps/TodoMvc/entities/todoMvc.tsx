@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import "../TodoMvc/styles/main.css";
-import { replaceAll } from '../../Utils/Util';
-import { Todo } from './entities/Todo';
-import { TodoList } from './entities/TodoList';
-import state from './entities/StateComponents';
+import "../../TodoMvc/styles/main.css";
+import { replaceAll } from '../../../Utils/Util';
+import { Todo } from './Todo';
+import { TodoList } from './TodoList';
 
 
 
 function TodoMVC() {
   const [mvctext, setText] = useState("");
   const [placeholderText, setPlaceHolderText] = useState("Todo MVC");
+
+  const todoList: Todo[] = [];
+  const [list, setTodoList] = useState(todoList);
+
+  let wrapper = new TodoListWrapper(list, setTodoList);
 
   let clearTodoBar = (e:any) => {
       setText("");
@@ -24,7 +28,7 @@ function TodoMVC() {
     if (e.code === "Enter" && isOnlyWhiteSpace) 
     {
       // Need to add Todo to List then clear
-      state.TodoListState.AddTodo(nextStr);
+      wrapper.AddTodo(nextStr);
       clearTodoBar(e);
     }
     else 
@@ -56,6 +60,19 @@ function TodoMVC() {
     </div>
 
   );
+}
+
+class TodoListWrapper {
+  public list: Todo[] = [];
+  public setTodoList: React.Dispatch<React.SetStateAction<Todo[]>>;
+  constructor(list: Todo[], setTodoList: React.Dispatch<React.SetStateAction<Todo[]>>) {
+    this.list = list;
+    this.setTodoList = setTodoList;
+  }
+
+  public AddTodo = (todo: string) => this.setTodoList([...this.list, new Todo(todo)])
+
+  public GetTodos = () => this.list
 }
 
 export default TodoMVC;
