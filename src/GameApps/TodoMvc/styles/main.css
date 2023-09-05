@@ -37,3 +37,24 @@
 .todo-mvc-app:hover {
     cursor: pointer;
 }
+
+.todos {
+    /* border: 1px solid black; */
+    width: 800px;
+    margin: auto;
+    border-radius: 15px;
+}
+
+.todo {
+    margin: 1px;
+    height: 100px;
+    border: 1px solid purple;
+    border-radius: 15px;
+}
+
+.todo:hover {
+    cursor: pointer;
+}
+
+.todo-text {
+}

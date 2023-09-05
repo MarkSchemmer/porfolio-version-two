@@ -19,16 +19,21 @@ export const todoListSlice = createSlice({
     name: 'todoList',
     initialState,
     reducers: {
-        AddTodo: (state, action) => {
-            state.todos.push(action.payload);
+        AddTodo: (state, action: {type: string, payload: Todo}) => {
+            state.todos = [action.payload, ...state.todos];
+        },
+        UpdateTodoById: (state, action: { type: string, payload: Todo}) => {
+            const id = action.payload.id;
+            const idx = state.todos.findIndex(t => t.id === id);
+            state.todos[idx] = action.payload;
         }
     },
   })
   
   // Action creators are generated for each case reducer function
-  export const { AddTodo } = todoListSlice.actions
+  export const { AddTodo, UpdateTodoById } = todoListSlice.actions
 
-  export const selectTodos = (state: any) => state.todoList.todos; 
+  export const selectTodos = (state: {todoList: { todos: Todo[]}}) => state.todoList.todos; 
 
 
   

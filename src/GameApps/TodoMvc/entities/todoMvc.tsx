@@ -19,22 +19,21 @@ function TodoMVC() {
   }
 
   let setTextWrapper = (e:any) => {
-    let nextStr: string = e.target.value;
-    let isOnlyWhiteSpace = replaceAll(nextStr, " ", "", false).length > 0;
-    console.log(isOnlyWhiteSpace);
-
-    if (e.code === "Enter" && isOnlyWhiteSpace) 
-    {
-      // Need to add Todo to List then clear
-      const newTodo = new Todo(nextStr);
-      dispatch(AddTodo(newTodo));
-      clearTodoBar(e);
-    }
-    else 
-    {
-      console.log(e);
-      setText(nextStr);
-    }
+      let nextStr: string = e.target.value;
+      let isOnlyWhiteSpace = replaceAll(nextStr, " ", "", false).length > 0;
+      
+      if (e.code === "Enter" && isOnlyWhiteSpace) 
+      {
+        // Need to add Todo to List then clear
+        const newTodo = new Todo(nextStr);
+        dispatch(AddTodo(newTodo));
+        clearTodoBar(e);
+      }
+      else 
+      {
+        // console.log(e);
+        setText(nextStr);
+      }
   }
 
   useEffect(() => {
