@@ -14,3 +14,7 @@ export function e2() {
     }
     return u
 }
+
+export const IsNullOrUndefined = (obj: any) => obj === null || obj === undefined;
+
+export const IsValue = (obj: any) => !IsNullOrUndefined(obj); 
