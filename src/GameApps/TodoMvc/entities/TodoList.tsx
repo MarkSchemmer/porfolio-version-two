@@ -26,10 +26,8 @@ const TodoComponent = (props: {todo: Todo}) => {
     let setTextWrapper = (e:any) => {
         let nextStr: string = e.target.value;
         let isOnlyWhiteSpace = replaceAll(nextStr, " ", "", false).length > 0;
-
-        console.log(e.target.selectionStart);
         
-        if (e.code === "Enter" && isOnlyWhiteSpace) 
+        if (e.key === "Enter" && isOnlyWhiteSpace) 
         {
           dispatch(UpdateTodoById({ ...props.todo, str: nextStr, canEdit: false }));
           clearTodoBar(e);

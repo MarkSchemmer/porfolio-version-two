@@ -38,45 +38,44 @@ const GenericInput = (props:IInputProps) => {
         setText("");
         e.target.value = "";
     }
-    
-    let setTextWrapper = (e:any) => {
-        let nextStr: string = e.target.value;
-        let isOnlyWhiteSpace = replaceAll(nextStr, " ", "", false).length > 0;
-        
-        if (e.code === "Enter" && isOnlyWhiteSpace) 
-        {
-          // Need to add Todo to List then clear
+
+    const handlingEnter = (e: any) => {
+      let nextStr: string = e.target.value;
+      let isOnlyWhiteSpace = replaceAll(nextStr, " ", "", false).length > 0;
+      if (e.nativeEvent instanceof KeyboardEvent && isOnlyWhiteSpace) {
+        const key = e.nativeEvent.key;
+        if (key === 'Enter') {
           const newTodo = new Todo(nextStr);
           dispatch(AddTodo(newTodo));
           clearTodoBar(e);
         }
-        else 
-        {
-          // console.log(e);
-          setText(nextStr);
-        }
+      }
+    }
+    
+    let setTextWrapper = (e:any) => {
+          const { selectionStart, value } = e.target;
+          const updatedValue = value.slice(0, selectionStart) + value.slice(selectionStart + 1);
+          setText(updatedValue);
     }
     
     useEffect(() => {
-        if (mvctext.length != 0) {
+        if (mvctext.length !== 0) {
           setPlaceHolderText("");
         } else {
           setPlaceHolderText("Todo MVC");
         }
   
-    }, [mvctext])
-
-    const genericKeyUp = (e:any) => { setTextWrapper(e); }
+    }, [mvctext]);
 
     return (
         <input
-                // onChange={(e: any) => { setText(mvctext + e.target.value); }}
+                onChange={e => { setTextWrapper(e); }}
+                onKeyUp={e => { handlingEnter(e); }}
                 value={mvctext}
                 style={IsValue(props.styleObj) ? props.styleObj : {}}
                 placeholder={placeholderText}
                 contentEditable={props.contentEditable}
                 className={props.classNames}
-                onKeyUp={IsValue(props.onKeyUp) ? props.onKeyUp : genericKeyUp}
             />
     );
 }
