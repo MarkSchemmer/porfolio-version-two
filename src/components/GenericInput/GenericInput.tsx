@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { IsValue, replaceAll } from "../../Utils/Util";
 import { Todo } from "../../GameApps/TodoMvc/entities/Todo";
 import { useDispatch } from "react-redux";
-import { AddTodo } from "../../store/slices/tododListSlice";
+import { AddTodo, UpdateTodoById } from "../../store/slices/tododListSlice";
+import { TodoOperations } from "../../GameApps/TodoMvc/entities/TodoOperations";
 
 interface IInputProps {
     placeholder?: string;
@@ -12,6 +13,8 @@ interface IInputProps {
     txt: string;
     styleObj?: React.CSSProperties;
     callback?: any;
+    operationForInput: TodoOperations;
+    todo?: Todo
 }
 
 /*
@@ -34,20 +37,36 @@ const GenericInput = (props:IInputProps) => {
     const [mvctext, setText] = useState(props.txt);
     const [placeholderText, setPlaceHolderText] = useState(props.placeholder);
 
+
+
     let clearTodoBar = (e:any) => {
         setText("");
         e.target.value = "";
     }
 
-    const handlingEnter = (e: any) => {
-      let nextStr: string = e.target.value;
-      let isOnlyWhiteSpace = replaceAll(nextStr, " ", "", false).length > 0;
+    const handlingEnter = (e: any, forceUpdate: boolean = false) => {
+      let nextStr: string = mvctext;
+      let isOnlyWhiteSpace = replaceAll(mvctext, " ", "", false).length > 0;
       if (e.nativeEvent instanceof KeyboardEvent && isOnlyWhiteSpace) {
         const key = e.nativeEvent.key;
-        if (key === 'Enter') {
-          const newTodo = new Todo(nextStr);
-          dispatch(AddTodo(newTodo));
-          clearTodoBar(e);
+        if (key === 'Enter' || forceUpdate) {
+
+          switch(props.operationForInput) {
+            case TodoOperations.AddTodo : {
+              const newTodo = new Todo(nextStr);
+              dispatch(AddTodo(newTodo));
+              clearTodoBar(e);
+              break;
+            }
+            case TodoOperations.UpdateTodo : {
+              dispatch(UpdateTodoById({...props.todo as Todo, str: nextStr, canEdit: false}));
+              break;
+            }
+            default: {
+              console.log("Todo Operations hit default potential error.");
+            }
+          }
+
         }
       }
     }
@@ -68,6 +87,7 @@ const GenericInput = (props:IInputProps) => {
     }, [mvctext]);
 
     return (
+      <>
         <input
                 onChange={e => { setTextWrapper(e); }}
                 onKeyUp={e => { handlingEnter(e); }}
@@ -77,6 +97,7 @@ const GenericInput = (props:IInputProps) => {
                 contentEditable={props.contentEditable}
                 className={props.classNames}
             />
+        </>
     );
 }
 

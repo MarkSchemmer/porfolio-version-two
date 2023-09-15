@@ -48,8 +48,10 @@
 .todo {
     margin: 1px;
     height: 100px;
+    width: 700px;
     border: 1px solid purple;
     border-radius: 15px;
+    float:right;
 }
 
 .todo:hover {
@@ -57,4 +59,11 @@
 }
 
 .todo-text {
+}
+
+.complete-button {
+    position: relative;
+    width: 95px;
+    height: 100px;
+    right: 400px;
 }

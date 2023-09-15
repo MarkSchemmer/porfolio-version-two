@@ -4,14 +4,28 @@ import { selectTodos, UpdateTodoById } from "../../../store/slices/tododListSlic
 import { Todo } from './Todo';
 import GenericInput from '../../../components/GenericInput/GenericInput';
 import { replaceAll } from '../../../Utils/Util';
+import { TodoOperations } from './TodoOperations';
 
+
+const NoneEditableDisplayTodo = (props: {todo: Todo, todoStyles : React.CSSProperties}) => {
+    return (
+        <>
+            <button className='complete-button' />
+            <span contentEditable={props.todo.canEdit} style={props.todoStyles} className="todo-text">
+                    {props.todo.str}
+            </span>
+        </>
+    );
+}
 
 const TodoComponent = (props: {todo: Todo}) => {
 
     const todoStyles: React.CSSProperties = {
         float: "left",
-        width: "100%",
+        width: "800px",
         height: "100%",
+        position: "relative",
+        left:"20px"
     }
 
     const dispatch = useDispatch();
@@ -34,7 +48,6 @@ const TodoComponent = (props: {todo: Todo}) => {
         }
         else 
         {
-          // console.log(e);
           setText(nextStr);
         }
     }
@@ -47,16 +60,21 @@ const TodoComponent = (props: {todo: Todo}) => {
         onDoubleClick={(event) => {
             dispatch(UpdateTodoById({...props.todo, canEdit: true}));
         }}>
-          { props.todo.canEdit === false ?  <span contentEditable={props.todo.canEdit} style={todoStyles} className="todo-text">
-                {props.todo.str}
-            </span> : <GenericInput
+          { props.todo.canEdit === false ?  <NoneEditableDisplayTodo todo={props.todo} todoStyles={todoStyles} /> : 
+
+                    <>
+                        <GenericInput
+                            operationForInput={TodoOperations.UpdateTodo}
+                            todo={props.todo}
                             placeholder=''
                             contentEditable={true}
                             classNames=''
                             txt={props.todo.str}
                             styleObj={todoStyles}
                             onKeyUp={setTextWrapper}
-                            /> }
+                            /> 
+                    </>
+         }
         </div>
     )
 }

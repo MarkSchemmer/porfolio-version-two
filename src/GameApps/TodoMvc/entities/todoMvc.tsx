@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import "../../TodoMvc/styles/main.css";
-import { replaceAll } from '../../../Utils/Util';
-import { Todo } from './Todo';
 import { TodoList } from './TodoList';
-import { useDispatch } from 'react-redux';
-import { AddTodo } from '../../../store/slices/tododListSlice';
 import GenericInput from '../../../components/GenericInput/GenericInput';
+import { TodoOperations } from './TodoOperations';
 
 function TodoMVC() {
   return (
     <div className="mvc-container">
       <GenericInput
+        operationForInput={TodoOperations.AddTodo}
         placeholder="TODO MVC"
         contentEditable={true}
         classNames="todo-mvc-app"
