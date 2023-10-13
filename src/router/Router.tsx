@@ -17,8 +17,9 @@ export default function Router() {
           <Route path="blogs" element={<Blogs />} />
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NoPage />} /> */}
-
-          <Route path="/" element={<HomePage />} />
+          
+          {/* Change this later to <HomePage /> */}
+          <Route path="/" element={<TodoMVC />} />
           {/*
                 Routes below are for me in developing my apps
           */}

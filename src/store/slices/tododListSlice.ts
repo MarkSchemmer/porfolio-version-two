@@ -15,6 +15,15 @@ const initialState = {
     todos: todos
 }
 
+const selectTodoById = (todos: Todo[], id: string) => {
+    var todo = todos.filter(todo => todo.id === id);
+
+    if (todo.length > 0) 
+        return todo[0];
+    else 
+        return null;
+}
+
 export const todoListSlice = createSlice({
     name: 'todoList',
     initialState,
@@ -26,15 +35,30 @@ export const todoListSlice = createSlice({
             const id = action.payload.id;
             const idx = state.todos.findIndex(t => t.id === id);
             state.todos[idx] = action.payload;
+        },
+        MakeTodoCannotEdit: (state, action: { type: string, payload: string}) => {
+            var todoById = selectTodoById(state.todos, action.payload);
+
+            if (todoById) {
+                todoById.canEdit = false;
+            }
         }
     },
   })
   
   // Action creators are generated for each case reducer function
-  export const { AddTodo, UpdateTodoById } = todoListSlice.actions
+  export const { AddTodo, UpdateTodoById, MakeTodoCannotEdit } = todoListSlice.actions
 
   export const selectTodos = (state: {todoList: { todos: Todo[]}}) => state.todoList.todos; 
 
+//   export const selectTodoById = (id: string, state: {todos: {todos: Todo[]}}) => {
+//     var todo = state.todos.todos.filter(todo => todo.id === id);
+
+//     if (todo.length > 0) 
+//         return todo[0];
+//     else 
+//         return null;
+//   }
 
   
   export default todoListSlice.reducer

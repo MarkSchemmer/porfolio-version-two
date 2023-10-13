@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IsValue, replaceAll } from "../../Utils/Util";
 import { Todo } from "../../GameApps/TodoMvc/entities/Todo";
 import { useDispatch } from "react-redux";
-import { AddTodo, UpdateTodoById } from "../../store/slices/tododListSlice";
+import { AddTodo, UpdateTodoById, MakeTodoCannotEdit } from "../../store/slices/tododListSlice";
 import { TodoOperations } from "../../GameApps/TodoMvc/entities/TodoOperations";
 
 interface IInputProps {
@@ -39,6 +39,8 @@ const GenericInput = (props:IInputProps) => {
 
 
 
+
+
     let clearTodoBar = (e:any) => {
         setText("");
         e.target.value = "";
@@ -47,10 +49,10 @@ const GenericInput = (props:IInputProps) => {
     const handlingEnter = (e: any, forceUpdate: boolean = false) => {
       let nextStr: string = mvctext;
       let isOnlyWhiteSpace = replaceAll(mvctext, " ", "", false).length > 0;
-      if (e.nativeEvent instanceof KeyboardEvent && isOnlyWhiteSpace) {
+      if (!isOnlyWhiteSpace) return;
         const key = e.nativeEvent.key;
         if (key === 'Enter' || forceUpdate) {
-
+          console.log(forceUpdate);
           switch(props.operationForInput) {
             case TodoOperations.AddTodo : {
               const newTodo = new Todo(nextStr);
@@ -59,6 +61,7 @@ const GenericInput = (props:IInputProps) => {
               break;
             }
             case TodoOperations.UpdateTodo : {
+              console.log("ehllo");
               dispatch(UpdateTodoById({...props.todo as Todo, str: nextStr, canEdit: false}));
               break;
             }
@@ -68,7 +71,6 @@ const GenericInput = (props:IInputProps) => {
           }
 
         }
-      }
     }
     
     let setTextWrapper = (e:any) => {
@@ -89,6 +91,12 @@ const GenericInput = (props:IInputProps) => {
     return (
       <>
         <input
+                onBlur={(e) => { 
+                  if (props.todo && props.todo.canEdit) {
+                    console.log(props.operationForInput);
+                    handlingEnter(e, true);
+                  }
+                 }}
                 onChange={e => { setTextWrapper(e); }}
                 onKeyUp={e => { handlingEnter(e); }}
                 value={mvctext}
