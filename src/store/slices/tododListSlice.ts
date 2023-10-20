@@ -42,12 +42,15 @@ export const todoListSlice = createSlice({
             if (todoById) {
                 todoById.canEdit = false;
             }
+        },
+        DeleteTodoById: (state, action: {type: string, payload: string}) => {
+            state.todos = state.todos.filter(t => t.id != action.payload);
         }
     },
   })
   
   // Action creators are generated for each case reducer function
-  export const { AddTodo, UpdateTodoById, MakeTodoCannotEdit } = todoListSlice.actions
+  export const { AddTodo, UpdateTodoById, MakeTodoCannotEdit, DeleteTodoById } = todoListSlice.actions
 
   export const selectTodos = (state: {todoList: { todos: Todo[]}}) => state.todoList.todos; 
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { selectTodos, UpdateTodoById } from "../../../store/slices/tododListSlice";
+import { DeleteTodoById, selectTodos, UpdateTodoById } from "../../../store/slices/tododListSlice";
 import { Todo } from './Todo';
 import GenericInput from '../../../components/GenericInput/GenericInput';
 import { replaceAll } from '../../../Utils/Util';
@@ -8,9 +8,16 @@ import { TodoOperations } from './TodoOperations';
 
 
 const NoneEditableDisplayTodo = (props: {todo: Todo, todoStyles : React.CSSProperties}) => {
+
+    const dispatch = useDispatch();
+
+    const deleteTodoById = () => {
+        dispatch(DeleteTodoById(props.todo.id));
+    }
+
     return (
         <>
-            <button className='complete-button' />
+            <button className='complete-button' onClick={deleteTodoById} />
             <span contentEditable={props.todo.canEdit} style={props.todoStyles} className="todo-text">
                     {props.todo.str}
             </span>

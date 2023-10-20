@@ -73,3 +73,7 @@
     right: 400px;
     border-radius: 10px;
 }
+
+.complete-button:hover{
+    cursor: pointer;
+}
