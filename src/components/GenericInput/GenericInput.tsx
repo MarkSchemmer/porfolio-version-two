@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IsValue, replaceAll } from "../../Utils/Util";
 import { Todo } from "../../GameApps/TodoMvc/entities/Todo";
 import { useDispatch } from "react-redux";
-import { AddTodo, UpdateTodoById, MakeTodoCannotEdit } from "../../store/slices/tododListSlice";
+import { AddTodo, UpdateTodoById } from "../../store/slices/tododListSlice";
 import { TodoOperations } from "../../GameApps/TodoMvc/entities/TodoOperations";
 
 interface IInputProps {
@@ -26,9 +26,9 @@ interface IInputProps {
             }, false);
             <input type="text" value="sample" />
 
-    Need a uniformed way of updating a value of text in an input
+            Need a uniformed way of updating a value of text in an input
 
-    Or I will have to switch to Div or textarea  editable. 
+            Or I will have to switch to Div or textarea  editable. 
 
 */
 
@@ -36,10 +36,6 @@ const GenericInput = (props:IInputProps) => {
     const dispatch = useDispatch();
     const [mvctext, setText] = useState(props.txt);
     const [placeholderText, setPlaceHolderText] = useState(props.placeholder);
-
-
-
-
 
     let clearTodoBar = (e:any) => {
         setText("");

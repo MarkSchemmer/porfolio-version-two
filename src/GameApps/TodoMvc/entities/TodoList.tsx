@@ -21,11 +21,16 @@ const NoneEditableDisplayTodo = (props: {todo: Todo, todoStyles : React.CSSPrope
 const TodoComponent = (props: {todo: Todo}) => {
 
     const todoStyles: React.CSSProperties = {
-        float: "left",
-        width: "800px",
-        height: "100%",
-        position: "relative",
-        left:"20px"
+        // width: "100%",
+        // height: "100%",
+        // position: "absolute",
+        // right: 0,
+        // padding: "5px"
+    }
+
+    const genericInputStyles: React.CSSProperties = {
+        // width: "100%",
+        // height: "100%"
     }
 
     const dispatch = useDispatch();
@@ -70,7 +75,7 @@ const TodoComponent = (props: {todo: Todo}) => {
                             contentEditable={true}
                             classNames=''
                             txt={props.todo.str}
-                            styleObj={todoStyles}
+                            styleObj={genericInputStyles}
                             onKeyUp={setTextWrapper}
                             /> 
                     </>
