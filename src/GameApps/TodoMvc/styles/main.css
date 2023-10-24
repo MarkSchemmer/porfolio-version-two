@@ -64,6 +64,8 @@
     position: absolute;
     top: 5%;
     left: 2%;
+    top: calc(50% - 21px);
+    font-size: large;
 }
 
 .complete-button {
@@ -87,4 +89,5 @@
     margin: 0;
     left: 0px;
     top: -2px;
+    font-size: large;
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { DeleteTodoById, selectTodos, UpdateTodoById } from "../../../store/slices/tododListSlice";
+import { DeleteTodoById, MakeAllTodosEditFalse, MakeTodoCannotEdit, selectTodos, UpdateTodoById } from "../../../store/slices/tododListSlice";
 import { Todo } from './Todo';
 import GenericInput from '../../../components/GenericInput/GenericInput';
 import { replaceAll } from '../../../Utils/Util';
@@ -74,10 +74,10 @@ const TodoComponent = (props: {todo: Todo}) => {
             evt.preventDefault();
         }}
         onDoubleClick={(event) => {
+            dispatch(MakeAllTodosEditFalse(null))
             dispatch(UpdateTodoById({...props.todo, canEdit: true}));
         }}>
-          { props.todo.canEdit === true ?  <NoneEditableDisplayTodo todo={props.todo} todoStyles={todoStyles} /> : 
-
+          { props.todo.canEdit === false ?  <NoneEditableDisplayTodo todo={props.todo} todoStyles={todoStyles} /> : 
                     <>
                       <button className='complete-button' onClick={deleteTodoById} />
                         <GenericInput
