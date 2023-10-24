@@ -5,7 +5,7 @@ import { Todo } from './Todo';
 import GenericInput from '../../../components/GenericInput/GenericInput';
 import { replaceAll } from '../../../Utils/Util';
 import { TodoOperations } from './TodoOperations';
-import { faCircle, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
+import { faCircle, faCircleCheck, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
@@ -51,7 +51,9 @@ const NoneEditableDisplayTodo = (props: {todo: Todo, todoStyles : React.CSSPrope
 
     return (
         <>
-            <button className='complete-button' onClick={deleteTodoById} />
+            <button className='complete-button' onClick={deleteTodoById}>
+            <FontAwesomeIcon icon={faTrash} />
+            </button>
             <CompleteTodoEdit todo={props.todo} todoStyles={{}} />
             <span contentEditable={props.todo.canEdit} style={additionalStyles} className={"todo-text " + (props.todo.completed ? " line-slash " : "")} >
                     {props.todo.str}
@@ -114,7 +116,9 @@ const TodoComponent = (props: {todo: Todo}) => {
         }}>
           { props.todo.canEdit === false ?  <NoneEditableDisplayTodo todo={props.todo} todoStyles={todoStyles} /> : 
                     <>
-                      <button className='complete-button' onClick={deleteTodoById} />
+                      <button className='complete-button' onClick={deleteTodoById}>
+                      <FontAwesomeIcon icon={faTrash} />
+                      </button>
                         <GenericInput
                             operationForInput={TodoOperations.UpdateTodo}
                             todo={props.todo}
