@@ -5,7 +5,36 @@ import { Todo } from './Todo';
 import GenericInput from '../../../components/GenericInput/GenericInput';
 import { replaceAll } from '../../../Utils/Util';
 import { TodoOperations } from './TodoOperations';
+import { faCircle, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+
+const CompleteTodoEdit = (props: {todo: Todo, todoStyles : React.CSSProperties}) => {
+    const dispatch = useDispatch();
+
+    const CompletedTrue = () => {
+        dispatch(UpdateTodoById( {...props.todo, completed: true } ));
+    }
+
+    const CompletedFalse = () => {
+        dispatch(UpdateTodoById( {...props.todo, completed: false } ));
+    }
+
+    const styles: React.CSSProperties = {
+        height: "50px", width: "50px", position: "absolute",
+        left: "1%", top: "20px"
+    }
+
+    const CompletedCircle: React.CSSProperties = {
+        ...styles,
+        color: 'green'
+    }
+
+    return (
+        props.todo.completed ? <FontAwesomeIcon style={CompletedCircle} icon={faCircleCheck} onClick={CompletedFalse} /> 
+        : <FontAwesomeIcon icon={faCircle}  style={styles} onClick={CompletedTrue} /> 
+    )
+}
 
 const NoneEditableDisplayTodo = (props: {todo: Todo, todoStyles : React.CSSProperties}) => {
 
@@ -15,10 +44,16 @@ const NoneEditableDisplayTodo = (props: {todo: Todo, todoStyles : React.CSSPrope
         dispatch(DeleteTodoById(props.todo.id));
     }
 
+    const additionalStyles: React.CSSProperties = {
+        ...props.todoStyles,
+        left: "63px", top: "calc(50% - 20px)"
+    }
+
     return (
         <>
             <button className='complete-button' onClick={deleteTodoById} />
-            <span contentEditable={props.todo.canEdit} style={props.todoStyles} className="todo-text">
+            <CompleteTodoEdit todo={props.todo} todoStyles={{}} />
+            <span contentEditable={props.todo.canEdit} style={additionalStyles} className={"todo-text " + (props.todo.completed ? " line-slash " : "")} >
                     {props.todo.str}
             </span>
         </>

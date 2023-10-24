@@ -91,3 +91,7 @@
     top: -2px;
     font-size: large;
 }
+
+.line-slash {
+    text-decoration: line-through;
+}
