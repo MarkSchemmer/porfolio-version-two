@@ -44,6 +44,10 @@ const TodoComponent = (props: {todo: Todo}) => {
     const [mvctext, setText] = useState(props.todo.str);
     const [placeholderText, setPlaceHolderText] = useState(props.todo.str);
 
+    const deleteTodoById = () => {
+        dispatch(DeleteTodoById(props.todo.id));
+    }
+
     let clearTodoBar = (e:any) => {
         setText("");
         e.target.value = "";
@@ -72,15 +76,16 @@ const TodoComponent = (props: {todo: Todo}) => {
         onDoubleClick={(event) => {
             dispatch(UpdateTodoById({...props.todo, canEdit: true}));
         }}>
-          { props.todo.canEdit === false ?  <NoneEditableDisplayTodo todo={props.todo} todoStyles={todoStyles} /> : 
+          { props.todo.canEdit === true ?  <NoneEditableDisplayTodo todo={props.todo} todoStyles={todoStyles} /> : 
 
                     <>
+                      <button className='complete-button' onClick={deleteTodoById} />
                         <GenericInput
                             operationForInput={TodoOperations.UpdateTodo}
                             todo={props.todo}
                             placeholder=''
                             contentEditable={true}
-                            classNames=''
+                            classNames='todo-text todo-input'
                             txt={props.todo.str}
                             styleObj={genericInputStyles}
                             onKeyUp={setTextWrapper}
@@ -93,6 +98,7 @@ const TodoComponent = (props: {todo: Todo}) => {
 
 export const TodoList = () => {
     const todos = useSelector(selectTodos);
+
     return (
         <div className="todos">
             {todos.map((t: Todo) => <TodoComponent key={t.id} todo={t} />)}

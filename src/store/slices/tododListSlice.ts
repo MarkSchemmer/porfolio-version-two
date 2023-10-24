@@ -52,7 +52,7 @@ export const todoListSlice = createSlice({
   // Action creators are generated for each case reducer function
   export const { AddTodo, UpdateTodoById, MakeTodoCannotEdit, DeleteTodoById } = todoListSlice.actions
 
-  export const selectTodos = (state: {todoList: { todos: Todo[]}}) => state.todoList.todos; 
+  export const selectTodos = (state: {todoList: { todos: Todo[]}}) => state.todoList.todos;
 
 //   export const selectTodoById = (id: string, state: {todos: {todos: Todo[]}}) => {
 //     var todo = state.todos.todos.filter(todo => todo.id === id);

@@ -49,7 +49,7 @@
 .todo {
     margin: 1px;
     height: 100px;
-    width: 700px;
+    width: 750px;
     border: 1px solid purple;
     border-radius: 15px;
     float:right;
@@ -68,12 +68,23 @@
 
 .complete-button {
     position: relative;
-    width: 95px;
+    width: calc(50px);
     height: 100px;
-    right: 400px;
+    right: 425px;
     border-radius: 10px;
+    margin-right: -44px;
 }
 
 .complete-button:hover{
     cursor: pointer;
+}
+
+.todo-input {
+    border: 1px solid blue;
+    width: calc(100%);
+    height: calc(100%);
+    border-radius: 15px;
+    margin: 0;
+    left: 0px;
+    top: -2px;
 }
