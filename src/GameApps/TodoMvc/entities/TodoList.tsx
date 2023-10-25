@@ -1,11 +1,41 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { DeleteTodoById, selectTodos, UpdateTodoById } from "../../../store/slices/tododListSlice";
+import { completedTodos, DeleteTodoById, itemsLeft, MakeAllTodosEditFalse, MakeTodoCannotEdit, selectTodos, UpdateTodoById } from "../../../store/slices/tododListSlice";
 import { Todo } from './Todo';
 import GenericInput from '../../../components/GenericInput/GenericInput';
 import { replaceAll } from '../../../Utils/Util';
 import { TodoOperations } from './TodoOperations';
+import { faCircle, faCircleCheck, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { TodoFilter, selectFilter } from '../../../store/slices/todoFilterSlice';
 
+
+const CompleteTodoEdit = (props: {todo: Todo, todoStyles : React.CSSProperties}) => {
+    const dispatch = useDispatch();
+
+    const CompletedTrue = () => {
+        dispatch(UpdateTodoById( {...props.todo, completed: true } ));
+    }
+
+    const CompletedFalse = () => {
+        dispatch(UpdateTodoById( {...props.todo, completed: false } ));
+    }
+
+    const styles: React.CSSProperties = {
+        height: "50px", width: "50px", position: "absolute",
+        left: "1%", top: "20px"
+    }
+
+    const CompletedCircle: React.CSSProperties = {
+        ...styles,
+        color: 'green'
+    }
+
+    return (
+        props.todo.completed ? <FontAwesomeIcon style={CompletedCircle} icon={faCircleCheck} onClick={CompletedFalse} /> 
+        : <FontAwesomeIcon icon={faCircle}  style={styles} onClick={CompletedTrue} /> 
+    )
+}
 
 const NoneEditableDisplayTodo = (props: {todo: Todo, todoStyles : React.CSSProperties}) => {
 
@@ -15,10 +45,18 @@ const NoneEditableDisplayTodo = (props: {todo: Todo, todoStyles : React.CSSPrope
         dispatch(DeleteTodoById(props.todo.id));
     }
 
+    const additionalStyles: React.CSSProperties = {
+        ...props.todoStyles,
+        left: "63px", top: "calc(50% - 20px)"
+    }
+
     return (
         <>
-            <button className='complete-button' onClick={deleteTodoById} />
-            <span contentEditable={props.todo.canEdit} style={props.todoStyles} className="todo-text">
+            <button className='complete-button' onClick={deleteTodoById}>
+            <FontAwesomeIcon icon={faTrash} />
+            </button>
+            <CompleteTodoEdit todo={props.todo} todoStyles={{}} />
+            <span contentEditable={props.todo.canEdit} style={additionalStyles} className={"todo-text " + (props.todo.completed ? " line-slash " : "")} >
                     {props.todo.str}
             </span>
         </>
@@ -74,12 +112,14 @@ const TodoComponent = (props: {todo: Todo}) => {
             evt.preventDefault();
         }}
         onDoubleClick={(event) => {
+            dispatch(MakeAllTodosEditFalse(null))
             dispatch(UpdateTodoById({...props.todo, canEdit: true}));
         }}>
-          { props.todo.canEdit === true ?  <NoneEditableDisplayTodo todo={props.todo} todoStyles={todoStyles} /> : 
-
+          { props.todo.canEdit === false ?  <NoneEditableDisplayTodo todo={props.todo} todoStyles={todoStyles} /> : 
                     <>
-                      <button className='complete-button' onClick={deleteTodoById} />
+                      <button className='complete-button' onClick={deleteTodoById}>
+                      <FontAwesomeIcon icon={faTrash} />
+                      </button>
                         <GenericInput
                             operationForInput={TodoOperations.UpdateTodo}
                             todo={props.todo}
@@ -98,10 +138,32 @@ const TodoComponent = (props: {todo: Todo}) => {
 
 export const TodoList = () => {
     const todos = useSelector(selectTodos);
+    const filter = useSelector(selectFilter);
+    const itemsleftSlice = useSelector(itemsLeft);
+    const completed = useSelector(completedTodos);
+
+    let functionGetProperTodo = (f: TodoFilter) => {
+        switch(f) {
+            case TodoFilter.All : {
+                return todos;
+            }
+            case TodoFilter.Active : {
+                return itemsleftSlice;
+            }
+            case TodoFilter.Completed : {
+                return completed;
+            }
+            default: {
+                return todos;
+            }
+        }
+    }
+
+    let displayTodos = functionGetProperTodo(filter);
 
     return (
         <div className="todos">
-            {todos.map((t: Todo) => <TodoComponent key={t.id} todo={t} />)}
+            {displayTodos.map((t: Todo) => <TodoComponent key={t.id} todo={t} />)}
         </div>
     )
 }

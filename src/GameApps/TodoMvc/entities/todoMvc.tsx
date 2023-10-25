@@ -3,6 +3,7 @@ import "../../TodoMvc/styles/main.css";
 import { TodoList } from './TodoList';
 import GenericInput from '../../../components/GenericInput/GenericInput';
 import { TodoOperations } from './TodoOperations';
+import { TodoListFooter } from './TodoFooter';
 
 function TodoMVC() {
   return (
@@ -15,6 +16,7 @@ function TodoMVC() {
         txt=""
       /> 
       <TodoList />
+      <TodoListFooter />
     </div>
   );
 }

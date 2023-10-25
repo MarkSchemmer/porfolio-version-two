@@ -2,6 +2,8 @@
 
 .mvc-container {
     margin: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .todo-mvc-app:before { 
@@ -41,7 +43,6 @@
 .todos {
     /* border: 1px solid black; */
     width: 800px;
-    height: 800px;
     margin: auto;
     border-radius: 15px;
 }
@@ -64,6 +65,8 @@
     position: absolute;
     top: 5%;
     left: 2%;
+    top: calc(50% - 21px);
+    font-size: large;
 }
 
 .complete-button {
@@ -87,4 +90,44 @@
     margin: 0;
     left: 0px;
     top: -2px;
+    font-size: large;
+}
+
+.line-slash {
+    text-decoration: line-through;
+}
+
+.footer-todo {
+    border: 1px solid black;
+    width: 800px;
+    height: 100px;
+    border-radius: 10px;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.footer-todo .control {
+    margin-top: 20px;
+}
+
+.footer-todo .control span {
+    margin-left: 20px;
+}
+
+.footer-todo .items-left {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.footer-todo .clear-completed {
+    margin-right: 20px;
+    margin-top: 20px;
+}
+
+.selected {
+    border: 1px solid pink;
+    border-radius: 5px;
+    padding: 5px;
 }
