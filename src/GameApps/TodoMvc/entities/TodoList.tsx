@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { DeleteTodoById, MakeAllTodosEditFalse, MakeTodoCannotEdit, selectTodos, UpdateTodoById } from "../../../store/slices/tododListSlice";
+import { completedTodos, DeleteTodoById, itemsLeft, MakeAllTodosEditFalse, MakeTodoCannotEdit, selectTodos, UpdateTodoById } from "../../../store/slices/tododListSlice";
 import { Todo } from './Todo';
 import GenericInput from '../../../components/GenericInput/GenericInput';
 import { replaceAll } from '../../../Utils/Util';
 import { TodoOperations } from './TodoOperations';
 import { faCircle, faCircleCheck, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { TodoFilter, selectFilter } from '../../../store/slices/todoFilterSlice';
 
 
 const CompleteTodoEdit = (props: {todo: Todo, todoStyles : React.CSSProperties}) => {
@@ -137,10 +138,32 @@ const TodoComponent = (props: {todo: Todo}) => {
 
 export const TodoList = () => {
     const todos = useSelector(selectTodos);
+    const filter = useSelector(selectFilter);
+    const itemsleftSlice = useSelector(itemsLeft);
+    const completed = useSelector(completedTodos);
+
+    let functionGetProperTodo = (f: TodoFilter) => {
+        switch(f) {
+            case TodoFilter.All : {
+                return todos;
+            }
+            case TodoFilter.Active : {
+                return itemsleftSlice;
+            }
+            case TodoFilter.Completed : {
+                return completed;
+            }
+            default: {
+                return todos;
+            }
+        }
+    }
+
+    let displayTodos = functionGetProperTodo(filter);
 
     return (
         <div className="todos">
-            {todos.map((t: Todo) => <TodoComponent key={t.id} todo={t} />)}
+            {displayTodos.map((t: Todo) => <TodoComponent key={t.id} todo={t} />)}
         </div>
     )
 }

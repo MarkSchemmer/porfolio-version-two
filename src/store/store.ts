@@ -1,5 +1,6 @@
 import { configureStore, } from '@reduxjs/toolkit'
 import todoListReducer from '../store/slices/tododListSlice';
+import todoFilterReducer from '../store/slices/todoFilterSlice';
 
 
 // import {
@@ -42,6 +43,7 @@ export function isPlain(val: any) {
 export default configureStore({
   reducer: {
     todoList: todoListReducer,
+    todoFilter: todoFilterReducer
   },
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({
