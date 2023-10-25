@@ -2,6 +2,8 @@
 
 .mvc-container {
     margin: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .todo-mvc-app:before { 
@@ -41,7 +43,6 @@
 .todos {
     /* border: 1px solid black; */
     width: 800px;
-    height: 800px;
     margin: auto;
     border-radius: 15px;
 }
@@ -94,4 +95,34 @@
 
 .line-slash {
     text-decoration: line-through;
+}
+
+.footer-todo {
+    border: 1px solid black;
+    width: 800px;
+    height: 100px;
+    border-radius: 10px;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+.footer-todo .control {
+    margin-top: 20px;
+}
+
+.footer-todo .control span {
+    margin-left: 20px;
+}
+
+.footer-todo .items-left {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.footer-todo .clear-completed {
+    margin-right: 20px;
+    margin-top: 20px;
 }
