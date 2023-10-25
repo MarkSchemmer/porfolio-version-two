@@ -1,8 +1,58 @@
-.footer {
-    height: 100px;
+/*Header Section*/
+
+.header {
+   background-color: rgb(14, 1, 14)
+}
+
+/* Top Page Bar, selection */
+
+.topbar {
+    height: 70px;
     background-color: rgb(27, 25, 25);
 }
 
+.topbar-text {
+
+}
+
+
+.right-corner {
+    width: 50%;
+    height: 10%;
+    padding-left: 900px;
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-evenly;
+    color: white;
+    font-size: 17px;
+    position: relative;
+    top: 40%;
+}
+
+/* Header Title Homepage */ 
+
+.h-title {
+    padding-top: 80px;
+}
+
+.headertext {
+    font-size: 125px;
+    font-style:oblique;
+    color:rgb(255, 137, 28)
+}
+
+/*Footer Section*/
+
+.footer {
+    padding-top: 375px; 
+}
+
+/*Footer Bottom Strip*/
+
+.fb-strip {
+    height: 100px;
+    background-color: rgb(27, 25, 25);
+}
 
 .footertexts {
     width: 50%;
@@ -16,4 +66,3 @@
     position: relative;
     top: 70%;
 }
-

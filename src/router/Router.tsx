@@ -27,5 +27,6 @@ export default function Router() {
       </Routes>
     </BrowserRouter>
         </div>
+    
     );
 }
