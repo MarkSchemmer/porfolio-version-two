@@ -1,0 +1,19 @@
+.footer {
+    height: 100px;
+    background-color: rgb(27, 25, 25);
+}
+
+
+.footertexts {
+    width: 50%;
+    height: 10%;
+    margin: auto;
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-evenly;
+    color: white;
+    font-size: 17px;
+    position: relative;
+    top: 70%;
+}
+
