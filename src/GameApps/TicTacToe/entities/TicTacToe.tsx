@@ -1,5 +1,8 @@
 import React from "react";
 import "../styles/main.css";
+import { useSelector } from "react-redux";
+import { sliceBoard } from "../slices/TicTacToeSlice";
+import { SquareComponent } from "./SquareComponent";
 
 /*
     null -> empty square
@@ -7,49 +10,18 @@ import "../styles/main.css";
     1 -> O
 */
 
-class Square {
-
-    // width and height
-    public Dimension = "100px";
-    public boderColor = "black";
-    public value: any;
-
-    constructor(val:any) {
-        this.value = val;
-    }
-
-    render() {
-        return (
-            <div className="square"></div>
-        )
-    }
-}
-
-enum TicTacToeEnum {
-    X = "X",
-    O = "O"
-};
-
-const board = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-];
-
-let genBoard = () => board.map(row => {
-    return row.map(columnItem => new Square(columnItem))
-});
-
 export const TicTacToe = () => {
 
-    let b = genBoard();
+
+
+    let b = useSelector(sliceBoard)
 
     return (
         <div className="tic-container">
             {
-            b.map(row => 
+            b.map((row, idx) => 
                 {
-                    return (<div className="row">{row.map(r => r.render())}</div>)
+                    return (<div className="row" key={idx}>{row.map(r => <SquareComponent key={r.id} square={r} />)}</div>)
                 })
             }
         </div>

@@ -1,6 +1,7 @@
 import { configureStore, } from '@reduxjs/toolkit'
 import todoListReducer from '../store/slices/tododListSlice';
 import todoFilterReducer from '../store/slices/todoFilterSlice';
+import ticTacToeReducer from '../../src/GameApps/TicTacToe/slices/TicTacToeSlice';
 
 
 // import {
@@ -43,7 +44,8 @@ export function isPlain(val: any) {
 export default configureStore({
   reducer: {
     todoList: todoListReducer,
-    todoFilter: todoFilterReducer
+    todoFilter: todoFilterReducer,
+    TicTacToeState: ticTacToeReducer
   },
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({
