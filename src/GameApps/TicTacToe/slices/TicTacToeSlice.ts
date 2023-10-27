@@ -34,7 +34,6 @@ export const TicTacToeSlice = createSlice({
     initialState: initialState,
     reducers: {
         HandleTicTacToeClick: (state, action: {type: string, payload: {sqaure: Square}}) => {
-            console.log(action.payload.sqaure);
             let x = action.payload.sqaure.x;
             let y = action.payload.sqaure.y;
             state.board = JSON.parse(JSON.stringify(state.board));
