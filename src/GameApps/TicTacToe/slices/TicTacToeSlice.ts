@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Square } from "../entities/Square";
-import { type } from "os";
 
 export enum TicTacToeEnum {
     X = "X",
     O = "O"
 };
+
 const board = [
     [null, null, null],
     [null, null, null],
@@ -17,7 +17,6 @@ let genBoard = () => board.map((row, rowIdx) => {
 });
 
 let generatedBoard: Square[][] = genBoard();
-
 let whosTurn: TicTacToeEnum = TicTacToeEnum.X;
 
 type State = {
@@ -49,8 +48,6 @@ export const TicTacToeSlice = createSlice({
 });
 
 export const { HandleTicTacToeClick, SwitchTurn } = TicTacToeSlice.actions;
-
 export const sliceBoard = (state: {TicTacToeState: {board: Square[][], turn: TicTacToeEnum}}) => state.TicTacToeState.board;
 export const sliceTurn = (state: {board: Square[][], turn: TicTacToeEnum}) => state.turn;
-
 export default TicTacToeSlice.reducer;
