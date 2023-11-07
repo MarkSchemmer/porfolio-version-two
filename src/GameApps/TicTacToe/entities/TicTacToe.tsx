@@ -6,6 +6,7 @@ import { SquareComponent } from "./SquareComponent";
 
 export const TicTacToe = () => {
     let b = useSelector(sliceBoard);
+
     return (
         <div className="tic-container">
             {
