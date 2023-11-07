@@ -1,0 +1,36 @@
+.tic-container {
+    width: 500px;
+    height: 500px;
+    margin: 0;
+    margin-bottom: 0px;
+    margin:auto;
+    display: flex;
+}
+
+.row {
+    display: inline-block;
+    border: 1px solid black;
+    margin: 0;
+    height: 500px;
+    width: calc(((500px) / 3) - 2px);
+    height: 500px;
+}
+
+.square {
+    width: calc(((500px) / 3) - 2px);
+    height: calc(((500px) / 3) - 2px);
+    border: 1px solid black;
+    z-index: 1;
+}
+
+.sq-txt {
+    display: block;
+    width: 100%;
+    font-size: 150px;
+    margin-top: -20%;
+    height: 100%;
+}
+
+.winner {
+    background-color: yellow;
+}

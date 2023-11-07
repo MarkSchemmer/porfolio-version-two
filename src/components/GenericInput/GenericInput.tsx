@@ -48,7 +48,6 @@ const GenericInput = (props:IInputProps) => {
       if (!isOnlyWhiteSpace) return;
         const key = e.nativeEvent.key;
         if (key === 'Enter' || forceUpdate) {
-          console.log(forceUpdate);
           switch(props.operationForInput) {
             case TodoOperations.AddTodo : {
               const newTodo = new Todo(nextStr);
@@ -57,12 +56,10 @@ const GenericInput = (props:IInputProps) => {
               break;
             }
             case TodoOperations.UpdateTodo : {
-              console.log("ehllo");
               dispatch(UpdateTodoById({...props.todo as Todo, str: nextStr, canEdit: false}));
               break;
             }
             default: {
-              console.log("Todo Operations hit default potential error.");
             }
           }
 
@@ -89,7 +86,6 @@ const GenericInput = (props:IInputProps) => {
         <input
                 onBlur={(e) => { 
                   if (props.todo && props.todo.canEdit) {
-                    console.log(props.operationForInput);
                     handlingEnter(e, true);
                   }
                  }}

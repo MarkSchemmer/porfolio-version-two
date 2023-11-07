@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "../Pages/HomePage/HomePage";
 import TodoMVC from "../GameApps/TodoMvc/entities/todoMvc";
+import { TicTacToe } from "../GameApps/TicTacToe/entities/TicTacToe";
 
 export default function Router() {
     return (
@@ -20,6 +21,7 @@ export default function Router() {
           
           {/* Change this later to <HomePage /> */}
           <Route path="/" element={<TodoMVC />} />
+          <Route path="/tic" element={<TicTacToe />} />
           {/*
                 Routes below are for me in developing my apps
           */}
