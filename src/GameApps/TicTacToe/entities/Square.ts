@@ -1,10 +1,4 @@
-import react from 'react';
-import { useDispatch } from 'react-redux';
-import { HandleTicTacToeClick, TicTacToeEnum } from '../slices/TicTacToeSlice';
 import { e2 } from '../../../Utils/Util';
-
-
-
 
 export class Square {
 
@@ -23,4 +17,3 @@ export class Square {
         this.y = y;
     }
 }
-
