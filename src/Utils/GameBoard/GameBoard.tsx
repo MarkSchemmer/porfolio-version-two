@@ -1,8 +1,13 @@
 import React from 'react';
 import '../GameBoard/styles/main.css';
+import Board from "../GameBoard/GameBoard";
 
-export const GameBoard = () => {
+type IBoardProps = {
+    board: Board;
+}
+
+export const GameBoard = (props: IBoardProps) => {
     return (
-        <div className='game-board'></div>
+        <div id={props.board.Id}></div>
     );
 }
