@@ -47,18 +47,12 @@ import "../GameBoard/styles/main.css";
             Todo this repalce switch with a object, then on construction of the class code in the
             The additional commands. 
 
-
-
-
             Always same key strokes in less overridden
             s -> start
             p -> stop or pause
             r -> restart
 
-
-
             Determining when 
-
 
             I'm thinking I'm going to have to make this a react component. 
             Then add a ref
@@ -67,6 +61,20 @@ import "../GameBoard/styles/main.css";
 
 
             Might be value to actually create a unique ID for each 
+
+            An old implementation of handling a board click, but determining what square or grid was clicked.
+            This is important whne we break a canvas into small squares. 
+
+            public handleBoardClick = e => {
+                const x = e.pageX - this.canvas.offsetLeft;
+                const y = e.pageY - this.canvas.offsetTop;
+                if (y >= 0 && y <= y + this.resolution) {
+                    const indexOfX = Math.floor(x / this.resolution);
+                    const indexOfY = Math.floor(y / this.resolution);   
+                    this.grid[indexOfX][indexOfY].isAlive =  !this.grid[indexOfX][indexOfY].isAlive;
+                    this.board.draw(this.grid, this.ctx);
+                }
+            }
 
 
 */
@@ -92,6 +100,11 @@ interface IBoard {
     startTime: number;
 }
 
+type IBoardProps = {
+    width?: number;
+    height?: number;
+}
+
 export default class Board extends React.Component implements IBoard { 
     
     public Id: string = e2();
@@ -108,26 +121,33 @@ export default class Board extends React.Component implements IBoard {
     public ctx: any;
     private board: any;
     public refToBoard: any;
+    public boardRef: any;
+
     // a method that should later to assigned later on in time
     // after the board is initialized assign an actual meaningful game loop.
     public gameLoopFunctions: any = () => {}
+    // A method that should later be assigned with a clear instructjions for drawing on whatever that may be.
+    public drawFunctionCommands: any = () => {}
 
     private KeyStrokeCommandObject: any = {
         "s": () => this.start(),
         "p": () => this.stop(),
     };
 
-    constructor(props:any) {
+    constructor(props:IBoardProps) {
         super(props);
-        //this.boardHeight = boardHeight;
-        //this.boardWidth = boardWidth;
-        // when the board is initialized we will call the initialize step to make sure that 
-        this.initialGameSetup();
-     } 
-    
-    
+        this.boardWidth = props.width || 800;
+        this.boardHeight = props.height || 800;
+        this.boardRef = React.createRef();
+     }
 
+     componentDidMount(): void {
+        this.initialGameSetup();
+        document.addEventListener("keydown", this.handleKeyBoardStrokes);
+     }
+    
     public start: () => void = () => {
+        this.runner = true;
         this.gameLooper = requestAnimationFrame(this.gameLoop);
     }
 
@@ -152,6 +172,9 @@ export default class Board extends React.Component implements IBoard {
                 Usually we clean the board.
                 Then we re-draw.
                 This needs to implemented by the programmer.
+
+                We implement this by creating a logical game instructions by re-assigning
+                gameLoopFunctions();
             */
             this.gameLoopFunctions();
         }
@@ -176,17 +199,21 @@ export default class Board extends React.Component implements IBoard {
         this.KeyStrokeCommandObject = { ...this.KeyStrokeCommandObject, ...additionalStrokes };
     }
 
+    public Draw = () => {
+        this.drawFunctionCommands();
+    }
+
     public initialGameSetup: () => void = () => {
-        // this.board = document.getElementById(this.Id);
-        //this.ctx = this.board.getContext("2d");
-        // this.board.width = this.boardWidth;
-        // this.board.height = this.boardHeight;
-        document.onkeydown = this.handleKeyBoardStrokes;
+        this.boardRef.style.width = `${this.boardWidth}px`;
+        this.boardRef.style.height = `${this.boardHeight}px`;
+        this.ctx = this.boardRef.getContext("2d");
+        // Going to need 
+        this.Draw();
     }
 
     render(): React.ReactNode {
         return (
-            <div className={'game-board'} id={this.Id}></div>
+            <div ref={r => this.boardRef = r} className={'game-board'} id={this.Id}></div>
         );
     }
 }
