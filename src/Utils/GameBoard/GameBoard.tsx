@@ -101,8 +101,8 @@ interface IBoard {
 }
 
 type IBoardProps = {
-    width?: number;
-    height?: number;
+    width: number;
+    height: number;
 }
 
 export default class Board extends React.Component implements IBoard { 
@@ -206,14 +206,12 @@ export default class Board extends React.Component implements IBoard {
     public initialGameSetup: () => void = () => {
         this.boardRef.style.width = `${this.boardWidth}px`;
         this.boardRef.style.height = `${this.boardHeight}px`;
-        this.ctx = this.boardRef.getContext("2d");
-        // Going to need 
         this.Draw();
     }
 
     render(): React.ReactNode {
         return (
-            <div ref={r => this.boardRef = r} className={'game-board'} id={this.Id}></div>
+            <canvas ref={r => {this.boardRef = r; if (r) { this.ctx = r.getContext('2d'); } }} className={'game-board'} id={this.Id}></canvas>
         );
     }
 }
