@@ -65,6 +65,9 @@ import "../GameBoard/styles/main.css";
             An old implementation of handling a board click, but determining what square or grid was clicked.
             This is important whne we break a canvas into small squares. 
 
+            We use resolution to guage the size and scale of the square. also it helps determine the rows and columns that will
+            be needed to evenly stretch across the board. 
+
             public handleBoardClick = e => {
                 const x = e.pageX - this.canvas.offsetLeft;
                 const y = e.pageY - this.canvas.offsetTop;
@@ -100,12 +103,13 @@ interface IBoard {
     startTime: number;
 }
 
-type IBoardProps = {
+interface IBoardProps {
     width: number;
     height: number;
+    resolution?:number;
 }
 
-export default class Board extends React.Component implements IBoard { 
+export default class Board extends React.Component<IBoardProps> implements IBoard { 
     
     public Id: string = e2();
     public fps: number = 10;
@@ -123,6 +127,8 @@ export default class Board extends React.Component implements IBoard {
     public refToBoard: any;
     public boardRef: any;
 
+    public resolution: number;
+
     // a method that should later to assigned later on in time
     // after the board is initialized assign an actual meaningful game loop.
     public gameLoopFunctions: any = () => {}
@@ -138,6 +144,7 @@ export default class Board extends React.Component implements IBoard {
         super(props);
         this.boardWidth = props.width || 800;
         this.boardHeight = props.height || 800;
+        this.resolution = props.resolution || 20;
         this.boardRef = React.createRef();
      }
 
@@ -170,6 +177,7 @@ export default class Board extends React.Component implements IBoard {
             this.then = now - (elapsed % this.fpsInterval);
             /*
                 Usually we clean the board.
+                re-calculate
                 Then we re-draw.
                 This needs to implemented by the programmer.
 
@@ -211,7 +219,11 @@ export default class Board extends React.Component implements IBoard {
 
     render(): React.ReactNode {
         return (
-            <canvas ref={r => {this.boardRef = r; if (r) { this.ctx = r.getContext('2d'); } }} className={'game-board'} id={this.Id}></canvas>
+            <canvas 
+            ref={r => {this.boardRef = r; if (r) { this.ctx = r.getContext('2d'); } }} 
+            className={'game-board'} 
+            id={this.Id}>
+            </canvas>
         );
     }
 }
