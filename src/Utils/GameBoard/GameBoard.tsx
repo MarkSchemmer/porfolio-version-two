@@ -10,12 +10,6 @@
 import React from "react";
 import { e2 } from "../Util";
 import "../GameBoard/styles/main.css";
-
-
-
-
-
-
 /*
 
     fps: 10
@@ -107,6 +101,9 @@ interface IBoardProps {
     width: number;
     height: number;
     resolution?:number;
+    drawFunctionCommands:any;
+    additionalKeyStrokeCommands?:any;
+    clickHandler?:any;
 }
 
 export default class Board extends React.Component<IBoardProps> implements IBoard { 
@@ -133,7 +130,11 @@ export default class Board extends React.Component<IBoardProps> implements IBoar
     // after the board is initialized assign an actual meaningful game loop.
     public gameLoopFunctions: any = () => {}
     // A method that should later be assigned with a clear instructjions for drawing on whatever that may be.
-    public drawFunctionCommands: any = () => {}
+    public drawFunctionCommands: any = (ctx: any) => {}
+
+    public handleClick:any = (event:any) => {
+        console.log(event)
+    }
 
     private KeyStrokeCommandObject: any = {
         "s": () => this.start(),
@@ -146,11 +147,26 @@ export default class Board extends React.Component<IBoardProps> implements IBoar
         this.boardHeight = props.height || 800;
         this.resolution = props.resolution || 20;
         this.boardRef = React.createRef();
+
+        if (props.drawFunctionCommands) {
+            this.drawFunctionCommands = props.drawFunctionCommands;
+        }
+
+        if (props.additionalKeyStrokeCommands) {
+            this.AddKeyStrokes(props.additionalKeyStrokeCommands);
+        }
+
      }
 
      componentDidMount(): void {
         this.initialGameSetup();
         document.addEventListener("keydown", this.handleKeyBoardStrokes);
+
+        if (this.props.clickHandler) {
+            this.handleClick = this.props.clickHandler(this.ctx);
+        }
+
+       // document.addEventListener("click", this.handleClick);
      }
     
     public start: () => void = () => {
@@ -185,7 +201,10 @@ export default class Board extends React.Component<IBoardProps> implements IBoar
                 gameLoopFunctions();
             */
             this.gameLoopFunctions();
+            this.forceUpdate();
         }
+
+        this.start();
     }
 
 
@@ -198,6 +217,7 @@ export default class Board extends React.Component<IBoardProps> implements IBoar
 
     public handleKeyBoardStrokes: (key: KeyboardEvent) => void = (key:KeyboardEvent) => {
         const value: string = key.key.toLowerCase();
+        console.log(value);
         if (value in this.KeyStrokeCommandObject) {
             this.KeyStrokeCommandObject[value]();
         }
@@ -208,18 +228,24 @@ export default class Board extends React.Component<IBoardProps> implements IBoar
     }
 
     public Draw = () => {
-        this.drawFunctionCommands();
+        this.drawFunctionCommands(this.ctx);
     }
 
     public initialGameSetup: () => void = () => {
         this.boardRef.style.width = `${this.boardWidth}px`;
         this.boardRef.style.height = `${this.boardHeight}px`;
         this.Draw();
+        this.gameLoopFunctions();
     }
 
     render(): React.ReactNode {
         return (
-            <canvas 
+            <canvas
+            onClick={e => {
+                this.handleClick(e);
+                this.forceUpdate();
+                this.Draw();
+            }} 
             ref={r => {this.boardRef = r; if (r) { this.ctx = r.getContext('2d'); } }} 
             className={'game-board'} 
             id={this.Id}>

@@ -2,6 +2,7 @@ import { configureStore, } from '@reduxjs/toolkit'
 import todoListReducer from '../store/slices/tododListSlice';
 import todoFilterReducer from '../store/slices/todoFilterSlice';
 import ticTacToeReducer from '../../src/GameApps/TicTacToe/slices/TicTacToeSlice';
+import conwaysGameOfLifeReducer from './slices/conwaysGameOfLifeSlice';
 
 
 // import {
@@ -45,7 +46,8 @@ export default configureStore({
   reducer: {
     todoList: todoListReducer,
     todoFilter: todoFilterReducer,
-    TicTacToeState: ticTacToeReducer
+    TicTacToeState: ticTacToeReducer,
+    conways: conwaysGameOfLifeReducer
   },
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({
