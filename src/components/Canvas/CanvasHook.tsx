@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react'
+import { IOptions } from '../../GameApps/ConwaysGameOfLife/conwaysGameofLife';
 
-export const postdraw = (ctx:any) => () => {
+export const postdraw = (ctx:any) => (options: IOptions) => {
     // index++
     ctx.restore();
     return {
@@ -8,30 +9,33 @@ export const postdraw = (ctx:any) => () => {
     };
 }
 
-export const predraw = (context:any, canvas:any) => () => {
+export const predraw = (context:any, canvas:any) => (options: IOptions) => {
     context.save();
-    resizeCanvasToDisplaySize(context, canvas);
+    resizeCanvasToDisplaySize(context, canvas, options);
     const { width, height } = context.canvas;
     context.clearRect(0, 0, width, height);
 }
 
-export const resizeCanvasToDisplaySize = (context:any, canvas:any) => {
+export const resizeCanvasToDisplaySize = (context:any, canvas:any, options: IOptions) => {
     
+  if (canvas) {
     const { width, height } = canvas.getBoundingClientRect();
 
-    if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
+    if (options.width !== width || options.height !== height) {
+        canvas.width = options.width;
+        canvas.height = options.height;
         return true; // here you can return some usefull information like delta width and delta height instead of just true
         // this information can be used in the next redraw...
     }
+  }
+
 
     return false;
 }
 
 export const resizeCanvasHighDensityDevices = (context:any, canvas:any) => {
     const { width, height } = canvas.getBoundingClientRect();
-    
+  
     if (canvas.width !== width || canvas.height !== height) {
         const { devicePixelRatio:ratio=1 } = window;
         canvas.width = width * ratio;
@@ -44,10 +48,27 @@ export const resizeCanvasHighDensityDevices = (context:any, canvas:any) => {
   }
 
 
+  // can use for time control if needed. 
+  export const canDraw = (draw:any, now:number, fpsInterval:number, then: number=0) => {
+    return () => {
+      if(fpsInterval === 0) { draw(); } else {
+        now = Date.now();
+        let elapsed = now - then;
+        if (elapsed > fpsInterval) {
+          then = now - (elapsed % fpsInterval);
+          // console.log("I'm drawing. ");
+          draw();
+        }
+      }
+
+    }
+  } 
+
+
 // if framecount causes error we can remove, it's not needed to be honest. 
 // Also instead of just 1 draw method we pass. we can could pass mutiple draw methods. 
 // Or maybe we just addin the all the functions that are needed inside of the draw method...?
-const useCanvas = (draw:any, options={}) => {
+const useCanvas = (draw:any, options:IOptions) => {
   
   const canvasRef = useRef(null);
   
@@ -59,10 +80,12 @@ const useCanvas = (draw:any, options={}) => {
 
     let pstDraw = postdraw(context);
     let pre_draw = predraw(context, canvas);
+
+    let _draw = canDraw(() => draw(context, canvas, options), Date.now(), options.fpsInterval, 0);
     const render = () => {
-      pre_draw();
-      draw(context);
-      pstDraw();
+      pre_draw(options);
+      _draw();
+      pstDraw(options);
       animationFrameId = window.requestAnimationFrame(render);
     }
 
