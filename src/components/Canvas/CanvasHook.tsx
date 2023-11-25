@@ -33,6 +33,25 @@ export const resizeCanvasToDisplaySize = (context:any, canvas:any, options: IOpt
     return false;
 }
 
+
+export const handleClickForGridCoordinates = (e:any, canvas:any, options: IOptions) => {
+  if (canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // Calculate the grid square based on mouse coordinates
+    const col = Math.floor(mouseX / options.resolution);
+    const row = Math.floor(mouseY / options.resolution);
+
+    // Log or use the clicked grid square
+    console.log('Clicked on grid:', col, row);
+    return [col, row]
+  }
+
+  return [];
+}
+
 export const resizeCanvasHighDensityDevices = (context:any, canvas:any) => {
     const { width, height } = canvas.getBoundingClientRect();
   

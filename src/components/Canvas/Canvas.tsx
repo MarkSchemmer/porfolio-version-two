@@ -6,10 +6,12 @@ export interface CanvasProps {
 }
 
 const Canvas = (props:any) => {  
-  const { draw, options, ...rest } = props;
+  const { draw, handleClick, options, ...rest } = props;
   const { context, ...moreConfig } = options;
   const canvasRef = useCanvas(draw, options);
-  return <canvas ref={canvasRef} {...rest}/>
+  return <canvas onClick={(e) => {
+      handleClick(e, canvasRef.current, options);
+    }} style={{border: "1px solid black"}} ref={canvasRef} {...rest}/>
 }
 
 export default Canvas;
