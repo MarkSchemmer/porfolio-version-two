@@ -35,6 +35,23 @@ export class Point implements IPoint {
     }
 }
 
+export const degressToRadians = (degrees:number) => {
+    return degrees * Math.PI / 180.0;
+}
+
+export const rotatePoint = (point: Point, degrees:number) => {
+    let radians = degressToRadians(degrees);
+    let sine = Math.sin(radians);
+    let cosine = Math.cos(radians);
+
+    let p = new Point();
+
+    p.x = point.x * cosine - point.y * sine;
+    p.y = point.x * sine + point.y * cosine;
+
+    return p;
+}
+
 export interface IBoardDimensions {
     width: number;
     height: number;
@@ -62,6 +79,9 @@ export interface IShape {
 class Shape implements IShape {
     public point: Point;
     public resolution: number;
+
+    public strokeStyle:string = 'black';
+    public fillStyle:string = 'black';
 
     constructor(point: Point, resolution: number) {
         this.point = point;
@@ -94,7 +114,25 @@ export class Rectangle extends Shape {
     }
 }
 
+export class Circle extends Shape {
 
+    public radius:number = 0;
+    public pi:number = Math.PI;
+
+    public startAngle:number = 0;
+    public endAngle: number = 0;
+
+    constructor(point: Point, resolution: number, radius: number) {
+        super(point, resolution);
+        this.radius = radius;
+    }
+
+    public draw: (ctx: any) => void = (ctx:any) => {
+        ctx.beginPath();
+        ctx.arc(this.point.x, this.point.y, this.radius, this.startAngle, this.endAngle * this.pi);
+        ctx.stroke();
+    }
+}
 
 /*
     Helper methods

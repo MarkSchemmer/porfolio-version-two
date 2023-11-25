@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Canvas from "../../components/Canvas/Canvas";
 import { handleClickForGridCoordinates, resizeCanvasToDisplaySize } from "../../components/Canvas/CanvasHook";
 import "../ConwaysGameOfLife/main.css";
-import { Point, Rectangle, range } from "../../Utils/Util";
+import { Point, Rectangle, range, rotatePoint } from "../../Utils/Util";
 
 
 export interface IOptions {
@@ -22,8 +22,6 @@ let generateCanvasBoard = (width:number, height:number, resolution:number) => {
 }
 
 class ConwaysGameOfLifeRect extends Rectangle {
-
-
     public isAlive:boolean = false;
 
     constructor(point: Point, resolution: number) {
@@ -51,20 +49,20 @@ export const ConWaysGameOfLife = (props:any) => {
     const handleBoardClick = (col: number, row: number) => {
         board[col][row].isAlive = !board[col][row].isAlive;
         setBoard(board);
-    }
+    };
 
     let canvasProps = {
         draw: (ctx:any, canvas:any, options: IOptions) => {
             resizeCanvasToDisplaySize(ctx, canvas, options);
             board.forEach(b => {
                 b.forEach(r => r.draw(ctx));
-            })
+            });
         },
         handleClick: (e:any, canvas:any, options:IOptions) => {
             let [col, row] = handleClickForGridCoordinates(e, canvas, options);
             // more logic here... 
             handleBoardClick(col, row);
-        } ,
+        },
         options:{
             context:'2d',
             moreConfig: {
@@ -75,12 +73,11 @@ export const ConWaysGameOfLife = (props:any) => {
             height,
             resolution
         },
-
-    }
+    };
 
     return (
         <div className="conways-container" ref={ref}>
             <Canvas {...canvasProps} />
         </div>
-    )
+    );
 }
