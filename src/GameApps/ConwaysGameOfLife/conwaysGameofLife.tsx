@@ -14,9 +14,8 @@ export interface IOptions {
 
 export const ConWaysGameOfLife = (props:any) => {
 
-    const [width, setWidth] = useState(500);
-    const [height, setHeight] = useState(500);
-
+    const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
     const [numbers, setNumbers] = useState([]);
 
     const ref = useRef<HTMLDivElement | null>(null);
@@ -39,10 +38,10 @@ export const ConWaysGameOfLife = (props:any) => {
 
         }
     
-        window.addEventListener('resize', handleWindowResize);
+        document.addEventListener('resize', handleWindowResize);
     
         return () => {
-          window.removeEventListener('resize', handleWindowResize);
+          document.removeEventListener('resize', handleWindowResize);
         };
       }, []);
 

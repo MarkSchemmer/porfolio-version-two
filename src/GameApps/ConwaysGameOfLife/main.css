@@ -1,7 +1,5 @@
 .conways-container {
-    max-width: 800px;
-    max-height: 800px;
-    min-width: 500px;
-    min-height: 500px;
     margin:auto;
+    height: 500px;
+    width: 500px;
 }

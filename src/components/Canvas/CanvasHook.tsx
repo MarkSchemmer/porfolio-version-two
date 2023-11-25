@@ -81,10 +81,10 @@ const useCanvas = (draw:any, options:IOptions) => {
     let pstDraw = postdraw(context);
     let pre_draw = predraw(context, canvas);
 
-    let _draw = canDraw(() => draw(context, canvas, options), Date.now(), options.fpsInterval, 0);
+    let _draw = (options:any) => canDraw(() => draw(context, canvas, options), Date.now(), options.fpsInterval, 0);
     const render = () => {
       pre_draw(options);
-      _draw();
+      _draw(options)();
       pstDraw(options);
       animationFrameId = window.requestAnimationFrame(render);
     }
