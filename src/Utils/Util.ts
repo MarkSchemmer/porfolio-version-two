@@ -1,6 +1,5 @@
 
 // This is a public library of functions that can be shared between apps regardless of use. 
-
 export const replaceAll = function(thisString: string, str1: string, str2: string, ignore: boolean) 
 {
     return thisString.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
@@ -114,6 +113,23 @@ export class Rectangle extends Shape {
     }
 }
 
+export class ConwaysGameOfLifeRect extends Rectangle {
+    public isAlive:boolean = false;
+
+    constructor(point: Point, resolution: number) {
+        super(point, resolution);
+    }
+
+    public draw: (ctx: any) => void = (ctx:any) => {
+        ctx.beginPath();
+        ctx.lineWidth = this.lineWidth;
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(this.point.x * this.resolution, this.point.y * this.resolution, this.resolution, this.resolution);
+        ctx.stroke();
+        if (this.isAlive) { this.fillRect(ctx); }
+    }
+}
+
 export class Circle extends Shape {
 
     public radius:number = 0;
@@ -193,4 +209,104 @@ export const deepClone = (obj:any, hash = new WeakMap()):any => {
     hash.set(obj, result);
     return Object.assign(result, ...Object.keys(obj).map(
         key => ({ [key]: deepClone(obj[key], hash) }) ));
+}
+
+export function deepCloneForConwaysGameOfLife(obj: ConwaysGameOfLifeRect[][]) {
+    let shallowClone:ConwaysGameOfLifeRect[][] = obj.map(c => c.map(cc => {
+        let point = cc.point;
+        let resolution = cc.resolution;
+        let isAlive = cc.isAlive;
+        let newObj = new ConwaysGameOfLifeRect(point, resolution);
+        newObj.isAlive = isAlive;
+        return newObj;
+    }));
+
+    return shallowClone;
+  }
+
+  export class AnimationRequestHelper {
+
+    public animationRequestId:any;
+    public now:number;
+    public fpsInterval:number;
+    public then:number;
+    public callBack:any;
+    public runner:boolean = true;
+
+    constructor(fpsInterval:number, callBack: any) {
+        this.now = Date.now();
+        this.fpsInterval = fpsInterval;
+        this.then = 0;
+        // this.animationRequestId = window.requestAnimationFrame(this.render);
+        this.callBack = callBack;
+    }
+
+    render = () => {
+        if (this.runner) {
+            this.now = Date.now();
+            let elapsed = this.now - this.then;
+            if (elapsed > this.fpsInterval) {
+                this.then = this.now - (elapsed % this.fpsInterval);
+                this.callBack();
+            }
+        }
+    }
+
+    pause = () => {
+        this.runner = false;
+        window.cancelAnimationFrame(this.animationRequestId);
+        this.animationRequestId = null;
+    }
+
+    start = () => {
+        this.runner = true;
+        this.animationRequestId = window.requestAnimationFrame(this.render);
+        this.render();
+    }
+  }
+
+  type AnimationCallback = () => void;
+
+  export class AnimationFrame {
+    private requestId: number | null = null;
+    private startTime = 0;
+    private elapsed = 0;
+    private interval: number;
+    private callback: AnimationCallback;
+  
+    constructor(interval: number, callback: AnimationCallback) {
+      this.interval = interval;
+      this.callback = callback;
+    }
+  
+    private loop = (currentTime: number) => {
+      if (!this.startTime) {
+        this.startTime = currentTime;
+      }
+  
+      this.elapsed = currentTime - this.startTime;
+  
+      if (this.elapsed >= this.interval) {
+        this.callback();
+        this.startTime = currentTime;
+      }
+  
+      this.requestId = requestAnimationFrame(this.loop);
+    };
+  
+    start(): void {
+      this.requestId = requestAnimationFrame(this.loop);
+    }
+  
+    stop(): void {
+      if (this.requestId !== null) {
+        cancelAnimationFrame(this.requestId);
+        this.startTime = 0;
+        this.elapsed = 0;
+      }
+    }
+  }
+
+export class TimerHelper {
+    
 }
