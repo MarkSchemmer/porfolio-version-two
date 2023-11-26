@@ -1,5 +1,5 @@
-import React from 'react'
-import useCanvas from './CanvasHook'
+import React from 'react';
+import useCanvas from './CanvasHook';
 
 export interface CanvasProps {
     

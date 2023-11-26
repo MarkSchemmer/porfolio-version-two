@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react';
 import { IOptions } from '../../GameApps/ConwaysGameOfLife/conwaysGameofLife';
 
 export const postdraw = (ctx:any) => (options: IOptions) => {
