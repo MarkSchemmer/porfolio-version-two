@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { IOptions } from './CanvasProps';
+import { CanvasProps, IOptions } from './CanvasProps';
 
 export const postdraw = (ctx:any) => (options: IOptions) => {
     // index++
@@ -21,9 +21,9 @@ export const resizeCanvasToDisplaySize = (context:any, canvas:any, options: IOpt
   if (canvas) {
     const { width, height } = canvas.getBoundingClientRect();
 
-    if (options.width !== width || options.height !== height) {
-        canvas.width = options.width;
-        canvas.height = options.height;
+    if (options.width.current !== width || options.height.current !== height) {
+        canvas.width = options.width.current;
+        canvas.height = options.height.current;
         return true; // here you can return some usefull information like delta width and delta height instead of just true
         // this information can be used in the next redraw...
     }
@@ -35,21 +35,18 @@ export const resizeCanvasToDisplaySize = (context:any, canvas:any, options: IOpt
 
 
 export const handleClickForGridCoordinates = (e:any, canvas:any, options: IOptions) => {
-  if (canvas) {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
 
-    // Calculate the grid square based on mouse coordinates
-    const col = Math.floor(mouseX / options.resolution);
-    const row = Math.floor(mouseY / options.resolution);
+        // Calculate the grid square based on mouse coordinates
+        const col = Math.floor(mouseX / options.resolution.current);
+        const row = Math.floor(mouseY / options.resolution.current);
+        return [col, row];
+    }
 
-    // Log or use the clicked grid square
-    console.log('Clicked on grid:', col, row);
-    return [col, row]
-  }
-
-  return [];
+      return [];
 }
 
 export const resizeCanvasHighDensityDevices = (context:any, canvas:any) => {
@@ -65,7 +62,6 @@ export const resizeCanvasHighDensityDevices = (context:any, canvas:any) => {
 
     return false;
   }
-
 
   // can use for time control if needed. 
   export const canDraw = (draw:any, now:number, fpsInterval:number, then: number=0) => {
@@ -87,8 +83,8 @@ export const resizeCanvasHighDensityDevices = (context:any, canvas:any) => {
 // if framecount causes error we can remove, it's not needed to be honest. 
 // Also instead of just 1 draw method we pass. we can could pass mutiple draw methods. 
 // Or maybe we just addin the all the functions that are needed inside of the draw method...?
-const useCanvas = (draw:any, options:IOptions) => {
-  
+const useCanvas = (props: CanvasProps) => {
+  const {Instructions, options} = props;
   const canvasRef = useRef(null);
   
   useEffect(() => {
@@ -99,19 +95,19 @@ const useCanvas = (draw:any, options:IOptions) => {
 
     let pstDraw = postdraw(context);
     let pre_draw = predraw(context, canvas);
-    const render = (now?:number) => {
+    const render = (now:number) => {
       pre_draw(options);
-      draw(context, canvas, options, now);
+      Instructions(context, canvas, options, now);
       pstDraw(options);
       animationFrameId = window.requestAnimationFrame(render);
     }
 
-    render();
+    render(0);
     
     return () => {
       window.cancelAnimationFrame(animationFrameId)
     };
-  }, [draw]);
+  }, [Instructions]);
   
   return canvasRef;
 }
