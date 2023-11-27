@@ -2,18 +2,18 @@
 
 - Todo App (TODO MVC) - DONE
 - TicTacToe - DONE
-- Conways Game of Life
-- Pong
-- Snake
-- Rubics Cube solver game
-- Solitaire game
-- Solar System game, planets orbiting around the Sun
-- Flappy Bird
-- Tetris
-- Chess
-- Algorithm visualization
-- Tower of Defense
-- Sodoku
+- Conways Game of Life - DONE
+- Snake - PENDING
+- Solar System game, planets orbiting around the Sun - PENDING
+- Rubics Cube solver game - PENDING
+- Pong - PENDING
+- Solitaire game - PENDING
+- Flappy Bird - PENDING
+- Tetris - PENDING
+- Chess -> (can be done in canvas and in HTML) - PENDING
+- Algorithm visualization -> (Need to list different algorithms to visualize, and even data structures.) - PENDING
+- Tower of Defense - PENDING
+- Sodoku - PENDING
 
 
 # Front-End Development Directives

@@ -4,17 +4,10 @@ import { handleClickForGridCoordinates, resizeCanvasToDisplaySize } from "../../
 import "../ConwaysGameOfLife/main.css";
 import { ConwaysGameOfLifeRect, IsValue, Point, deepCloneForConwaysGameOfLife, range } from "../../Utils/Util";
 import { ConwaysDashboard } from "../../components/ConwaysGameOfLifeDashoard/conwaysDashBoard";
+import { CanvasProps, IOptions, Instructions, boardSetupRezizeAndOtherBeforeDrawOperations } from "../../components/Canvas/CanvasProps";
 
 
-export interface IOptions {
-    context: string;
-    moreConfig: {};
-    fpsInterval: number;
-    width:number;
-    height:number;
-    resolution: number;
-    runner: boolean;
-}
+
 
 let generateCanvasBoard = (width:number, height:number, resolution:number) => {
     let rows = Math.ceil(width / resolution);
@@ -85,72 +78,71 @@ let calculateNextGeneration = (board:ConwaysGameOfLifeRect[][]) => {
     return copyBoard;
 }
 
-
-
-
 export const ConWaysGameOfLife = (props:any) => {
 
-    const [width, setWidth] = useState(500);
-    const [height, setHeight] = useState(500);
-    const [resolution, setResolution] = useState(20);
-    const [board, setBoard] = useState(generateCanvasBoard(width, height, resolution));
-    const [fpsInterval, setFps] = useState(10000);
+    const width = useRef(500);
+    const height = useRef(500);
+    const resolution = useRef(20);
+    const board = useRef(generateCanvasBoard(width.current, height.current, resolution.current));
+    const fpsInterval = useRef(1000);
     const ref = useRef<HTMLDivElement | null>(null);
 
-    const [runner, setRunner] = useState(false);
+    const runnerRef = useRef(false);
     const lastRef = useRef(0);
 
     const handleBoardClick = (col: number, row: number) => {
-        board[col][row].isAlive = !board[col][row].isAlive;
-        setBoard(board);
+        board.current[col][row].isAlive = !board.current[col][row].isAlive;
     };
 
-    let canvasProps = {
-        draw: (ctx:any, canvas:any, options: IOptions, now:number) => {
-            resizeCanvasToDisplaySize(ctx, canvas, options);
-            
-            board.forEach(b => {
-                b.forEach(r => r.draw(ctx));
-            });
-            
-            if (runner && (now - lastRef.current >= options.fpsInterval)) {
-                lastRef.current = now;
-                setBoard(calculateNextGeneration(board));
+    const options: IOptions = {
+        context: '2d',
+        moreConfig: {
+            boardSetupRezizeAndOtherBeforeDrawOperations,
+            draw:  (ctx:any, canvas:any, options: IOptions, now:number) => {
+                board.current.forEach(b => {
+                    b.forEach(r => r.draw(ctx));
+                });
+            },
+            calculations: (ctx:any, canvas:any, options: IOptions, now:number) => {
+                board.current = (calculateNextGeneration(board.current));
+            },
+            boardOperationsConfigs: {
+                canResizeCanvasHighDensityDevices: false,
+                canResizeCanvasToDisplaySize: true
             }
         },
+        fpsInterval,
+        width,
+        height,
+        resolution,
+        runner: runnerRef,
+        lastRef
+    };
+
+    let canvasProps: CanvasProps = {
+        Instructions: Instructions,
         handleClick: (e:any, canvas:any, options:IOptions) => {
             let [col, row] = handleClickForGridCoordinates(e, canvas, options);
             // more logic here... 
             handleBoardClick(col, row);
         },
-        options:{
-            context:'2d',
-            moreConfig: {
-
-            },
-            fpsInterval: 1000,
-            width,
-            height,
-            resolution,
-            runner: false
-        },
+        options
     };
 
     return (
         <>
             <ConwaysDashboard
-            pause={() => {
-                // stop();
-                setRunner(false);
+            pause={() => {                
+                options.runner.current = false;
             }}
             run={() => {
-                // start();
-                setRunner(true);
+                options.runner.current = true;
             }}
             restart={() => {
-                setBoard(generateCanvasBoard(width, height, resolution));
+                board.current = generateCanvasBoard(width.current, height.current, resolution.current);
+                options.runner.current = false;
             }} nexGen={() => {
-                setBoard(calculateNextGeneration(board));
+                board.current = calculateNextGeneration(board.current);
             }} />
             <div className="conways-container" ref={ref}>
                 <Canvas {...canvasProps} />
