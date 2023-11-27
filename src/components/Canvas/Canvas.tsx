@@ -1,11 +1,10 @@
 import React from 'react';
 import useCanvas from './CanvasHook';
+import { CanvasProps } from './CanvasProps';
 
-export interface CanvasProps {
-    
-}
 
-const Canvas = (props:any) => {  
+
+const Canvas = (props:CanvasProps) => {  
   const { draw, handleClick, options, ...rest } = props;
   const { context, ...moreConfig } = options;
   const canvasRef = useCanvas(draw, options);

@@ -4,17 +4,10 @@ import { handleClickForGridCoordinates, resizeCanvasToDisplaySize } from "../../
 import "../ConwaysGameOfLife/main.css";
 import { ConwaysGameOfLifeRect, IsValue, Point, deepCloneForConwaysGameOfLife, range } from "../../Utils/Util";
 import { ConwaysDashboard } from "../../components/ConwaysGameOfLifeDashoard/conwaysDashBoard";
+import { CanvasProps, IOptions } from "../../components/Canvas/CanvasProps";
 
 
-export interface IOptions {
-    context: string;
-    moreConfig: {};
-    fpsInterval: number;
-    width:number;
-    height:number;
-    resolution: number;
-    runner: boolean;
-}
+
 
 let generateCanvasBoard = (width:number, height:number, resolution:number) => {
     let rows = Math.ceil(width / resolution);
@@ -105,7 +98,7 @@ export const ConWaysGameOfLife = (props:any) => {
         setBoard(board);
     };
 
-    let canvasProps = {
+    let canvasProps: CanvasProps = {
         draw: (ctx:any, canvas:any, options: IOptions, now:number) => {
             resizeCanvasToDisplaySize(ctx, canvas, options);
             

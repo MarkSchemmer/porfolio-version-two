@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { IOptions } from '../../GameApps/ConwaysGameOfLife/conwaysGameofLife';
+import { IOptions } from './CanvasProps';
 
 export const postdraw = (ctx:any) => (options: IOptions) => {
     // index++
