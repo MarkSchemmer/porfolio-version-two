@@ -1,10 +1,9 @@
-import React, { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Canvas from "../../components/Canvas/Canvas";
 import { handleClickForGridCoordinates, resizeCanvasToDisplaySize } from "../../components/Canvas/CanvasHook";
 import "../ConwaysGameOfLife/main.css";
-import { AnimationFrame, AnimationRequestHelper, ConwaysGameOfLifeRect, IsValue, Point, Rectangle, deepClone, deepCloneForConwaysGameOfLife, range, rotatePoint } from "../../Utils/Util";
+import { ConwaysGameOfLifeRect, IsValue, Point, deepCloneForConwaysGameOfLife, range } from "../../Utils/Util";
 import { ConwaysDashboard } from "../../components/ConwaysGameOfLifeDashoard/conwaysDashBoard";
-import { useAnimationFrame } from "../../components/Canvas/useAnimationFrame";
 
 
 export interface IOptions {
@@ -72,7 +71,6 @@ let calculateNextGeneration = (board:ConwaysGameOfLifeRect[][]) => {
             let nextCell: ConwaysGameOfLifeRect = copyBoard[x][y];
             let neighbors = getNeighbors(x, y, board);
             let aliveNeighbors = neighbors.filter(c => c.isAlive === true);
-            let deadNeighbors = neighbors.filter(c => c.isAlive === false);
 
             if (currentCell.isAlive === true && (aliveNeighbors.length === 2 || aliveNeighbors.length === 3)) {
                 nextCell.isAlive = true;
@@ -100,10 +98,7 @@ export const ConWaysGameOfLife = (props:any) => {
     const ref = useRef<HTMLDivElement | null>(null);
 
     const [runner, setRunner] = useState(false);
-
-    let then = 0;
-    let elapsed = Date.now();
-    let now = Date.now();
+    const lastRef = useRef(0);
 
     const handleBoardClick = (col: number, row: number) => {
         board[col][row].isAlive = !board[col][row].isAlive;
@@ -111,18 +106,17 @@ export const ConWaysGameOfLife = (props:any) => {
     };
 
     let canvasProps = {
-        draw: (ctx:any, canvas:any, options: IOptions) => {
+        draw: (ctx:any, canvas:any, options: IOptions, now:number) => {
             resizeCanvasToDisplaySize(ctx, canvas, options);
+            
             board.forEach(b => {
                 b.forEach(r => r.draw(ctx));
             });
-
-            if (runner) {
-                setTimeout(() => {
-                    setBoard(calculateNextGeneration(board));
-                }, 500);
+            
+            if (runner && (now - lastRef.current >= options.fpsInterval)) {
+                lastRef.current = now;
+                setBoard(calculateNextGeneration(board));
             }
- 
         },
         handleClick: (e:any, canvas:any, options:IOptions) => {
             let [col, row] = handleClickForGridCoordinates(e, canvas, options);
