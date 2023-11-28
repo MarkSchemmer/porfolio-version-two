@@ -4,8 +4,8 @@ import { CanvasProps, IBoardOperationsConfigs, IOptions, Instructions, boardSetu
 type functionReturn = (ctx:any, canvas:any, options: IOptions, now:number) => void;
 type functionClick = (e:any, canvas:any, options:IOptions) => void;
 export const useCanvasProps = (draw: functionReturn, calculations: functionReturn, boardOperationsConfigs: IBoardOperationsConfigs, handleClick: functionClick) => {
-    const width = useRef(500);
-    const height = useRef(500);
+    const width = useRef(800);
+    const height = useRef(800);
     const resolution = useRef(20);
     const fpsInterval = useRef(1000);
     const ref = useRef<HTMLDivElement | null>(null);

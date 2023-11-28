@@ -1,28 +1,26 @@
 import { Directions, Point, Rectangle } from "../../Utils/Util";
 
 export class Snake {
-
     public origin: Point;
     public body: Rectangle[] = [];
     public snakeDelta = 1;
     public Direction: Directions = Directions.UP;
-
-    public whereToGoNext: Directions[] = [
-        
-    ]
+    public snakeSquareResolution:number = 8;
 
     constructor(x:number, y:number) {
         this.origin = new Point(x, y);
-
+        let head = new Rectangle(this.origin, this.snakeSquareResolution);
+        head.fillStyle = "blue";
         this.body = [
-            new Rectangle(this.origin, 5),
-            new Rectangle(new Point(this.origin.x + 1, this.origin.y), 5),
-            new Rectangle(new Point(this.origin.x + 2, this.origin.y), 5),
-            new Rectangle(new Point(this.origin.x + 3, this.origin.y), 5)
+            head,
+            new Rectangle(new Point(this.origin.x + 1, this.origin.y), this.snakeSquareResolution),
+            new Rectangle(new Point(this.origin.x + 2, this.origin.y), this.snakeSquareResolution),
+            new Rectangle(new Point(this.origin.x + 3, this.origin.y), this.snakeSquareResolution)
         ];
      }
 
      public draw = (ctx:any) => {
+        this.body[0].fillStyle = "green";
         this.body.forEach(r => r.drawSolid(ctx));
      }
 
@@ -59,11 +57,17 @@ export class Snake {
      }
 
      public snakeCalculation = () => {
-        let first:Rectangle = this.body[0].DeepCopy();
+        let [head, ...rest] = this.body;
+        let first:Rectangle = head.DeepCopy();
         first.point.AddingChangeDelta(this.Direction, this.snakeDelta);
+        this.body.forEach(r => r.fillStyle = "black");
+        this.body.pop();
         let _body = [first, ...this.body];
-        _body.pop();
         this.body = _body;
         return this.body;
+     }
+
+     public getHeadOfSnake = () => {
+        return this.body[0];
      }
 }

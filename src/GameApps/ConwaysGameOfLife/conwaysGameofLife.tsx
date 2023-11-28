@@ -6,7 +6,6 @@ import { ConwaysGameOfLifeRect, IsValue, Point, deepCloneForConwaysGameOfLife, r
 import { ConwaysDashboard } from "../../components/ConwaysGameOfLifeDashoard/conwaysDashBoard";
 import { CanvasProps, IOptions, Instructions, boardSetupRezizeAndOtherBeforeDrawOperations } from "../../components/Canvas/CanvasProps";
 
-
 let generateCanvasBoard = (width:number, height:number, resolution:number) => {
     let rows = Math.ceil(width / resolution);
     let cols = Math.ceil(height / resolution);

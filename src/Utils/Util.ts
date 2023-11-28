@@ -121,6 +121,7 @@ export class Rectangle extends Shape {
     public drawSolid: (ctx: any) => void = (ctx:any) => {
         ctx.beginPath();
         ctx.lineWidth = this.lineWidth;
+        ctx.fillStyle = this.fillStyle;
         this.fillRect(ctx);
         ctx.stroke();
     }
@@ -139,6 +140,37 @@ export class Rectangle extends Shape {
         return new Rectangle(point, resolution);
     }
 }
+
+const overLapping = (minA: number, maxA: number, minB: number, maxB: number) => {
+    return minB <= maxA && minA <= maxB;
+};
+
+export const rectanglesIntersecting = (rA: Rectangle, rB: Rectangle): boolean => {
+
+    // For some reason the size of the square is exactly 1, I don't know how exactly to change that.
+    let size = 1;
+    let aLeft = rA.point.x;
+    let aRight = aLeft + size;
+    let bLeft = rB.point.x;
+    let bRight = bLeft + size;
+
+    let aBottom = rA.point.y;
+    let aTop = aBottom + size;
+    let bBottom = rB.point.y;
+    let bTop = bBottom + size; 
+
+    return overLapping(aLeft, aRight, bLeft, bRight) 
+            && overLapping(aBottom, aTop, bBottom, bTop);
+};
+
+export const rectanglesIntersecting2nd = (rA: Rectangle, rB: Rectangle): boolean => {
+    let width = 1;
+    let x1 = rA.point.x;
+    let y1 = rA.point.y;
+    let x2 = rB.point.x;
+    let y2 = rB.point.y;
+    return x1 + width >= x2 && x1 <= x2 + width && y1 + width >= y2 && y1 <= y2 + width;
+};
 
 export class ConwaysGameOfLifeRect extends Rectangle {
     public isAlive:boolean = false;
@@ -251,85 +283,7 @@ export function deepCloneForConwaysGameOfLife(obj: ConwaysGameOfLifeRect[][]) {
     return shallowClone;
   }
 
-  export class AnimationRequestHelper {
-
-    public animationRequestId:any;
-    public now:number;
-    public fpsInterval:number;
-    public then:number;
-    public callBack:any;
-    public runner:boolean = true;
-
-    constructor(fpsInterval:number, callBack: any) {
-        this.now = Date.now();
-        this.fpsInterval = fpsInterval;
-        this.then = 0;
-        // this.animationRequestId = window.requestAnimationFrame(this.render);
-        this.callBack = callBack;
-    }
-
-    render = () => {
-        if (this.runner) {
-            this.now = Date.now();
-            let elapsed = this.now - this.then;
-            if (elapsed > this.fpsInterval) {
-                this.then = this.now - (elapsed % this.fpsInterval);
-                this.callBack();
-            }
-        }
-    }
-
-    pause = () => {
-        this.runner = false;
-        window.cancelAnimationFrame(this.animationRequestId);
-        this.animationRequestId = null;
-    }
-
-    start = () => {
-        this.runner = true;
-        this.animationRequestId = window.requestAnimationFrame(this.render);
-        this.render();
-    }
-  }
-
-  type AnimationCallback = () => void;
-
-  export class AnimationFrame {
-    private requestId: number | null = null;
-    private startTime = 0;
-    private elapsed = 0;
-    private interval: number;
-    private callback: AnimationCallback;
+  export const getRandomInt = (max:number) => {
+    return Math.floor(Math.random() * max);
+  };
   
-    constructor(interval: number, callback: AnimationCallback) {
-      this.interval = interval;
-      this.callback = callback;
-    }
-  
-    private loop = (currentTime: number) => {
-      if (!this.startTime) {
-        this.startTime = currentTime;
-      }
-  
-      this.elapsed = currentTime - this.startTime;
-  
-      if (this.elapsed >= this.interval) {
-        this.callback();
-        this.startTime = currentTime;
-      }
-  
-      this.requestId = requestAnimationFrame(this.loop);
-    };
-  
-    start(): void {
-      this.requestId = requestAnimationFrame(this.loop);
-    }
-  
-    stop(): void {
-      if (this.requestId !== null) {
-        cancelAnimationFrame(this.requestId);
-        this.startTime = 0;
-        this.elapsed = 0;
-      }
-    }
-  }

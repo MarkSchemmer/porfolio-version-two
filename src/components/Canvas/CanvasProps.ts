@@ -72,6 +72,6 @@ export interface moreConfig {
 
   export const Instructions = (ctx:any, canvas:any, options: IOptions, now:number) => {
         boardSetupRezizeAndOtherBeforeDrawOperations(ctx, canvas, options);
-        draw(options.moreConfig.draw)(ctx, canvas, options, now);
         calculations(options.moreConfig.calculations)(ctx, canvas, options, now);
+        draw(options.moreConfig.draw)(ctx, canvas, options, now);
   };
