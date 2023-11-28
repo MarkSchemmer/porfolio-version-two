@@ -1,24 +1,8 @@
 
 /*
-
-        draw: (ctx:any, canvas:any, options: IOptions, now:number) => {
-            resizeCanvasToDisplaySize(ctx, canvas, options); 
-           
-            board.forEach(b => {
-                b.forEach(r => r.draw(ctx));
-            });
-            
-            if (runner && (now - lastRef.current >= options.fpsInterval)) {
-                lastRef.current = now;
-                setBoard(calculateNextGeneration(board));
-            }
-        }
-
-
         1. Resize and display canvas
         2. draw current canvas and all objects -> all objects need to have a draw() method and a deepCopy object on them. 
         3. make all calculations -> calculations per iteration
-
 */
 
 import { resizeCanvasHighDensityDevices, resizeCanvasToDisplaySize } from "./CanvasHook";
@@ -27,17 +11,26 @@ import { resizeCanvasHighDensityDevices, resizeCanvasToDisplaySize } from "./Can
 export interface CanvasProps {
     Instructions: (ctx:any, canvas:any, options: IOptions, now:number) => void; // change draw to instructions -> which is function that has all the order instructions called as needed.
     handleClick: (e:any, canvas:any, options:IOptions) => void;
+    pausegame: () => void;
+    startgame: () => void;
     options: IOptions;
+}
+
+export interface IBoardOperationsConfigs {
+    canResizeCanvasToDisplaySize: boolean;
+    canResizeCanvasHighDensityDevices: boolean;
+}
+
+export const boardConfigurationsDefault: IBoardOperationsConfigs = {
+    canResizeCanvasHighDensityDevices: false,
+    canResizeCanvasToDisplaySize: true
 }
 
 export interface moreConfig {
     boardSetupRezizeAndOtherBeforeDrawOperations: (ctx:any, canvas:any, options: IOptions) => void;
     draw: (ctx:any, canvas:any, options: IOptions, now:number) => void;
     calculations: (ctx:any, canvas:any, options: IOptions, now:number) => void;
-    boardOperationsConfigs: {
-        canResizeCanvasToDisplaySize: boolean;
-        canResizeCanvasHighDensityDevices: boolean;
-    }
+    boardOperationsConfigs: IBoardOperationsConfigs;
 }
   
   export interface IOptions {
@@ -49,6 +42,7 @@ export interface moreConfig {
     resolution: React.MutableRefObject<number>;
     runner: React.MutableRefObject<boolean>;
     lastRef:React.MutableRefObject<number>;
+    canvasRef: React.MutableRefObject<HTMLDivElement | null>;
   }
 
  export const boardSetupRezizeAndOtherBeforeDrawOperations = (ctx:any, canvas:any, options: IOptions) => {
@@ -59,6 +53,10 @@ export interface moreConfig {
         if (options.moreConfig.boardOperationsConfigs.canResizeCanvasHighDensityDevices) {
             resizeCanvasHighDensityDevices(ctx, canvas);
         }
+  }
+
+  export const handleClick  = (fn: Function) => (e:any, canvas:any, options:IOptions) => {
+    fn(e, canvas, options);
   }
 
   const draw = (fn: Function) => (ctx:any, canvas:any, options: IOptions, now:number) => {
@@ -74,6 +72,6 @@ export interface moreConfig {
 
   export const Instructions = (ctx:any, canvas:any, options: IOptions, now:number) => {
         boardSetupRezizeAndOtherBeforeDrawOperations(ctx, canvas, options);
-        draw(options.moreConfig.draw)(ctx, canvas, options, now);
         calculations(options.moreConfig.calculations)(ctx, canvas, options, now);
+        draw(options.moreConfig.draw)(ctx, canvas, options, now);
   };
