@@ -30,14 +30,21 @@ export interface CanvasProps {
     options: IOptions;
 }
 
+export interface IBoardOperationsConfigs {
+    canResizeCanvasToDisplaySize: boolean;
+    canResizeCanvasHighDensityDevices: boolean;
+}
+
+export const boardConfigurationsDefault: IBoardOperationsConfigs = {
+    canResizeCanvasHighDensityDevices: false,
+    canResizeCanvasToDisplaySize: true
+}
+
 export interface moreConfig {
     boardSetupRezizeAndOtherBeforeDrawOperations: (ctx:any, canvas:any, options: IOptions) => void;
     draw: (ctx:any, canvas:any, options: IOptions, now:number) => void;
     calculations: (ctx:any, canvas:any, options: IOptions, now:number) => void;
-    boardOperationsConfigs: {
-        canResizeCanvasToDisplaySize: boolean;
-        canResizeCanvasHighDensityDevices: boolean;
-    }
+    boardOperationsConfigs: IBoardOperationsConfigs;
 }
   
   export interface IOptions {
@@ -49,6 +56,7 @@ export interface moreConfig {
     resolution: React.MutableRefObject<number>;
     runner: React.MutableRefObject<boolean>;
     lastRef:React.MutableRefObject<number>;
+    canvasRef: React.MutableRefObject<HTMLDivElement | null>;
   }
 
  export const boardSetupRezizeAndOtherBeforeDrawOperations = (ctx:any, canvas:any, options: IOptions) => {
@@ -59,6 +67,10 @@ export interface moreConfig {
         if (options.moreConfig.boardOperationsConfigs.canResizeCanvasHighDensityDevices) {
             resizeCanvasHighDensityDevices(ctx, canvas);
         }
+  }
+
+  export const handleClick  = (fn: Function) => (e:any, canvas:any, options:IOptions) => {
+    fn(e, canvas, options);
   }
 
   const draw = (fn: Function) => (ctx:any, canvas:any, options: IOptions, now:number) => {

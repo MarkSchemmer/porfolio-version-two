@@ -116,7 +116,8 @@ export const ConWaysGameOfLife = (props:any) => {
         height,
         resolution,
         runner: runnerRef,
-        lastRef
+        lastRef,
+        canvasRef: ref
     };
 
     let canvasProps: CanvasProps = {
@@ -144,7 +145,7 @@ export const ConWaysGameOfLife = (props:any) => {
             }} nexGen={() => {
                 board.current = calculateNextGeneration(board.current);
             }} />
-            <div className="conways-container" ref={ref}>
+            <div className="conways-container" ref={options.canvasRef}>
                 <Canvas {...canvasProps} />
             </div>
         </>
