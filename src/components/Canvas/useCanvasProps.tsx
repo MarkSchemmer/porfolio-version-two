@@ -32,6 +32,12 @@ export const useCanvasProps = (draw: functionReturn, calculations: functionRetur
     let canvasProps: CanvasProps = {
         Instructions: Instructions,
         handleClick: handleClick,
+        pausegame: () => {
+          options.runner.current = false;  
+        },
+        startgame: () => {
+            options.runner.current = true;
+        },
         options
     };
 

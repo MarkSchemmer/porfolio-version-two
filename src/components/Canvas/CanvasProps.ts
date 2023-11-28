@@ -1,24 +1,8 @@
 
 /*
-
-        draw: (ctx:any, canvas:any, options: IOptions, now:number) => {
-            resizeCanvasToDisplaySize(ctx, canvas, options); 
-           
-            board.forEach(b => {
-                b.forEach(r => r.draw(ctx));
-            });
-            
-            if (runner && (now - lastRef.current >= options.fpsInterval)) {
-                lastRef.current = now;
-                setBoard(calculateNextGeneration(board));
-            }
-        }
-
-
         1. Resize and display canvas
         2. draw current canvas and all objects -> all objects need to have a draw() method and a deepCopy object on them. 
         3. make all calculations -> calculations per iteration
-
 */
 
 import { resizeCanvasHighDensityDevices, resizeCanvasToDisplaySize } from "./CanvasHook";
@@ -27,6 +11,8 @@ import { resizeCanvasHighDensityDevices, resizeCanvasToDisplaySize } from "./Can
 export interface CanvasProps {
     Instructions: (ctx:any, canvas:any, options: IOptions, now:number) => void; // change draw to instructions -> which is function that has all the order instructions called as needed.
     handleClick: (e:any, canvas:any, options:IOptions) => void;
+    pausegame: () => void;
+    startgame: () => void;
     options: IOptions;
 }
 

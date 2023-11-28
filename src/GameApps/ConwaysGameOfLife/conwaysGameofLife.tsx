@@ -125,6 +125,8 @@ export const ConWaysGameOfLife = (props:any) => {
             // more logic here... 
             handleBoardClick(col, row);
         },
+        pausegame: () => {},
+        startgame: () => {},
         options
     };
 

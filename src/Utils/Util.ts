@@ -19,6 +19,13 @@ export const IsNullOrUndefined = (obj: any) => obj === null || obj === undefined
 export const IsValue = (obj: any) => !IsNullOrUndefined(obj); 
 
 
+export enum Directions {
+    LEFT = "left",
+    RIGHT = "right", 
+    UP = "up", 
+    DOWN = "down"
+};
+
 export interface IPoint {
     x: number;
     y: number;
@@ -31,6 +38,13 @@ export class Point implements IPoint {
     constructor(x: number = 0, y: number = 0) {
         this.x = x;
         this.y = y;
+    }
+
+    public AddingChangeDelta = (d: Directions, delta: number) => {
+        if (d === Directions.LEFT) { this.x -= delta; }
+        else if (d === Directions.RIGHT) { this.x += delta; }
+        else if (d === Directions.UP) { this.y -= delta; }
+        else if (d === Directions.DOWN) { this.y += delta; }
     }
 }
 
@@ -104,12 +118,25 @@ export class Rectangle extends Shape {
         ctx.stroke();
     }
 
+    public drawSolid: (ctx: any) => void = (ctx:any) => {
+        ctx.beginPath();
+        ctx.lineWidth = this.lineWidth;
+        this.fillRect(ctx);
+        ctx.stroke();
+    }
+
     public strokeRect: (ctx: any) => void = (ctx:any) => {
         ctx.strokeRect(this.point.x * this.resolution, this.point.y * this.resolution, this.resolution, this.resolution);
     }
 
     public fillRect: (ctx: any) => void = (ctx:any) => {
         ctx.fillRect(this.point.x * this.resolution, this.point.y * this.resolution, this.resolution, this.resolution);
+    }
+
+    public DeepCopy: () => Rectangle = () => {
+        let point = new Point(this.point.x, this.point.y);
+        let resolution = this.resolution;
+        return new Rectangle(point, resolution);
     }
 }
 
@@ -306,7 +333,3 @@ export function deepCloneForConwaysGameOfLife(obj: ConwaysGameOfLifeRect[][]) {
       }
     }
   }
-
-export class TimerHelper {
-    
-}

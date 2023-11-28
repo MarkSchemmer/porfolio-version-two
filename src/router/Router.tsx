@@ -4,7 +4,7 @@ import HomePage from "../Pages/HomePage/HomePage";
 import TodoMVC from "../GameApps/TodoMvc/entities/todoMvc";
 import { TicTacToe } from "../GameApps/TicTacToe/entities/TicTacToe";
 import { ConWaysGameOfLife } from "../GameApps/ConwaysGameOfLife/conwaysGameofLife";
-import { Snake } from "../GameApps/Snake/snake";
+import { SnakeComponent } from "../GameApps/Snake/SnakeComponent";
 
 export default function Router() {
     return (
@@ -25,7 +25,7 @@ export default function Router() {
           <Route path="/" element={<TodoMVC />} />
           <Route path="/tic" element={<TicTacToe />} />
           <Route path="/con" element={<ConWaysGameOfLife /> } />
-          <Route path="/snake" element={<Snake /> } /> 
+          <Route path="/snake" element={<SnakeComponent /> } /> 
           {/*
                 Routes below are for me in developing my apps
           */}
