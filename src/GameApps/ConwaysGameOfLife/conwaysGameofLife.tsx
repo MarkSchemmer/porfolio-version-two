@@ -1,12 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Canvas from "../../components/Canvas/Canvas";
-import { handleClickForGridCoordinates, resizeCanvasToDisplaySize } from "../../components/Canvas/CanvasHook";
+import { handleClickForGridCoordinates } from "../../components/Canvas/CanvasHook";
 import "../ConwaysGameOfLife/main.css";
 import { ConwaysGameOfLifeRect, IsValue, Point, deepCloneForConwaysGameOfLife, range } from "../../Utils/Util";
 import { ConwaysDashboard } from "../../components/ConwaysGameOfLifeDashoard/conwaysDashBoard";
 import { CanvasProps, IOptions, Instructions, boardSetupRezizeAndOtherBeforeDrawOperations } from "../../components/Canvas/CanvasProps";
-
-
 
 
 let generateCanvasBoard = (width:number, height:number, resolution:number) => {
