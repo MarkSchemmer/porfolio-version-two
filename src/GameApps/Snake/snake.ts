@@ -56,12 +56,13 @@ export class Snake {
         // this.Direction = Directions.UP;
      }
 
-     public snakeCalculation = () => {
+     public snakeCalculation = (eaten:boolean = false) => {
         let [head, ...rest] = this.body;
         let first:Rectangle = head.DeepCopy();
         first.point.AddingChangeDelta(this.Direction, this.snakeDelta);
         this.body.forEach(r => r.fillStyle = "black");
-        this.body.pop();
+        if ((eaten === false))
+            this.body.pop();
         let _body = [first, ...this.body];
         this.body = _body;
         return this.body;
