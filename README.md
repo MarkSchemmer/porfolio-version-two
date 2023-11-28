@@ -1,9 +1,8 @@
 # Projects
-
 - Todo App (TODO MVC) - DONE
 - TicTacToe - DONE
 - Conways Game of Life - DONE
-- Snake - PENDING
+- Snake - DONE
 - Solar System game, planets orbiting around the Sun - PENDING
 - Rubics Cube solver game - PENDING
 - Pong - PENDING

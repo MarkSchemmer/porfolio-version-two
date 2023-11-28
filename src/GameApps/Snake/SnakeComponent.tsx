@@ -12,6 +12,13 @@ export const SnakeComponent = (props:any) => {
     let snakeRef = useRef(new Snake(50, 50));
     let foodRef = useRef(new Rectangle(new Point(20, 50), snakeRef.current.snakeSquareResolution));
 
+
+    let restartGame = () => {
+        canvasProps.pausegame();
+        snakeRef.current = new Snake(50, 50);
+        foodRef.current = new Rectangle(new Point(20, 50), snakeRef.current.snakeSquareResolution);
+    }
+
     let handKeyDown = (e:KeyboardEvent) => {
         let valuePressed = e.key.toString().toLowerCase();
         if (valuePressed === "arrowright") { snakeRef.current.GoRight(); } 
@@ -19,9 +26,7 @@ export const SnakeComponent = (props:any) => {
         else if (valuePressed === "p") { canvasProps.pausegame(); }
         else if (valuePressed === "s") { canvasProps.startgame(); }
         else if (valuePressed === "r") {
-            canvasProps.pausegame();
-            snakeRef.current = new Snake(50, 50);
-            foodRef.current = new Rectangle(new Point(20, 50), snakeRef.current.snakeSquareResolution);
+            restartGame();
         }
         // else if (valuePressed === "arrowup") { snakeRef.current.GoUp(); } 
         // else if (valuePressed === "arrowdown") { snakeRef.current.GoDown(); }
@@ -57,6 +62,11 @@ export const SnakeComponent = (props:any) => {
            // console.log("I ate the food. ");
            eaten = true;
            foodRef.current = (new Rectangle(new Point(getRandomInt(100), getRandomInt(100)), snakeRef.current.snakeSquareResolution))
+        }
+
+        if (snakeRef.current.hasEatenSelf()) {
+            alert("You ate yourself, gmae over. ");
+            restartGame();
         }
 
         snakeRef.current.body = snakeRef.current.snakeCalculation(eaten);

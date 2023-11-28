@@ -48,6 +48,13 @@ export class Snake {
         }
      }
 
+     public hasEatenSelf = () => {
+        let [head, ...rest] = this.body;
+        return rest.some((r: Rectangle) => {
+            return r.point.x === head.point.x && r.point.y === head.point.y;
+        });
+     }
+
      public GoDown = () => {
         // this.Direction = Directions.DOWN;
      }
