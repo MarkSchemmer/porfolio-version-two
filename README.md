@@ -4,8 +4,8 @@
 - Conways Game of Life - DONE
 - Snake - DONE
 - Solar System game, planets orbiting around the Sun - PENDING
-- Rubics Cube solver game - PENDING
 - Pong - PENDING
+- Rubics Cube solver game - PENDING
 - Solitaire game - PENDING
 - Flappy Bird - PENDING
 - Tetris - PENDING
@@ -13,6 +13,10 @@
 - Algorithm visualization -> (Need to list different algorithms to visualize, and even data structures.) - PENDING
 - Tower of Defense - PENDING
 - Sodoku - PENDING
+- Sliding puzzle game - PENDING
+- 2048 game - PENDING
+    Linkt to game: https://play2048.co/
+    Link to documentation about the game: 2048
 
 
 # Front-End Development Directives

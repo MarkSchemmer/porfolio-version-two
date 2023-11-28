@@ -10,13 +10,13 @@ export const SnakeComponent = (props:any) => {
     // Needing to assign a onkeydown event to the window so we can capture key press. 
     // so we can control the snake and or restart the game.
     let snakeRef = useRef(new Snake(50, 50));
-    let foodRef = useRef(new Rectangle(new Point(20, 50), snakeRef.current.snakeSquareResolution));
+    let foodRef = useRef(new Rectangle(new Point(10, 30), snakeRef.current.snakeSquareResolution));
 
 
     let restartGame = () => {
         canvasProps.pausegame();
         snakeRef.current = new Snake(50, 50);
-        foodRef.current = new Rectangle(new Point(20, 50), snakeRef.current.snakeSquareResolution);
+        foodRef.current = new Rectangle(new Point(20, 25), snakeRef.current.snakeSquareResolution);
     }
 
     let handKeyDown = (e:KeyboardEvent) => {
@@ -61,7 +61,7 @@ export const SnakeComponent = (props:any) => {
            // alert("I ate food");
            // console.log("I ate the food. ");
            eaten = true;
-           foodRef.current = (new Rectangle(new Point(getRandomInt(100), getRandomInt(100)), snakeRef.current.snakeSquareResolution))
+           foodRef.current = (new Rectangle(new Point(getRandomInt(50), getRandomInt(50)), snakeRef.current.snakeSquareResolution))
         }
 
         if (snakeRef.current.hasEatenSelf()) {
