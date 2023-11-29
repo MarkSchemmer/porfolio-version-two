@@ -194,8 +194,9 @@ export class Circle extends Shape {
     public radius:number = 0;
     public pi:number = Math.PI;
 
-    public startAngle:number = 0;
-    public endAngle: number = 0;
+    public startAngle:number = 0 * Math.PI / 180;
+    public endAngle: number = 36 * Math.PI / 180;
+    public rotateAngle: number = 36 * Math.PI / 180; 
 
     constructor(point: Point, resolution: number, radius: number) {
         super(point, resolution);
@@ -204,8 +205,23 @@ export class Circle extends Shape {
 
     public draw: (ctx: any) => void = (ctx:any) => {
         ctx.beginPath();
-        ctx.arc(this.point.x, this.point.y, this.radius, this.startAngle, this.endAngle * this.pi);
+        ctx.arc(this.point.x, this.point.y, this.radius, this.startAngle, Math.PI * 2);
+        // ctx.fillStyle = 'orange';
+        // ctx.fill();
         ctx.stroke();
+    }
+
+    public drawSolid: (ctx: any) => void = (ctx:any) => {
+        ctx.beginPath();
+        ctx.arc(this.point.x, this.point.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.fillStyle;
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    public calculateAlongACircularPath = (angle:number) => {
+        this.point.x = this.point.x + this.radius * Math.cos(angle);
+        this.point.y = this.point.y + this.radius * Math.sin(angle);
     }
 }
 
