@@ -7,7 +7,9 @@ import { Point } from "../../Utils/Util";
 
 export const SolarComponent = (props:any) => {
     let sunRef = useRef(new Planet(new Point(250, 250), 10, Math.PI * 10 / 1000000, null, 0, "orange", 100));
-    let earthRef = useRef(new Planet(new Point(150+250, 250), 10, Math.PI * 10 / 1000000, null, 0, "green", 100));
+    let earthRef = useRef(new Planet(new Point(150+250, 250), 5, Math.PI * 10 / 1000000, null, 0, "green", 100));
+    earthRef.current.setSunPoint(sunRef.current.point);
+
     let lastTimeStampRef = useRef<number | null>(null);
     let speedRef = useRef(Math.PI * 10 / 1000000);
     let timeStepRef = useRef(100);
@@ -27,6 +29,7 @@ export const SolarComponent = (props:any) => {
     let draw = (ctx:any, canvas:any, options: IOptions, now:number) => {
         sunRef.current.drawSolid(ctx);
         earthRef.current.drawSolid(ctx);
+        earthRef.current.drawRadiusFromSunToCenterOfPlanet(ctx);
     };
 
     let calculations = (ctx:any, canvas:any, options: IOptions, now:number) => {
@@ -41,7 +44,7 @@ export const SolarComponent = (props:any) => {
         
         */
        earthRef.current.rotatePlanetAroundOhterCircle(sun.point);
-         
+       
     };
 
     let handleClick = (e:any, canvas:any, options:IOptions) => {

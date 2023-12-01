@@ -5,8 +5,9 @@ export class Planet extends Circle {
     public ImageToPaint:any;
     public angle:number;
     public distanceFromSun:number;
-
     public timeInterval = 100; 
+
+    public sunPoint: Point | null = null;
 
     constructor(p: Point, r:number, delta:number, pdf: any, angle:number, fillStyle: string, distanceFromSun: number) {
         super(p, r, r);
@@ -25,6 +26,8 @@ export class Planet extends Circle {
         this.delta -= 10;
     }
 
+    public setSunPoint = (sP: Point) => this.sunPoint = sP;
+
     public calcNextAngle = () => {
         this.angle += this.timeInterval * this.delta;
     }
@@ -39,5 +42,13 @@ export class Planet extends Circle {
     public rotatePlanetAroundOhterCircle = (otherPoint: Point) => {
         this.calcNextAngle();
         this.calculateRotationAroundOtherCircle(otherPoint);
+    }
+
+    // Need to draw a circle at the center of the sun the center of the planet we are drawing. 
+    public drawRadiusFromSunToCenterOfPlanet = (ctx:any) => {
+        ctx.beginPath();
+        ctx.lineWidth = 0.1;
+        ctx.arc(this.sunPoint?.x, this.sunPoint?.y, this.distanceFromSun, this.startAngle, Math.PI * 2);
+        ctx.stroke();
     }
 }
