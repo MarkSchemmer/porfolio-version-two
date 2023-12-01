@@ -10,12 +10,10 @@ export const SolarComponent = (props:any) => {
 
     let earthRef = useRef(new Planet(new Point(150+250, 250), 5, Math.PI * 10 / 1000000, null, 0, "green", 100));
     earthRef.current.setSunPoint(sunRef.current.point);
-
     earthRef.current.setDelta(Math.PI * 10 / 99_999_9);
 
     let earthMoonRef = useRef(new Planet(new Point(140+250, 250), 3, Math.PI * 10 / 1000000, null, 0, "grey", 20));
     earthMoonRef.current.setSunPoint(earthRef.current.point);
-
     earthMoonRef.current.setDelta(2000)
 
     let marsRef = useRef(new Planet(new Point((150+250), 250), 6, Math.PI * 10 / 70_000_0, null, 0, "orange", 155));
