@@ -1,0 +1,143 @@
+import { KeyPressArrowValues, Point, Rectangle, getRandomInt, range } from "../../../Utils/Util";
+
+
+export class DataBlob {
+    public point:Point;
+    public value: number;
+    public bakcgroundColor = "#eee4da";
+    public fontColor = "black";
+    public resolution: number;
+    public spacing: number = 5;
+    constructor(p: Point, resolution: number) {
+        this.point = p;
+        this.value = this.generateRandomTwoOr4();
+        this.resolution = resolution;
+    }
+
+    public generateRandomTwoOr4 = () => {
+        let range = [2, 4];
+        let randomIdx = getRandomInt(1);
+        return range[randomIdx];
+    }
+
+    public draw = (ctx: any) => {
+        ctx.beginPath();
+        ctx.fillStyle = this.bakcgroundColor;
+        this.fillRect(ctx);
+        ctx.stroke();
+    }
+
+    public fillRect: (ctx: any) => void = (ctx:any) => {
+        const x = this.point.x * (this.resolution + this.spacing) + this.spacing;
+        const y = this.point.y * (this.resolution + this.spacing) + this.spacing;
+        ctx.fillRect(x, y, this.resolution, this.resolution);
+        ctx.font="20px Georgia";
+        ctx.textAlign="center"; 
+        ctx.fillStyle = "black";
+        ctx.fillText(this.value.toString(), x + (this.resolution / 2), y + (this.resolution / 2));
+    }
+}
+
+export class TwentyFortyEightRectangle extends Rectangle {
+    public hasBeenCalled: boolean = false;
+    public spacing: number = 5;
+    public dataBlob: DataBlob | null = null;
+    constructor(p: Point, r: number) {
+        super(p, r);
+    }
+
+    public changeXOfnextSquare = () => {
+        if (this.hasBeenCalled === false) {
+            this.point.x += 1;
+            this.point.y += 1;
+            this.hasBeenCalled = true;
+        }
+    }
+
+
+    // Very important to take notes of this in the future, spacing between squares. 
+    // This is important because I can create a sort of 2048 grid layout.
+    public strokeRectWithoutAdditionalRes: (ctx: any) => void = (ctx:any) => {
+        const x = this.point.x * (this.resolution + this.spacing) + this.spacing;
+        const y = this.point.y * (this.resolution + this.spacing) + this.spacing;
+        ctx.strokeRect(x, y, this.resolution, this.resolution);
+    }
+
+    // if the grid is populated it's self we will have to draw that as well. 
+    // And things are getting easier. Then to determin when a transition happens... 
+    // Every grid rectangle has an point, an x, y -> then we create the transition... 
+    // Basically  when a shift happpens -> we properly animate from (x, y) to (x, y)...
+}
+
+type Board = TwentyFortyEightRectangle[][];
+
+export const GenerateTwentyFortyEightBoard = () => {
+    return range(1, 4).map((x) => range(1, 4).map((y) => new TwentyFortyEightRectangle(new Point(x, y), 75)));
+}
+
+export class TwentyFortyEightBoard {
+    public Board: Board = GenerateTwentyFortyEightBoard();
+    constructor() {
+        // start with two points or at least 1 point
+        let positionOnBoard = this.Board[2][1];
+        positionOnBoard.dataBlob = new DataBlob(positionOnBoard.point, positionOnBoard.resolution);
+        this.Board[2][1] = positionOnBoard;
+    }
+    // I'm needing to determine where to generate a new square once a translation has happened.
+    // Basically if going left -> we need to generate a 2 or 4 but on the right side, or 
+    // opposite of the translation.
+    public getOppositeSideOfTranslation = (direction: KeyPressArrowValues) => {
+        let left = KeyPressArrowValues.LEFT, right = KeyPressArrowValues.RIGHT, 
+        up = KeyPressArrowValues.UP, down = KeyPressArrowValues.DOWN;
+
+        if (direction === left) return right;
+        else if (direction === right) return left;
+        else if (direction === up) return down;
+        else if (direction === down) return up;
+        // major issue if none of these are return... Might just throw an error or return null.
+        // for right now I will throw an error. 
+        throw new Error("invalid direction. ");
+    }
+
+    public shiftLeft = () => {
+        
+    }
+
+    public shiftRight = () => {
+        console.log("shift right. ");
+    }
+
+    public shiftDown = () => {
+        console.log("shift down. ");
+    }
+
+    public shiftUp = () => {
+        console.log("shift up. ");
+    }
+
+    // When drawing the board... what is that going to look like...?
+    // We need a special background.
+    // Padding between every square
+    // an animation for maniuplation of our board
+    // So the square gently slides over... instead of an extreme shift...
+    public draw = (ctx: any) => {
+        this.Board.forEach((lr: TwentyFortyEightRectangle[])=> {
+            lr.forEach((r: TwentyFortyEightRectangle) => {
+                r.strokeRectWithoutAdditionalRes(ctx);
+                if (r.dataBlob) {
+                    r.dataBlob.draw(ctx);
+                }
+            });
+        })
+    }
+
+    public handleArrowKeyPress = (e: KeyboardEvent) => {
+        let left = KeyPressArrowValues.LEFT, right = KeyPressArrowValues.RIGHT, 
+        up = KeyPressArrowValues.UP, down = KeyPressArrowValues.DOWN;
+        let val = e.key.toString().toLocaleLowerCase();
+        if (val === left) { this.shiftLeft(); }
+        else if (val === right) { this.shiftRight(); }
+        else if (val === down) {this.shiftDown(); }
+        else if (val === up) { this.shiftUp(); }
+    }
+}

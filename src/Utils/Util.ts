@@ -26,6 +26,13 @@ export enum Directions {
     DOWN = "down"
 };
 
+export enum KeyPressArrowValues {
+    LEFT = "arrowleft",
+    RIGHT = "arrowright",
+    UP = "arrowup",
+    DOWN = "arrowdown"
+}
+
 export interface IPoint {
     x: number;
     y: number;
@@ -106,6 +113,7 @@ class Shape implements IShape {
 
 export class Rectangle extends Shape {
     public lineWidth: number = 1;
+
 
     constructor(point: Point, resolution: number) {
         super(point, resolution);
