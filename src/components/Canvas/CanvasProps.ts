@@ -74,4 +74,4 @@ export interface moreConfig {
         boardSetupRezizeAndOtherBeforeDrawOperations(ctx, canvas, options);
         calculations(options.moreConfig.calculations)(ctx, canvas, options, now);
         draw(options.moreConfig.draw)(ctx, canvas, options, now);
-  };
+  }

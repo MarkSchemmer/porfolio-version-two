@@ -6,6 +6,9 @@
 - Solar System game, planets orbiting around the Sun - PENDING
 - Pong - PENDING
 - Rubics Cube solver game - PENDING
+- 2048 game - PENDING
+    Linkt to game: https://play2048.co/
+    Link to documentation about the game: 2048
 - Solitaire game - PENDING
 - Flappy Bird - PENDING
 - Tetris - PENDING
@@ -14,9 +17,7 @@
 - Tower of Defense - PENDING
 - Sodoku - PENDING
 - Sliding puzzle game - PENDING
-- 2048 game - PENDING
-    Linkt to game: https://play2048.co/
-    Link to documentation about the game: 2048
+
 
 
 # Front-End Development Directives
