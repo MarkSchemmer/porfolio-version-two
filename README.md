@@ -3,7 +3,7 @@
 - TicTacToe - DONE
 - Conways Game of Life - DONE
 - Snake - DONE
-- Solar System game, planets orbiting around the Sun - PENDING
+- Solar System game, planets orbiting around the Sun - DONE
 - Pong - PENDING
 - Rubics Cube solver game - PENDING
 - 2048 game - PENDING

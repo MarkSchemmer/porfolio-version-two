@@ -13,12 +13,12 @@ export const SolarComponent = (props:any) => {
 
     earthRef.current.setDelta(Math.PI * 10 / 99_999_9);
 
-    let earthMoonRef = useRef(new Planet(new Point(150+250, 250), 5, Math.PI * 10 / 1000000, null, 0, "grey", 20));
+    let earthMoonRef = useRef(new Planet(new Point(140+250, 250), 3, Math.PI * 10 / 1000000, null, 0, "grey", 20));
     earthMoonRef.current.setSunPoint(earthRef.current.point);
 
     earthMoonRef.current.setDelta(2000)
 
-    let marsRef = useRef(new Planet(new Point((150+250), 250), 5, Math.PI * 10 / 1000000, null, 0, "orange", 155));
+    let marsRef = useRef(new Planet(new Point((150+250), 250), 6, Math.PI * 10 / 70_000_0, null, 0, "orange", 155));
     marsRef.current.setSunPoint(sunRef.current.point);
 
     let lastTimeStampRef = useRef<number | null>(null);
@@ -58,13 +58,10 @@ export const SolarComponent = (props:any) => {
             the two. 
 
             So when determing rotation, I should include a function for keeping track
-        
         */
        earthRef.current.rotatePlanetAroundOhterCircle(sun.point);
        earthMoonRef.current.rotatePlanetAroundOhterCircle(earthRef.current.point);
        marsRef.current.rotatePlanetAroundOhterCircle(sun.point);
-
-       
     };
 
     let handleClick = (e:any, canvas:any, options:IOptions) => {
