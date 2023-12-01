@@ -28,6 +28,8 @@ export class Planet extends Circle {
 
     public setSunPoint = (sP: Point) => this.sunPoint = sP;
 
+    public setDelta = (n: number) => this.delta = n;
+
     public calcNextAngle = () => {
         this.angle += this.timeInterval * this.delta;
     }
