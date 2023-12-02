@@ -32,7 +32,6 @@ export const TwentyFortyEightComponent = (props:any) => {
     };
 
     let calculations = (ctx:any, canvas:any, options: IOptions, now:number) => {
-
     };
 
     let handleClick = (e:any, canvas:any, options:IOptions) => {

@@ -53,6 +53,13 @@ export class Point implements IPoint {
         else if (d === Directions.UP) { this.y -= delta; }
         else if (d === Directions.DOWN) { this.y += delta; }
     }
+
+    public DeepCopy = () => {
+        let x = this.x;
+        let y = this.y;
+
+        return new Point(x, y);
+    }
 }
 
 export const degressToRadians = (degrees:number) => {
