@@ -1,4 +1,4 @@
-import { KeyPressArrowValues, Point, Rectangle, getRandomInt, range } from "../../../Utils/Util";
+import { KeyPressArrowValues, Point, Rectangle, getRandomInt, isValue, range } from "../../../Utils/Util";
 
 
 export class DataBlob {
@@ -152,11 +152,40 @@ export class TwentyFortyEightBoard {
     }
 
     public shiftDown = () => {
+        // this is basically
+        let newBoard = this.DeepCopyTwentyEightBoard();
+        this.Board = newBoard.map((rl:TwentyFortyEightRectangle[]) => {
+            let shiftedUp = rl.map((r:TwentyFortyEightRectangle) => r.dataBlob.value).filter(isValue);
+            let shiftedDown = shiftValuesRight(shiftedUp, 4);
+            let newcopy = rl.map((r:TwentyFortyEightRectangle) => r.DeepCopy2048());
+            return newcopy.map((r: TwentyFortyEightRectangle, i: number) => {
+                try {
+                    r.dataBlob.value = shiftedDown[i];
+                } catch(e) {
+                    r.dataBlob.value = null;
+                }
 
+                return r;
+            });
+        });
     }
 
     public shiftUp = () => {
+        // this is basically
+        let newBoard = this.DeepCopyTwentyEightBoard();
+        this.Board = newBoard.map((rl:TwentyFortyEightRectangle[]) => {
+            let shiftedUp = rl.map((r:TwentyFortyEightRectangle) => r.dataBlob.value).filter(isValue);
+            let newcopy = rl.map((r:TwentyFortyEightRectangle) => r.DeepCopy2048());
+            return newcopy.map((r: TwentyFortyEightRectangle, i: number) => {
+                try {
+                    r.dataBlob.value = shiftedUp[i];
+                } catch(e) {
+                    r.dataBlob.value = null;
+                }
 
+                return r;
+            });
+        });
     }
 
     // When drawing the board... what is that going to look like...?
@@ -196,4 +225,16 @@ export class TwentyFortyEightBoard {
 
         return newboard;
     }
+}
+
+export const shiftValuesLeft = (arr:any, expectedLen:number) => {
+    let len = arr.length;
+    let newRange = range(1, expectedLen - len).map(i => null);
+    return [...arr, ...newRange].filter((i, idx) => idx < expectedLen);
+}
+
+export const shiftValuesRight = (arr:any, expectedLen:number) => {
+    let len = arr.length;
+    let newRange = range(1, expectedLen - len).map(i => null);
+    return [...newRange, ...arr].filter((i, idx) => idx < expectedLen);
 }
