@@ -122,10 +122,10 @@ export class TwentyFortyEightBoard {
         positionOnBoard.dataBlob.value = 8;
         this.Board[2][1] = positionOnBoard;
 
-        let pos2 = this.Board[2][2];
+        let pos2 = this.Board[1][2];
         pos2.dataBlob = new DataBlob(pos2.point, pos2.resolution);
         pos2.dataBlob.value = 10;
-        this.Board[2][2] = pos2;
+        this.Board[1][2] = pos2;
     }
     // I'm needing to determine where to generate a new square once a translation has happened.
     // Basically if going left -> we need to generate a 2 or 4 but on the right side, or 

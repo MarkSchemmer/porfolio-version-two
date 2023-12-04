@@ -7,6 +7,7 @@ import { ConWaysGameOfLife } from "../GameApps/ConwaysGameOfLife/conwaysGameofLi
 import { SnakeComponent } from "../GameApps/Snake/SnakeComponent";
 import { SolarComponent } from "../GameApps/Solar/SolarComponent";
 import { TwentyFortyEightComponent } from "../GameApps/2048/canvas-version/2048Canvas";
+import { MouseCurserComponent } from "../GameApps/MouseCurserGame/MouseCurser";
 
 export default function Router() {
     return (
@@ -20,6 +21,7 @@ export default function Router() {
                     <Route path="/snake" element={<SnakeComponent /> } /> 
                     <Route path="/sol" element={<SolarComponent /> } />
                     <Route path="/2048" element={<TwentyFortyEightComponent /> } />
+                    <Route path="/mouse" element={<MouseCurserComponent /> } />
                 </Routes>
             </BrowserRouter>
         </div>
