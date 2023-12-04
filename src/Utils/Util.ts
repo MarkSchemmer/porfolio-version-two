@@ -26,6 +26,13 @@ export enum Directions {
     DOWN = "down"
 };
 
+export enum KeyPressArrowValues {
+    LEFT = "arrowleft",
+    RIGHT = "arrowright",
+    UP = "arrowup",
+    DOWN = "arrowdown"
+}
+
 export interface IPoint {
     x: number;
     y: number;
@@ -45,6 +52,13 @@ export class Point implements IPoint {
         else if (d === Directions.RIGHT) { this.x += delta; }
         else if (d === Directions.UP) { this.y -= delta; }
         else if (d === Directions.DOWN) { this.y += delta; }
+    }
+
+    public DeepCopy = () => {
+        let x = this.x;
+        let y = this.y;
+
+        return new Point(x, y);
     }
 }
 
@@ -106,6 +120,7 @@ class Shape implements IShape {
 
 export class Rectangle extends Shape {
     public lineWidth: number = 1;
+
 
     constructor(point: Point, resolution: number) {
         super(point, resolution);
