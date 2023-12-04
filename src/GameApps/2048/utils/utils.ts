@@ -1,4 +1,4 @@
-import { KeyPressArrowValues, Point, Rectangle, getRandomInt, isValue, range } from "../../../Utils/Util";
+import { IsValue, KeyPressArrowValues, Point, Rectangle, getRandomInt, isValue, range } from "../../../Utils/Util";
 
 
 export class DataBlob {
@@ -145,10 +145,53 @@ export class TwentyFortyEightBoard {
 
     public shiftLeft = () => {
 
+        let board = this.DeepCopyTwentyEightBoard();
+        let getRow = (row: number) => {
+            return board.map(xrow => {
+                return xrow[row].dataBlob.value;
+            }).filter(isValue);
+        }
+
+        
+        let shiftedValuesLeftRow0 = shiftValuesLeft((getRow(0)), 4);
+        let shiftedValuesLeftRow1 = shiftValuesLeft((getRow(1)), 4);
+        let shiftedValuesLeftRow2 = shiftValuesLeft((getRow(2)), 4);
+        let shiftedValuesLeftRow3 = shiftValuesLeft((getRow(3)), 4);
+        
+
+        board.forEach((rl, idx) => {
+            rl[0].dataBlob.value = shiftedValuesLeftRow0[idx];
+            rl[1].dataBlob.value = shiftedValuesLeftRow1[idx];
+            rl[2].dataBlob.value = shiftedValuesLeftRow2[idx];
+            rl[3].dataBlob.value = shiftedValuesLeftRow3[idx];
+        });
+
+        this.Board = board;
     }
 
     public shiftRight = () => {
-        console.log("shift right. ");
+        let board = this.DeepCopyTwentyEightBoard();
+        let getRow = (row: number) => {
+            return board.map(xrow => {
+                return xrow[row].dataBlob.value;
+            }).filter(isValue);
+        }
+
+        
+        let shiftedValuesLeftRow0 = shiftValuesRight((getRow(0)), 4);
+        let shiftedValuesLeftRow1 = shiftValuesRight((getRow(1)), 4);
+        let shiftedValuesLeftRow2 = shiftValuesRight((getRow(2)), 4);
+        let shiftedValuesLeftRow3 = shiftValuesRight((getRow(3)), 4);
+        
+
+        board.forEach((rl, idx) => {
+            rl[0].dataBlob.value = shiftedValuesLeftRow0[idx];
+            rl[1].dataBlob.value = shiftedValuesLeftRow1[idx];
+            rl[2].dataBlob.value = shiftedValuesLeftRow2[idx];
+            rl[3].dataBlob.value = shiftedValuesLeftRow3[idx];
+        });
+
+        this.Board = board;
     }
 
     public shiftDown = () => {

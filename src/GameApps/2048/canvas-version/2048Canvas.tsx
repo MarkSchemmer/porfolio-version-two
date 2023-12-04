@@ -17,7 +17,7 @@ export const TwentyFortyEightComponent = (props:any) => {
         return () => {
             document.removeEventListener("keydown", twentyFortyEightBoardRef.current.handleArrowKeyPress);
         }
-    }, [twentyFortyEightBoardRef])
+    }, [])
 
     let restartGame = () => {
 
