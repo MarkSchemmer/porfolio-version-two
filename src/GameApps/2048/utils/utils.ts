@@ -178,14 +178,16 @@ export class TwentyFortyEightBoard {
         }
 
         
-        let shiftedValuesLeftRow0 = (shiftValuesRight((getRow(0)), 4));
-        let shiftedValuesLeftRow1 = (shiftValuesRight((getRow(1)), 4));
-        let shiftedValuesLeftRow2 = (shiftValuesRight((getRow(2)), 4));
-        let shiftedValuesLeftRow3 = (shiftValuesRight((getRow(3)), 4));
+        let shiftedValuesLeftRow0 = (TwentyFortyEightCalculationForShiftingRight(getRow(0)));
+        console.log(shiftedValuesLeftRow0)
+        let shiftedValuesLeftRow1 = (TwentyFortyEightCalculationForShiftingRight(getRow(1)));
+        let shiftedValuesLeftRow2 = (TwentyFortyEightCalculationForShiftingRight(getRow(2)));
+        let shiftedValuesLeftRow3 = (TwentyFortyEightCalculationForShiftingRight(getRow(3)));
         
 
         board.forEach((rl, idx) => {
             rl[0].dataBlob.value = shiftedValuesLeftRow0[idx];
+            // rl[0].dataBlob.bakcgroundColor = "green";
             rl[1].dataBlob.value = shiftedValuesLeftRow1[idx];
             rl[2].dataBlob.value = shiftedValuesLeftRow2[idx];
             rl[3].dataBlob.value = shiftedValuesLeftRow3[idx];
@@ -303,14 +305,48 @@ export const TwentyFortyEightCalculation = (arr:any, newArray:any): any => {
     }
 }
 
-export const TwentyFortyEightCalculationForShiftingRight = (arr:any, newArray:any): any => {
-    if (newArray.length === 4) return shiftValuesLeft(newArray.filter(isValue), 4);
-    let [f, s, ...r] = arr;
-    if (f === s && f != null) {
-        return TwentyFortyEightCalculation(r, [...newArray, f+s]);
-    } else {
-        return TwentyFortyEightCalculation([s, ...r], [...newArray, f]);
-    }
+type ComplexRightCalculation = {
+    newArr: any[];
+    shouldSkip: boolean;
+}
+
+const newComplexRightCalculation: ComplexRightCalculation = {
+    newArr: [],
+    shouldSkip: false
+}
+
+export const TwentyFortyEightCalculationForShiftingRight = (arr:any): any => {
+    let res: ComplexRightCalculation = arr.reduceRight((acc:ComplexRightCalculation, currentVal:any, idx:number, array:any) => {
+        let nextVal = array[idx-1];
+
+        if (acc.shouldSkip) {
+
+            return {
+                ...acc,
+                shouldSkip:false
+            }
+        } 
+
+        if (currentVal === nextVal && currentVal != null) {
+
+            const nextComplexCalc: ComplexRightCalculation = {
+                newArr: [...acc.newArr, currentVal + nextVal],
+                shouldSkip: true
+            };
+
+            return nextComplexCalc;
+        } else {
+            const nextComplexCalcElse : ComplexRightCalculation = {
+                newArr: [...acc.newArr, currentVal], shouldSkip: false
+            };
+
+            return nextComplexCalcElse;
+        }
+    }, newComplexRightCalculation);
+
+    console.log(res.newArr);
+
+    return shiftValuesRight(res.newArr, 4);
 }
 
 
