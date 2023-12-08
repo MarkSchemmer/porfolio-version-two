@@ -119,12 +119,12 @@ export class TwentyFortyEightBoard {
         // start with two points or at least 1 point
         let positionOnBoard = this.Board[2][1];
         positionOnBoard.dataBlob = new DataBlob(positionOnBoard.point, positionOnBoard.resolution);
-        positionOnBoard.dataBlob.value = 8;
+        positionOnBoard.dataBlob.value = 2;
         this.Board[2][1] = positionOnBoard;
 
         let pos2 = this.Board[1][2];
         pos2.dataBlob = new DataBlob(pos2.point, pos2.resolution);
-        pos2.dataBlob.value = 10;
+        pos2.dataBlob.value = 2;
         this.Board[1][2] = pos2;
     }
     // I'm needing to determine where to generate a new square once a translation has happened.
@@ -153,10 +153,10 @@ export class TwentyFortyEightBoard {
         }
 
         
-        let shiftedValuesLeftRow0 = shiftValuesLeft((getRow(0)), 4);
-        let shiftedValuesLeftRow1 = shiftValuesLeft((getRow(1)), 4);
-        let shiftedValuesLeftRow2 = shiftValuesLeft((getRow(2)), 4);
-        let shiftedValuesLeftRow3 = shiftValuesLeft((getRow(3)), 4);
+        let shiftedValuesLeftRow0 = TwentyFortyEightCalculation(shiftValuesLeft((getRow(0)), 4), []).reverse();
+        let shiftedValuesLeftRow1 = TwentyFortyEightCalculation(shiftValuesLeft((getRow(1)), 4), []).reverse();
+        let shiftedValuesLeftRow2 = TwentyFortyEightCalculation(shiftValuesLeft((getRow(2)), 4), []).reverse();
+        let shiftedValuesLeftRow3 = TwentyFortyEightCalculation(shiftValuesLeft((getRow(3)), 4), []).reverse();
         
 
         board.forEach((rl, idx) => {
@@ -178,10 +178,10 @@ export class TwentyFortyEightBoard {
         }
 
         
-        let shiftedValuesLeftRow0 = shiftValuesRight((getRow(0)), 4);
-        let shiftedValuesLeftRow1 = shiftValuesRight((getRow(1)), 4);
-        let shiftedValuesLeftRow2 = shiftValuesRight((getRow(2)), 4);
-        let shiftedValuesLeftRow3 = shiftValuesRight((getRow(3)), 4);
+        let shiftedValuesLeftRow0 = (shiftValuesRight((getRow(0)), 4));
+        let shiftedValuesLeftRow1 = (shiftValuesRight((getRow(1)), 4));
+        let shiftedValuesLeftRow2 = (shiftValuesRight((getRow(2)), 4));
+        let shiftedValuesLeftRow3 = (shiftValuesRight((getRow(3)), 4));
         
 
         board.forEach((rl, idx) => {
@@ -199,11 +199,17 @@ export class TwentyFortyEightBoard {
         let newBoard = this.DeepCopyTwentyEightBoard();
         this.Board = newBoard.map((rl:TwentyFortyEightRectangle[]) => {
             let shiftedUp = rl.map((r:TwentyFortyEightRectangle) => r.dataBlob.value).filter(isValue);
+            
             let shiftedDown = shiftValuesRight(shiftedUp, 4);
+            // Need to compress array and add reduce right 
+
+            let calculatedDown = TwentyFortyEightCalculation(shiftedDown.reverse(), []);
+
+
             let newcopy = rl.map((r:TwentyFortyEightRectangle) => r.DeepCopy2048());
             return newcopy.map((r: TwentyFortyEightRectangle, i: number) => {
                 try {
-                    r.dataBlob.value = shiftedDown[i];
+                    r.dataBlob.value = calculatedDown[i];
                 } catch(e) {
                     r.dataBlob.value = null;
                 }
@@ -218,10 +224,15 @@ export class TwentyFortyEightBoard {
         let newBoard = this.DeepCopyTwentyEightBoard();
         this.Board = newBoard.map((rl:TwentyFortyEightRectangle[]) => {
             let shiftedUp = rl.map((r:TwentyFortyEightRectangle) => r.dataBlob.value).filter(isValue);
+
+            let calculatedUp = TwentyFortyEightCalculation(shiftedUp, []);
+
+            calculatedUp.reverse();
+
             let newcopy = rl.map((r:TwentyFortyEightRectangle) => r.DeepCopy2048());
             return newcopy.map((r: TwentyFortyEightRectangle, i: number) => {
                 try {
-                    r.dataBlob.value = shiftedUp[i];
+                    r.dataBlob.value = calculatedUp[i];
                 } catch(e) {
                     r.dataBlob.value = null;
                 }
@@ -281,3 +292,25 @@ export const shiftValuesRight = (arr:any, expectedLen:number) => {
     let newRange = range(1, expectedLen - len).map(i => null);
     return [...newRange, ...arr].filter((i, idx) => idx < expectedLen);
 }
+
+export const TwentyFortyEightCalculation = (arr:any, newArray:any): any => {
+    if (newArray.length === 4) return newArray;
+    let [f, s, ...r] = arr;
+    if (f === s && f != null) {
+        return TwentyFortyEightCalculation(r, [f+s, ...newArray]);
+    } else {
+        return TwentyFortyEightCalculation([s, ...r], [f, ...newArray]);
+    }
+}
+
+export const TwentyFortyEightCalculationForShiftingRight = (arr:any, newArray:any): any => {
+    if (newArray.length === 4) return shiftValuesLeft(newArray.filter(isValue), 4);
+    let [f, s, ...r] = arr;
+    if (f === s && f != null) {
+        return TwentyFortyEightCalculation(r, [...newArray, f+s]);
+    } else {
+        return TwentyFortyEightCalculation([s, ...r], [...newArray, f]);
+    }
+}
+
+
