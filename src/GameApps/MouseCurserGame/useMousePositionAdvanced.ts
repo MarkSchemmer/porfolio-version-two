@@ -8,15 +8,21 @@ enum Directions {
 
 export interface IAdvancedMouseDirections {
     xDirection: XAxisMovement;
-    yDirection: Directions.UP | Directions.DOWN | null;
+    yDirection: YAxisMovement;
     prevPoint: Point | null;
     currentPoint: Point | null;
     distance: number | null;
     currentX: number | null;
     prevX: number | null;
+    currentY: number | null;
+    prevY: number | null;
+    prevXDelta: number | null;
+    prevYDelta: number | null;
 }
 
 type XAxisMovement = Directions.LEFT | Directions.RIGHT | null;
+
+type YAxisMovement = Directions.UP | Directions.DOWN | null;
 
 export const initialData : IAdvancedMouseDirections = {
     xDirection: null,
@@ -25,7 +31,11 @@ export const initialData : IAdvancedMouseDirections = {
     currentPoint: null,
     distance: null,
     currentX: null,
-    prevX: null
+    prevX: null,
+    currentY: null,
+    prevY: null,
+    prevXDelta: null,
+    prevYDelta: null
 }
 
 export const useMousePositionAdvanced = () => {
@@ -38,29 +48,33 @@ export const useMousePositionAdvanced = () => {
                 (prev: IAdvancedMouseDirections) => {
                     let prevPoint = prev.currentPoint;
                     let distance = prevPoint ? distanceFormula(prevPoint, nextPoint) : 0;
+
                     let currentX = nextPoint.x;
+                    let currentY = nextPoint.y;
+
                     let prevX = prevPoint ? prevPoint.x : null;
-                    console.log(
-                        "prev X -> " + prevX,
-                        "Next X -> " + currentX
-                    );
+                    let prevY = prevPoint ? prevPoint.y : null;
+
                     let prevXDelta = currentX - (prevX ? prevX : 0);
-                    console.log("delta: " + prevXDelta);
-                    // If delta is less than 0 left 
+                    let prevYDelta = currentY - (prevY ? prevY : 0);
+
                     let xAxisDirection: XAxisMovement = whichDirectionXAxis(prev.xDirection, prevXDelta);
-                    console.log(xAxisDirection);
+                    let yAxisDirection: YAxisMovement = whichDirectionYAxis(prev.yDirection, prevYDelta);
+
                     return {
                         ...prev,
                         distance,
                         prevPoint,
                         currentPoint: nextPoint,
                         xDirection: xAxisDirection,
+                        yDirection: yAxisDirection,
                         currentX,
-                        prevX
-                    }
+                        prevX,
+                        prevXDelta,
+                        prevYDelta
+                    };
                 }
-            )
-
+            );
         }
 
         document.addEventListener("mousemove", handleMouseMove);
@@ -80,4 +94,8 @@ export const distanceFormula = (p1: Point, p2: Point) => {
 
 export const whichDirectionXAxis = (prevDirction: XAxisMovement | null, delta: number): XAxisMovement => {
     return delta < 0 ? Directions.LEFT : delta > 0 ? Directions.RIGHT : prevDirction;
+};
+
+export const whichDirectionYAxis = (prevDirction: YAxisMovement, delta: number): YAxisMovement => {
+    return delta < 0 ? Directions.UP : delta > 0 ? Directions.DOWN : prevDirction;
 };
