@@ -176,10 +176,8 @@ export class TwentyFortyEightBoard {
                 return xrow[row].dataBlob.value;
             }).filter(isValue);
         }
-
         
         let shiftedValuesLeftRow0 = (TwentyFortyEightCalculationForShiftingRight(getRow(0)));
-        console.log(shiftedValuesLeftRow0)
         let shiftedValuesLeftRow1 = (TwentyFortyEightCalculationForShiftingRight(getRow(1)));
         let shiftedValuesLeftRow2 = (TwentyFortyEightCalculationForShiftingRight(getRow(2)));
         let shiftedValuesLeftRow3 = (TwentyFortyEightCalculationForShiftingRight(getRow(3)));
@@ -187,7 +185,6 @@ export class TwentyFortyEightBoard {
 
         board.forEach((rl, idx) => {
             rl[0].dataBlob.value = shiftedValuesLeftRow0[idx];
-            // rl[0].dataBlob.bakcgroundColor = "green";
             rl[1].dataBlob.value = shiftedValuesLeftRow1[idx];
             rl[2].dataBlob.value = shiftedValuesLeftRow2[idx];
             rl[3].dataBlob.value = shiftedValuesLeftRow3[idx];
@@ -343,8 +340,6 @@ export const TwentyFortyEightCalculationForShiftingRight = (arr:any): any => {
             return nextComplexCalcElse;
         }
     }, newComplexRightCalculation);
-
-    console.log(res.newArr);
 
     return shiftValuesRight(res.newArr, 4);
 }
