@@ -15,7 +15,7 @@ export const Dot = (props:IProps) => {
             position: 'absolute',
             top: '-10px',
             left: '-10px',
-            borderRadius: '50%',
+            // borderRadius: '50%',
             backgroundColor: props.bkC,
             opacity: props.opacity,
             transform: `translate(${props.postion.x}px, ${props.postion.y}px)`

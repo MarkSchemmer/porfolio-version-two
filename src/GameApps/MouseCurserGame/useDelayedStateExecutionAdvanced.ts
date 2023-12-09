@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Point } from "../../Utils/Util";
 
-export const useDelayedStateExecution = (initialState:any, delay: number) => {
-    const [state, setState] = useState(new Point(0, 0));
+export const useDelayedStateExecutionAdvanced = (initialState:any, delay: number) => {
+    const [state, setState] = useState({} as any);
 
     useEffect(() => {
         let i = setTimeout(() => {
