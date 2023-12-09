@@ -11,23 +11,18 @@ export const MouseCurserAdvancedComponent = (props:any) => {
     let pzRef = useRef(new Point(0, 0));
     let [dragging, setDrag] = useState(false);
     let mousePosition: IAdvancedMouseDirections = useMousePositionAdvanced();
-    // let delayedPosition: IAdvancedMouseDirections = useDelayedStateExecutionAdvanced(mousePosition, 15);
 
     const HandleClick = () => {
-            let xDelta = mousePosition.prevXDelta ? mousePosition.prevXDelta : 0;
-            let yDelta = mousePosition.prevYDelta ? mousePosition.prevYDelta : 0;
-            // console.log(xDelta)
-            // console.log(pzRef.current.x);
-            // pzRef.current.y + (yDelta / 2)
-            let newPoint = new Point(pzRef.current.x + (xDelta / 2), 0);
-            pzRef.current = newPoint;
+        let xDelta = mousePosition.prevXDelta ? mousePosition.prevXDelta : 0;
+        let yDelta = mousePosition.prevYDelta ? mousePosition.prevYDelta : 0;
+        // if you want to manipulate y-axis ->  pzRef.current.y + (yDelta / 2)
+        let newPoint = new Point(pzRef.current.x + (xDelta / 2), 0);
+        pzRef.current = newPoint;
     }
-
 
     if (dragging) {
         HandleClick();
     }
-
 
     return (
         <div className="board">
