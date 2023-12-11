@@ -92,7 +92,7 @@ export const distanceFormula = (p1: Point, p2: Point) => {
     );
 }
 
-export const whichDirectionXAxis = (prevDirction: XAxisMovement | null, delta: number): XAxisMovement => {
+export const whichDirectionXAxis = (prevDirction: XAxisMovement, delta: number): XAxisMovement => {
     return delta < 0 ? Directions.LEFT : delta > 0 ? Directions.RIGHT : prevDirction;
 };
 
