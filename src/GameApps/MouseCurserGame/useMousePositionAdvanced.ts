@@ -21,7 +21,6 @@ export interface IAdvancedMouseDirections {
 }
 
 type XAxisMovement = Directions.LEFT | Directions.RIGHT | null;
-
 type YAxisMovement = Directions.UP | Directions.DOWN | null;
 
 export const initialData : IAdvancedMouseDirections = {
@@ -94,8 +93,8 @@ export const distanceFormula = (p1: Point, p2: Point) => {
 
 export const whichDirectionXAxis = (prevDirction: XAxisMovement | null, delta: number): XAxisMovement => {
     return delta < 0 ? Directions.LEFT : delta > 0 ? Directions.RIGHT : prevDirction;
-};
+}
 
 export const whichDirectionYAxis = (prevDirction: YAxisMovement, delta: number): YAxisMovement => {
     return delta < 0 ? Directions.UP : delta > 0 ? Directions.DOWN : prevDirction;
-};
+}
