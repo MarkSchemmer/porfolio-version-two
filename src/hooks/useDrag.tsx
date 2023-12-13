@@ -9,14 +9,14 @@ export interface IState {
     rel: Point | null;
 }
 
-let initialState = {
+export let initialState: IState = {
     pos: defaultProps,
     dragging: false,
     rel: null
 };
 
-export const useDragging = (element: React.MutableRefObject<HTMLDivElement | null>) => {
-    let [state, setState] = useState<IState>(initialState);
+export const useDragging = (element: React.MutableRefObject<HTMLDivElement | null>, init: IState = initialState) => {
+    let [state, setState] = useState<IState>(init);
 
     const onMouseDown = (e: React.MouseEvent<HTMLElement>, draggablePieceRef: React.MutableRefObject<HTMLDivElement | null>) => {
         if (e.button !== 0) { return; }
