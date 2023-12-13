@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { IAdvancedMouseDirections, useMousePositionAdvanced } from "./useMousePositionAdvanced";
 import "../MouseCurserGame/styles/advanced-main.css";
 import { Point } from "../../Utils/Util";
+import { useDragging } from "../../hooks/useDrag";
 
 // To add to this game going to need to 
 // - Add other child divs and can't allow overlap
@@ -12,12 +13,46 @@ import { Point } from "../../Utils/Util";
 // - Then a complex way 
 
 export const MouseCurserAdvancedComponent = (props:any) => {
-    let pzRef = useRef(new Point(0, 0));
     let pzDivRef = useRef<HTMLDivElement>(null);
     let boardRef = useRef<HTMLDivElement>(null);
-    let [dragging, setDrag] = useState(false);
-    let mousePosition: IAdvancedMouseDirections = useMousePositionAdvanced();
+    let { state, onMouseDown, onMouseMove, onMouseUp, onMouseLeave } = useDragging(boardRef);
 
+    if (boardRef.current && pzDivRef.current) {
+        const boardResolution = boardRef.current.getBoundingClientRect();
+        const pieceResolution = pzDivRef.current.getBoundingClientRect();
+        //console.log(state.pos.x + pieceResolution.width);
+        //console.log(res.width);
+        // just add 152 to x to see if great than boardRef width. -> state.pos.x + 152(pieceRef.width) >= res.width
+        // if You want determine the left side just take "pos.x >= 0"
+        // These two conditions for x will keep it in the width of the board. 
+        // Need to create this same equation for Y-axis. 
+    }
+
+    return (
+        <div className="board" style={{
+            position: "absolute",
+            left: "40%"
+        }} ref={boardRef}>
+            <div className="pz"
+            ref={pzDivRef} 
+            onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef); }}
+            onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, boardRef); }}
+            onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e); }}
+            onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e); }}
+            style={{
+                    position: "absolute",
+                    left: `${state.pos.x}px`,
+                    top: `${state.pos.y}px`
+                }}>
+            </div>
+        </div>
+    )
+};
+
+
+
+
+/*
     const HandleClick = () => {
         if (pzDivRef.current && boardRef.current) {
             let xDelta = mousePosition.prevXDelta ? mousePosition.prevXDelta : 0;
@@ -43,22 +78,5 @@ export const MouseCurserAdvancedComponent = (props:any) => {
         }
     }
 
-    if (dragging) {
-        HandleClick();
-    }
 
-    return (
-        <div className="board" ref={boardRef}>
-            <div className="pz"
-            ref={pzDivRef} 
-            onMouseDown={(e) => { console.log(e);  setDrag(true); }}
-            onMouseUp={(e) => { setDrag(false); }}
-            onMouseLeave={(e) => { setDrag(false); }}
-            style={{
-                    position: 'relative',
-                    transform: `translate(${pzRef.current.x}px, ${pzRef.current.y}px)`
-                }}>
-            </div>
-        </div>
-    )
-};
+*/
