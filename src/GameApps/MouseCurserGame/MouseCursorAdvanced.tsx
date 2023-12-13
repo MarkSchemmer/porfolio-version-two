@@ -21,10 +21,9 @@ import { initialState, useDragging } from "../../hooks/useDrag";
 
 export const MouseCurserAdvancedComponent = (props:any) => {
     let boardRef = useRef<HTMLDivElement>(null);
-
     let pzDivRefTwo = useRef<HTMLDivElement>(null);
-    let pzTwoState = {...initialState, pos: new Point(152, 0)};
-    let pzTwoDrag = useDragging(boardRef, pzTwoState);
+
+    let pzTwoDrag = useDragging(boardRef, {...initialState, pos: new Point(152, 0)});
 
     let pzDivRef = useRef<HTMLDivElement>(null);
     let { state, onMouseDown, onMouseMove, onMouseUp, onMouseLeave } = useDragging(boardRef);
