@@ -1,5 +1,4 @@
-import React, { useRef, useState } from "react";
-import { IAdvancedMouseDirections, useMousePositionAdvanced } from "./useMousePositionAdvanced";
+import React, { useRef } from "react";
 import "../MouseCurserGame/styles/advanced-main.css";
 import { Point } from "../../Utils/Util";
 import { initialState, useDragging } from "../../hooks/useDrag";
@@ -64,30 +63,3 @@ export const MouseCurserAdvancedComponent = (props:any) => {
         </div>
     )
 };
-
-/*
-    const HandleClick = () => {
-        if (pzDivRef.current && boardRef.current) {
-            let xDelta = mousePosition.prevXDelta ? mousePosition.prevXDelta : 0;
-            let yDelta = mousePosition.prevYDelta ? mousePosition.prevYDelta : 0;
-            // if you want to manipulate y-axis ->  pzRef.current.y + (yDelta / 2)
-
-            let newXPosition = pzRef.current.x + (xDelta / 2); 
-            let newYPosition = pzRef.current.y + (yDelta / 2);
-
-            // Lines 23 & 24 Calculate the logic for a child div moving freely in a parent without leaving it's container... 
-            let x = newXPosition < 0 ? pzRef.current.x 
-                    : newXPosition >= boardRef.current?.clientWidth - pzDivRef.current?.clientWidth - 2 ? pzRef.current.x 
-                    : newXPosition;
-
-            let y = newYPosition < 0 ? pzRef.current.y 
-                    : newYPosition >= boardRef.current.clientHeight - pzDivRef.current.clientHeight - 2 ? pzRef.current.y 
-                    : newYPosition;
-
-            // Need to add sibling overlap check as well. 
-
-            let newPoint = new Point(x, y);
-            pzRef.current = newPoint;
-        }
-    }
-*/
