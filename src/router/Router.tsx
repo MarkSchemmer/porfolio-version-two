@@ -9,6 +9,7 @@ import { SolarComponent } from "../GameApps/Solar/SolarComponent";
 import { TwentyFortyEightComponent } from "../GameApps/2048/canvas-version/2048Canvas";
 import { MouseCurserComponent } from "../GameApps/MouseCurserGame/MouseCurser";
 import { MouseCurserAdvancedComponent } from "../GameApps/MouseCurserGame/MouseCursorAdvanced";
+import { PuzzleDrag } from "../GameApps/puzzleDrag/PuzzleDrag";
 
 export default function Router() {
     return (
@@ -23,7 +24,7 @@ export default function Router() {
                     <Route path="/sol" element={<SolarComponent /> } />
                     <Route path="/2048" element={<TwentyFortyEightComponent /> } />
                     <Route path="/mouse" element={<MouseCurserComponent /> } />
-                    <Route path="/m" element={<MouseCurserAdvancedComponent /> } /> 
+                    <Route path="/m" element={<PuzzleDrag /> } /> 
                 </Routes>
             </BrowserRouter>
         </div>
