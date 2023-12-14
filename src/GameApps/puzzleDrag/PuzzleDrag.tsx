@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import "../MouseCurserGame/styles/advanced-main.css";
 import { Point } from "../../Utils/Util";
 import { initialState, useDragging } from "../../hooks/useDrag";
+import { PuzzlePiece } from "./PuzzlePiece";
 
 // To add to this game going to need to 
 // - Add other child divs and can't allow overlap
@@ -18,34 +19,7 @@ import { initialState, useDragging } from "../../hooks/useDrag";
 // These two conditions for x will keep it in the width of the board. 
 // Need to create this same equation for Y-axis. 
 
-export interface IPuzzlePiece {
-    boardRef: React.RefObject<HTMLDivElement>;
-    styleProps?: React.CSSProperties;
-};
 
-export const PuzzlePiece = (props:IPuzzlePiece) => {
-
-    let pzDivRef = useRef<HTMLDivElement>(null);
-    let { state, onMouseDown, onMouseMove, onMouseUp, onMouseLeave } = useDragging(props.boardRef);
-
-    const pieceStyles: React.CSSProperties = {
-            position: "absolute",
-            left: `${state.pos.x}px`,
-            top: `${state.pos.y}px`,
-            ...(props.styleProps || {})
-    }
-
-    return (
-        <div className="pz"
-        ref={pzDivRef} 
-        onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef); }}
-        onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef); }}
-        onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e); }}
-        onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e); }}
-        style={pieceStyles}>
-    </div>
-    )
-}
 
 export const PuzzleDrag = (props:any) => {
     let boardRef = useRef<HTMLDivElement>(null);
