@@ -177,6 +177,24 @@ export const rectanglesIntersectingDomRect = (rA: DOMRect, rB: DOMRect): boolean
             && overLapping(aBottom, aTop, bBottom, bTop);
 };
 
+export const rectanglesIntersectingDomRectWithPoint = (rA: Point, rB: DOMRect): boolean => {
+
+    // For some reason the size of the square is exactly 1, I don't know how exactly to change that.
+    let size = rB.width; // perfect square the height is the same as the width... and is the size. 
+    let aLeft = rA.x;
+    let aRight = aLeft + size;
+    let bLeft = rB.x;
+    let bRight = bLeft + size;
+
+    let aBottom = rA.y;
+    let aTop = aBottom + size;
+    let bBottom = rB.y;
+    let bTop = bBottom + size; 
+
+    return overLapping(aLeft, aRight, bLeft, bRight) 
+            && overLapping(aBottom, aTop, bBottom, bTop);
+};
+
 export const getSidesOfRectForCompare = (rA: DOMRect, rB: DOMRect) => {
 
     let size = rA.width; // perfect square the height is the same as the width... and is the size. 
