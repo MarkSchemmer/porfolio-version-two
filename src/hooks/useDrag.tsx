@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Point, rectanglesIntersectingDomRect } from "../Utils/Util";
 
 let defaultProps = new Point(0, 0);
@@ -12,11 +12,23 @@ export interface IState {
 export let initialState: IState = {
     pos: defaultProps,
     dragging: false,
-    rel: null
+    rel: null,
 };
 
 export const useDragging = (element: React.MutableRefObject<HTMLDivElement | null>, init: IState = initialState) => {
     let [state, setState] = useState<IState>(init || initialState);
+    let stateHistoryRef = useRef<IState[]>([]);
+
+    const handleHistoryUpdate = (state: IState) => {
+        if (stateHistoryRef.current.length >= 25) {
+            // add to front and remove from back
+            stateHistoryRef.current.pop(); // remove back. 
+            stateHistoryRef.current = [ state, ...stateHistoryRef.current ]; // add to front. 
+        } else {
+            // add to front
+            stateHistoryRef.current = [ state, ...stateHistoryRef.current ]
+        }
+    }
 
     const onMouseDown = (e: React.MouseEvent<HTMLElement>, draggablePieceRef: React.MutableRefObject<HTMLDivElement | null>) => {
         if (e.button !== 0) { return; }
@@ -27,13 +39,15 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         let top = posTop ? posTop : 0;
 
         setState((prevState: IState) => {
+            handleHistoryUpdate(prevState);
             return {
                 ...prevState,
                 dragging: true,
                 rel: new Point(
                     e.pageX - left,
                     e.pageY - top
-                )
+                ),
+
             }
         });
 
@@ -69,6 +83,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);
 
         setState((prevState:IState) => {
+            handleHistoryUpdate(prevState)
             return {
                 ...prevState,
                 pos: new Point(p.x, p.y)
