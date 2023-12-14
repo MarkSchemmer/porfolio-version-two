@@ -100,6 +100,19 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         return p;
     }
 
+    const getChildID = (child: React.MutableRefObject<HTMLDivElement | null>) => {
+        if (child.current)
+            return child.current?.className.split(" ")[1].trim();
+        else 
+            return "null";
+    }
+
+
+    const getSiblings = (childId: string) => {
+        return Array.from(document.getElementsByClassName("pz"))
+            .filter((e: Element) => !e.className.includes(childId));
+    }
+
     const DoesPieceBreakBoundrisOfSiblings = (child: React.MutableRefObject<HTMLDivElement | null>, ID: string) => {
         
         if (child.current) {
