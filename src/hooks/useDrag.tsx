@@ -85,6 +85,10 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             const pieceResolution = child.current.getBoundingClientRect();
             const boardResolution = parent.current?.getBoundingClientRect();
 
+            let siblings = document.getElementsByClassName("pz");
+
+            console.log(siblings);
+
             let x = p.x < 0 ? 0 : p.x + pieceResolution.width >= boardResolution.width - 2 ? boardResolution.width - pieceResolution.width - 2 : p.x;
             let y = p.y < 0 ? 0 : p.y + pieceResolution.height >= boardResolution.height - 2 ? boardResolution.height - pieceResolution.height - 2 : p.y;
 

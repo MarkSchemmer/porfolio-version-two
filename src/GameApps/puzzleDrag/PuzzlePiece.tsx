@@ -21,7 +21,7 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
     }
 
     return (
-        <div className="pz"
+        <div className={"pz " + props.ID}
             ref={pzDivRef} 
             onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef); }}
             onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef); }}
