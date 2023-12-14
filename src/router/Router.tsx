@@ -8,7 +8,6 @@ import { SnakeComponent } from "../GameApps/Snake/SnakeComponent";
 import { SolarComponent } from "../GameApps/Solar/SolarComponent";
 import { TwentyFortyEightComponent } from "../GameApps/2048/canvas-version/2048Canvas";
 import { MouseCurserComponent } from "../GameApps/MouseCurserGame/MouseCurser";
-import { MouseCurserAdvancedComponent } from "../GameApps/MouseCurserGame/MouseCursorAdvanced";
 import { PuzzleDrag } from "../GameApps/puzzleDrag/PuzzleDrag";
 
 export default function Router() {

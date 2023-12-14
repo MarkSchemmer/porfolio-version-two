@@ -20,7 +20,7 @@ import { PuzzlePiece } from "./PuzzlePiece";
 // Need to create this same equation for Y-axis. 
 
 export const baseSquare = [
-    [ "blue", "green", "yellow" ],
+    [ "blue", "green", "pink" ],
     [ "orange", "purple", "red" ],
     [ "grey", "#AAF5EC", "#F5AADB" ]
 ];
@@ -29,7 +29,7 @@ export const PuzzleDrag = (props:any) => {
     let boardRef = useRef<HTMLDivElement>(null);
 
     let squares = baseSquare.map((row, x) => {
-        return row.map((c, y) => ({ boardRef, ID: e2(), styleProps: {backgroundColor: c}, initialProps: {...initialState, pos: new Point(152 * x, 152 * y)} }));
+        return row.map((c, y) => ({ boardRef, ID: e2(), styleProps: {backgroundColor: baseSquare[y][x]}, initialProps: {...initialState, pos: new Point(152 * x, 152 * y)} }));
     })
     .reduce(
         (acc, cur) => { return [ ...acc, ...cur ]; }, []

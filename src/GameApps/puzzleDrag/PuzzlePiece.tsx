@@ -24,7 +24,7 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
         <div className={"pz " + props.ID}
             ref={pzDivRef} 
             onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef); }}
-            onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef); }}
+            onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID); }}
             onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e); }}
             onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e); }}
             style={pieceStyles}>

@@ -155,9 +155,55 @@ export class Rectangle extends Shape {
     }
 }
 
-const overLapping = (minA: number, maxA: number, minB: number, maxB: number) => {
+export const overLapping = (minA: number, maxA: number, minB: number, maxB: number) => {
     return minB <= maxA && minA <= maxB;
 };
+
+export const rectanglesIntersectingDomRect = (rA: DOMRect, rB: DOMRect): boolean => {
+
+    // For some reason the size of the square is exactly 1, I don't know how exactly to change that.
+    let size = rA.width; // perfect square the height is the same as the width... and is the size. 
+    let aLeft = rA.x;
+    let aRight = aLeft + size;
+    let bLeft = rB.x;
+    let bRight = bLeft + size;
+
+    let aBottom = rA.y;
+    let aTop = aBottom + size;
+    let bBottom = rB.y;
+    let bTop = bBottom + size; 
+
+    return overLapping(aLeft, aRight, bLeft, bRight) 
+            && overLapping(aBottom, aTop, bBottom, bTop);
+};
+
+export const getSidesOfRectForCompare = (rA: DOMRect, rB: DOMRect) => {
+
+    let size = rA.width; // perfect square the height is the same as the width... and is the size. 
+    let aLeft = rA.x;
+    let aRight = aLeft + size;
+    let bLeft = rB.x;
+    let bRight = bLeft + size;
+
+    let aBottom = rA.y;
+    let aTop = aBottom + size;
+    let bBottom = rB.y;
+    let bTop = bBottom + size; 
+
+    return {
+        size,
+        aLeft,
+        aRight,
+        bLeft,
+        bRight,
+        aBottom,
+        aTop,
+        bBottom,
+        bTop
+    }
+}
+
+
 
 export const rectanglesIntersecting = (rA: Rectangle, rB: Rectangle): boolean => {
 

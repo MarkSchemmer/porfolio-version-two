@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Point } from "../Utils/Util";
+import React, { useState } from "react";
+import { Point, getSidesOfRectForCompare, rectanglesIntersectingDomRect } from "../Utils/Util";
 
 let defaultProps = new Point(0, 0);
 
@@ -53,7 +53,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         e.preventDefault();
     };
 
-    const onMouseMove = (e: React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
+    const onMouseMove = (e: React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>, ID: string) => {
         if (state.dragging === false) { return; }
         let x = state.rel?.x ? state.rel.x : 0;
         let y = state.rel?.y ? state.rel.y : 0;
@@ -65,14 +65,26 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             e.pageY - y
         );
 
+        // We hand boundry just right... 
         let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);
+
+
+        // TODO NEED TO FIX THIS METHOD AND WHILE LOOP BORKEN
+        // NEED TO DO CALCULATIONS BASED ON A POINT NOT THE CHILD RECT. !!!!!!!!
+        // if (DoesPieceBreakBoundrisOfSiblings(child, ID)){
+        //     while (DoesPieceBreakBoundrisOfSiblings(child, ID)) {
+        //         console.log("hit again");
+        //         p.x += 1;
+        //     }
+        // }
+       
 
         setState((prevState:IState) => {
             return {
-            ...prevState,
-            pos: new Point(p.x, p.y)
-        };
-    });
+                ...prevState,
+                pos: new Point(p.x, p.y)
+            };
+        });
 
         e.stopPropagation();
         e.preventDefault();
@@ -85,18 +97,12 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             const pieceResolution = child.current.getBoundingClientRect();
             const boardResolution = parent.current?.getBoundingClientRect();
 
-            let siblings = document.getElementsByClassName("pz");
-
-            console.log(siblings);
-
             let x = p.x < 0 ? 0 : p.x + pieceResolution.width >= boardResolution.width - 2 ? boardResolution.width - pieceResolution.width - 2 : p.x;
             let y = p.y < 0 ? 0 : p.y + pieceResolution.height >= boardResolution.height - 2 ? boardResolution.height - pieceResolution.height - 2 : p.y;
-
             // Logic here so it can't intersect with any siblings. 
             // loop siblings, and compare to the current ID. 
             // with all the others, then do a similar transformation to 
             // the parent child to -> child - child 
-            
             return new Point(
                 x, y
             );
@@ -104,6 +110,86 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
 
         return p;
     }
+
+    const DoesPieceBreakBoundrisOfSiblings = (child: React.MutableRefObject<HTMLDivElement | null>, ID: string) => {
+        
+        if (child.current) {
+            let childRect = child.current.getBoundingClientRect();
+            let childId = child.current?.className.split(" ")[1].trim();
+            let siblings = Array.from(document.getElementsByClassName("pz"))
+                            .filter((e: Element) => !e.className.includes(childId));
+
+            return siblings.some((e: Element) => {
+                let sibRect = e.getBoundingClientRect();
+                
+                let res = rectanglesIntersectingDomRect(childRect, sibRect);
+                if (res) {
+                    // console.log(sibRect.right);
+                    // console.log(childRect.left);
+                    // console.log(childRect.left - sibRect.right);
+
+                }
+
+                return res;
+                    /*
+                    
+                    dive into the implementation details and see how we can create this functionality in JavaScript.
+
+ 
+  
+                        function moveElementsOnDrag(draggableElement) {
+                            const draggableRect = draggableElement.getBoundingClientRect();
+                            const draggableCenterX = draggableRect.left + draggableRect.width / 2;
+                            const draggableCenterY = draggableRect.top + draggableRect.height / 2;
+                        
+                            const elementsToMove = document.querySelectorAll('.draggable');
+                            elementsToMove.forEach(element => {
+                                if (element !== draggableElement) {
+                                    const elementRect = element.getBoundingClientRect();
+                                    const elementCenterX = elementRect.left + elementRect.width / 2;
+                                    const elementCenterY = elementRect.top + elementRect.height / 2;
+                        
+                                    const distanceX = draggableCenterX - elementCenterX;
+                                    const distanceY = draggableCenterY - elementCenterY;
+                        
+                                    const overlapX = Math.max(0, (elementRect.width + draggableRect.width) / 2 - Math.abs(distanceX));
+                                    const overlapY = Math.max(0, (elementRect.height + draggableRect.height) / 2 - Math.abs(distanceY));
+                        
+                                    const moveX = distanceX > 0 ? overlapX : -overlapX;
+                                    const moveY = distanceY > 0 ? overlapY : -overlapY;
+                        
+                                    element.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                                }
+                            });
+                        }
+                    
+                    
+                    */
+
+                        // const draggableCenterX = childRect.left + childRect.width / 2;
+                        // const draggableCenterY = childRect.top + childRect.height / 2;
+
+                        // const elementCenterX = sibRect.left + sibRect.width / 2;
+                        // const elementCenterY = sibRect.top + sibRect.height / 2;
+            
+                        // const distanceX = draggableCenterX - elementCenterX;
+                        // const distanceY = draggableCenterY - elementCenterY;
+            
+                        // const overlapX = Math.max(0, (sibRect.width + childRect.width) / 2 - Math.abs(distanceX));
+                        // const overlapY = Math.max(0, (sibRect.height + childRect.height) / 2 - Math.abs(distanceY));
+            
+                        // const moveX = distanceX > 0 ? overlapX : -overlapX;
+                        // const moveY = distanceY > 0 ? overlapY : -overlapY;
+
+                        // console.log(p.x);
+                        // console.log(moveX);
+
+                        // console.log(p.x + moveX);
+
+                        // p.x += moveX;
+            });
+        }
+    };
 
 
     return {
