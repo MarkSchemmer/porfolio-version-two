@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Point, getSidesOfRectForCompare, rectanglesIntersectingDomRect } from "../Utils/Util";
+import { Point, rectanglesIntersectingDomRect } from "../Utils/Util";
 
 let defaultProps = new Point(0, 0);
 
@@ -68,17 +68,6 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         // We hand boundry just right... 
         let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);
 
-
-        // TODO NEED TO FIX THIS METHOD AND WHILE LOOP BORKEN
-        // NEED TO DO CALCULATIONS BASED ON A POINT NOT THE CHILD RECT. !!!!!!!!
-        // if (DoesPieceBreakBoundrisOfSiblings(child, ID)){
-        //     while (DoesPieceBreakBoundrisOfSiblings(child, ID)) {
-        //         console.log("hit again");
-        //         p.x += 1;
-        //     }
-        // }
-       
-
         setState((prevState:IState) => {
             return {
                 ...prevState,
@@ -123,74 +112,12 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
                 let sibRect = e.getBoundingClientRect();
                 
                 let res = rectanglesIntersectingDomRect(childRect, sibRect);
-                if (res) {
-                    // console.log(sibRect.right);
-                    // console.log(childRect.left);
-                    // console.log(childRect.left - sibRect.right);
-
-                }
+                if (res) { }
 
                 return res;
-                    /*
-                    
-                    dive into the implementation details and see how we can create this functionality in JavaScript.
-
- 
-  
-                        function moveElementsOnDrag(draggableElement) {
-                            const draggableRect = draggableElement.getBoundingClientRect();
-                            const draggableCenterX = draggableRect.left + draggableRect.width / 2;
-                            const draggableCenterY = draggableRect.top + draggableRect.height / 2;
-                        
-                            const elementsToMove = document.querySelectorAll('.draggable');
-                            elementsToMove.forEach(element => {
-                                if (element !== draggableElement) {
-                                    const elementRect = element.getBoundingClientRect();
-                                    const elementCenterX = elementRect.left + elementRect.width / 2;
-                                    const elementCenterY = elementRect.top + elementRect.height / 2;
-                        
-                                    const distanceX = draggableCenterX - elementCenterX;
-                                    const distanceY = draggableCenterY - elementCenterY;
-                        
-                                    const overlapX = Math.max(0, (elementRect.width + draggableRect.width) / 2 - Math.abs(distanceX));
-                                    const overlapY = Math.max(0, (elementRect.height + draggableRect.height) / 2 - Math.abs(distanceY));
-                        
-                                    const moveX = distanceX > 0 ? overlapX : -overlapX;
-                                    const moveY = distanceY > 0 ? overlapY : -overlapY;
-                        
-                                    element.style.transform = `translate(${moveX}px, ${moveY}px)`;
-                                }
-                            });
-                        }
-                    
-                    
-                    */
-
-                        // const draggableCenterX = childRect.left + childRect.width / 2;
-                        // const draggableCenterY = childRect.top + childRect.height / 2;
-
-                        // const elementCenterX = sibRect.left + sibRect.width / 2;
-                        // const elementCenterY = sibRect.top + sibRect.height / 2;
-            
-                        // const distanceX = draggableCenterX - elementCenterX;
-                        // const distanceY = draggableCenterY - elementCenterY;
-            
-                        // const overlapX = Math.max(0, (sibRect.width + childRect.width) / 2 - Math.abs(distanceX));
-                        // const overlapY = Math.max(0, (sibRect.height + childRect.height) / 2 - Math.abs(distanceY));
-            
-                        // const moveX = distanceX > 0 ? overlapX : -overlapX;
-                        // const moveY = distanceY > 0 ? overlapY : -overlapY;
-
-                        // console.log(p.x);
-                        // console.log(moveX);
-
-                        // console.log(p.x + moveX);
-
-                        // p.x += moveX;
             });
         }
     };
-
 
     return {
         state: state,
