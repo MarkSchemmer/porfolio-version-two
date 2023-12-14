@@ -92,6 +92,11 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             let x = p.x < 0 ? 0 : p.x + pieceResolution.width >= boardResolution.width - 2 ? boardResolution.width - pieceResolution.width - 2 : p.x;
             let y = p.y < 0 ? 0 : p.y + pieceResolution.height >= boardResolution.height - 2 ? boardResolution.height - pieceResolution.height - 2 : p.y;
 
+            // Logic here so it can't intersect with any siblings. 
+            // loop siblings, and compare to the current ID. 
+            // with all the others, then do a similar transformation to 
+            // the parent child to -> child - child 
+            
             return new Point(
                 x, y
             );
