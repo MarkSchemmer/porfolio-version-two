@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import "../MouseCurserGame/styles/advanced-main.css";
+import "../puzzleDrag/styles/main.css";
 import { Point } from "../../Utils/Util";
 import { initialState, useDragging } from "../../hooks/useDrag";
 import { PuzzlePiece } from "./PuzzlePiece";
@@ -21,18 +21,34 @@ import { PuzzlePiece } from "./PuzzlePiece";
 
 
 
+export const baseSquare = [
+    [ "blue", "green", "yellow" ],
+    [ "orange", "purple", "red" ],
+    [ "grey", "#AAF5EC", "#F5AADB" ]
+];
+
 export const PuzzleDrag = (props:any) => {
     let boardRef = useRef<HTMLDivElement>(null);
+
+    let squares = baseSquare.map((row, x) => {
+        return row.map((c, y) => ({ boardRef, styleProps: {backgroundColor: c}, initialProps: {...initialState, pos: new Point(152 * x, 152 * y)} }));
+    })
+    .reduce((acc, cur) => { return [...acc, ...cur]}, [])
+
     return (
         <div className="board" style={{
             position: "absolute",
             left: "40%"
         }} ref={boardRef}>
-            <PuzzlePiece boardRef={boardRef} /> 
+            {/* <PuzzlePiece boardRef={boardRef} /> 
             <PuzzlePiece 
             initialProps={{...initialState, pos: new Point(initialState.pos.x + 152, initialState.pos.y)}}
             boardRef={boardRef} 
-            styleProps={{backgroundColor: "blue"}} /> 
+            styleProps={{backgroundColor: "blue"}} />  */}
+
+            {squares.map((i => {
+                return <PuzzlePiece boardRef={boardRef} styleProps={i.styleProps} initialProps={i.initialProps} /> 
+            }))}
         </div>
     )
 };
