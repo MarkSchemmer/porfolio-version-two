@@ -23,14 +23,16 @@ import { PuzzlePiece } from "./PuzzlePiece";
 
 export const PuzzleDrag = (props:any) => {
     let boardRef = useRef<HTMLDivElement>(null);
-
     return (
         <div className="board" style={{
             position: "absolute",
             left: "40%"
         }} ref={boardRef}>
             <PuzzlePiece boardRef={boardRef} /> 
-            <PuzzlePiece boardRef={boardRef} styleProps={{backgroundColor: "blue"}} /> 
+            <PuzzlePiece 
+            initialProps={{...initialState, pos: new Point(initialState.pos.x + 152, initialState.pos.y)}}
+            boardRef={boardRef} 
+            styleProps={{backgroundColor: "blue"}} /> 
         </div>
     )
 };

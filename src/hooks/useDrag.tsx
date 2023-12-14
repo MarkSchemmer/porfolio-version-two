@@ -16,7 +16,7 @@ export let initialState: IState = {
 };
 
 export const useDragging = (element: React.MutableRefObject<HTMLDivElement | null>, init: IState = initialState) => {
-    let [state, setState] = useState<IState>(init);
+    let [state, setState] = useState<IState>(init || initialState);
 
     const onMouseDown = (e: React.MouseEvent<HTMLElement>, draggablePieceRef: React.MutableRefObject<HTMLDivElement | null>) => {
         if (e.button !== 0) { return; }
