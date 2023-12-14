@@ -5,6 +5,7 @@ export interface IPuzzlePiece {
     boardRef: React.RefObject<HTMLDivElement>;
     styleProps?: React.CSSProperties;
     initialProps?: IState
+    ID: string;
 };
 
 export const PuzzlePiece = (props:IPuzzlePiece) => {

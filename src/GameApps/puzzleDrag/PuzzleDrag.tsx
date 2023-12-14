@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import "../puzzleDrag/styles/main.css";
-import { Point } from "../../Utils/Util";
+import { Point, e2 } from "../../Utils/Util";
 import { initialState, useDragging } from "../../hooks/useDrag";
 import { PuzzlePiece } from "./PuzzlePiece";
 
@@ -19,8 +19,6 @@ import { PuzzlePiece } from "./PuzzlePiece";
 // These two conditions for x will keep it in the width of the board. 
 // Need to create this same equation for Y-axis. 
 
-
-
 export const baseSquare = [
     [ "blue", "green", "yellow" ],
     [ "orange", "purple", "red" ],
@@ -31,23 +29,24 @@ export const PuzzleDrag = (props:any) => {
     let boardRef = useRef<HTMLDivElement>(null);
 
     let squares = baseSquare.map((row, x) => {
-        return row.map((c, y) => ({ boardRef, styleProps: {backgroundColor: c}, initialProps: {...initialState, pos: new Point(152 * x, 152 * y)} }));
+        return row.map((c, y) => ({ boardRef, ID: e2(), styleProps: {backgroundColor: c}, initialProps: {...initialState, pos: new Point(152 * x, 152 * y)} }));
     })
-    .reduce((acc, cur) => { return [...acc, ...cur]}, [])
+    .reduce(
+        (acc, cur) => { return [ ...acc, ...cur ]; }, []
+    );
 
     return (
         <div className="board" style={{
             position: "absolute",
             left: "40%"
         }} ref={boardRef}>
-            {/* <PuzzlePiece boardRef={boardRef} /> 
-            <PuzzlePiece 
-            initialProps={{...initialState, pos: new Point(initialState.pos.x + 152, initialState.pos.y)}}
-            boardRef={boardRef} 
-            styleProps={{backgroundColor: "blue"}} />  */}
-
             {squares.map((i => {
-                return <PuzzlePiece boardRef={boardRef} styleProps={i.styleProps} initialProps={i.initialProps} /> 
+                return (<PuzzlePiece 
+                key={i.ID} 
+                ID={i.ID} 
+                boardRef={boardRef} 
+                styleProps={i.styleProps} 
+                initialProps={i.initialProps} />);
             }))}
         </div>
     )
