@@ -76,14 +76,15 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
     }
 
     const determineSectionInXAxis = (x: number) => {
-        return x > 304-75 ? 304 : x >= 152-75 ? 152 : 
-        x >= 30 ? 152 : 0;
+        return  x >= 304 - 75 ? 304 : 
+                x >= 152 - 75 ? 152 : 
+                0; 
     }
 
     const determineSectionInYAxis = (y: number) => {
-        return y >= 456 - 75 ? 456 :
-               y >= 304 - 75 ? 304 : 
-               y >= 152 - 75 ? 152 : 
+        return y >= (456 - 75) ? 456 :
+               y >= (304 - 75) ? 304 : 
+               y >= (152 - 105) ? 152 : 
                0; 
     }
 
