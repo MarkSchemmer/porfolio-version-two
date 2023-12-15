@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Point, rectanglesIntersectingDomRect, rectanglesIntersectingDomRectWithPoint } from "../Utils/Util";
-import { IAdvancedMouseDirections, XAxisMovement, YAxisMovement, distanceFormula, initialData, useMousePositionAdvanced, whichDirectionXAxis, whichDirectionYAxis } from "../GameApps/MouseCurserGame/useMousePositionAdvanced";
 import { handleClickForGridCoordinates } from "../GameApps/puzzleDrag/PuzzleDrag";
+import { flushSync } from "react-dom";
 
 let defaultProps = new Point(0, 0);
 
@@ -50,19 +50,33 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         e.preventDefault();
     };
 
-    const handleIfDropLocationIsValid = (child: React.MutableRefObject<HTMLDivElement | null>, p?: Point) => {
+    const handleIfDropLocationIsValid = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, p?: Point | undefined) => {
         let currentPosition = state.pos;
         let shouldUpdatetoNewPosition = DoesPieceBreakBoundrisOfSiblings(child);
-        setState((prevState: IState) => ({
-            ...prevState,
-            moveX: null, moveY: null, 
-            pos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : p ? p : prevState.pos, 
-            lastSavedPos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : currentPosition, 
-            dragging: false}));
+
+        flushSync(() => {
+            setState((prevState: IState) => ({
+                ...prevState,
+                moveX: null, moveY: null, 
+                pos: shouldUpdatetoNewPosition ? (p?p:prevState.lastSavedPos) : p ? p : prevState.pos, 
+                lastSavedPos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : currentPosition, 
+                dragging: false}));
+        })
+
+    }
+
+    const handleIfDropLocationIsValidWithoutE = () => {
+        
+        flushSync(() => {
+            setState((prevState: IState) => ({
+                ...prevState,
+                pos: new Point(determineSectionInXAxis(prevState.pos.x), determineSectionInYAxis(prevState.pos.y))
+            }));
+        })
     }
 
     const determineSectionInXAxis = (x: number) => {
-        return x > 304-105 ? 304 : x >= 152-105 ? 152 : 
+        return x > 304-75 ? 304 : x >= 152-75 ? 152 : 
         x >= 30 ? 152 : 0;
     }
 
@@ -103,29 +117,39 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
 
 
         // console.log(`${state.moveX} - ${state.moveY}`);
-        handleIfDropLocationIsValid(child, p);
+      
+        handleIfDropLocationIsValid(e, child, p);
+    
+       
         e.stopPropagation();
         e.preventDefault();
     };
 
     const onMouseLeave = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
-        let p = undefined;
-        if (state.dragging) {
-            let [x, y] = handleClickForGridCoordinates(e, parent.current)
-            //console.log(`${x * 152}-${y * 152}`);
-            let additionalXMovement = Math.floor(e.pageX - (child.current?.getBoundingClientRect().x || 0));
-            let additionalYMovement = Math.floor(e.pageY - (child.current?.getBoundingClientRect().y || 0));
-            //console.log(`${x} - ${y}`);
-            let p = new Point(determineSectionInXAxis((x*152)), determineSectionInYAxis(Math.ceil(y*152)));
-            console.log(p);
-        }
-        handleIfDropLocationIsValid(child, p);
+        let p: Point | undefined = undefined;
+        // if (state.dragging) {
+        //     let [x, y] = handleClickForGridCoordinates(e, parent.current)
+        //     //console.log(`${x * 152}-${y * 152}`);
+        //     let additionalXMovement = Math.floor(e.pageX - (child.current?.getBoundingClientRect().x || 0));
+        //     let additionalYMovement = Math.floor(e.pageY - (child.current?.getBoundingClientRect().y || 0));
+        //     //console.log(`${x} - ${y}`);
+        //     p = new Point(determineSectionInXAxis((x*152)), determineSectionInYAxis(Math.ceil(y*152)));
+        //     //console.log(p);
+        // }
+
+        
+        handleIfDropLocationIsValid(e, child, p);
+
         e.stopPropagation();
         e.preventDefault();
     };
 
     const onMouseMove = (e: React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>, ID: string) => {
-        if (state.dragging === false) { return; }
+        if (state.dragging === false) {
+            e.stopPropagation();
+            e.preventDefault();
+            return; 
+        }
         let x = state.rel?.x ? state.rel.x : 0;
         let y = state.rel?.y ? state.rel.y : 0;
         // The question we need to know this simple ansewer...
@@ -140,16 +164,18 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);
 
         if (state.dragging) {
-            setState((prevState:IState) => {
-                let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
-                let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
-                return {
-                    ...prevState,
-                    moveX,
-                    moveY,
-                    pos: new Point(moveX ? p.x : prevState.pos.x, moveY ? p.y : prevState.pos.y)
-                };
-            });
+            
+                setState((prevState:IState) => {
+                    let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
+                    let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
+                    return {
+                        ...prevState,
+                        moveX,
+                        moveY,
+                        pos: new Point(moveX ? p.x : prevState.pos.x, moveY ? p.y : prevState.pos.y)
+                    };
+                });
+
         }
 
 
@@ -218,7 +244,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             let siblings = Array.from(document.getElementsByClassName("pz"))
                             .filter((e: Element) => !e.className.includes(childId));
 
-            return siblings.some((e: Element) => {
+            return siblings.filter((e: Element) => {
                 let sibRect = e.getBoundingClientRect();
                 
                 let res = rectanglesIntersectingDomRectWithPoint(point, sibRect);
@@ -227,6 +253,8 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
                 return res;
             });
         }
+
+        return [];
     };
 
 
@@ -235,6 +263,8 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         onMouseDown,
         onMouseMove,
         onMouseUp,
-        onMouseLeave
+        onMouseLeave,
+        handleIfDropLocationIsValid,
+        handleIfDropLocationIsValidWithoutE
     };
 };

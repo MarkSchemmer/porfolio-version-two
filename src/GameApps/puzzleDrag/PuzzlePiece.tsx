@@ -9,12 +9,23 @@ export interface IPuzzlePiece {
     ID: string;
 };
 
+/*
+    Need to create an optimized history of current location and previous location using x-y grid system. 
+    I need to keep track of this through mouse move and up and leave... events... 
+
+    This way is as I drag the piece everytime I enter a new grid i update the current to the prev and the current to this
+    new location we are at 
+
+    The update will only happen when no intersections have happened... 
+    if this happens we will make sure to revert to the last optimal 
+    grid sqaure that we recorded for this puzzle drop game. 
+
+    This relieves many problems with out game I believe. 
+*/
+
 export const PuzzlePiece = (props:IPuzzlePiece) => {
-
     let pzDivRef = useRef<HTMLDivElement>(null);
-    let { state, onMouseDown, onMouseMove, onMouseUp, onMouseLeave } = useDragging(props.boardRef, props.initialProps);
-
-
+    let { state, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, handleIfDropLocationIsValidWithoutE } = useDragging(props.boardRef, props.initialProps);
 
     const pieceStyles: React.CSSProperties = {
             position: "absolute",
@@ -29,10 +40,10 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
         draggable={true}
         className={"pz " + props.ID}
             ref={pzDivRef} 
-            onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef); }}
-            onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID); }}
-            onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef, props.boardRef); }}
-            onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef, props.boardRef); }}
+            onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef);  /*console.log("mouse - down");*/ }}
+            onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID);/*console.log("mouse - move");*/ }}
+            onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - up");*/ }}
+            onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - leave");*/ }}
             style={pieceStyles}>
               {state.pos.x} - {state.pos.y}
         </div>
