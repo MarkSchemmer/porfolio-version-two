@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Point, rectanglesIntersectingDomRect } from "../Utils/Util";
+import { Point, rectanglesIntersectingDomRect, rectanglesIntersectingDomRectWithPoint } from "../Utils/Util";
 
 let defaultProps = new Point(0, 0);
 
@@ -7,12 +7,14 @@ export interface IState {
     pos: Point;
     dragging: boolean;
     rel: Point | null;
+    lastSavedPos: Point;
 }
 
 export let initialState: IState = {
     pos: defaultProps,
     dragging: false,
     rel: null,
+    lastSavedPos: defaultProps
 };
 
 export const useDragging = (element: React.MutableRefObject<HTMLDivElement | null>, init: IState = initialState) => {
@@ -20,7 +22,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
     let stateHistoryRef = useRef<IState[]>([]);
 
     const handleHistoryUpdate = (state: IState) => {
-        if (stateHistoryRef.current.length >= 25) {
+        if (stateHistoryRef.current.length >= 200) {
             // add to front and remove from back
             stateHistoryRef.current.pop(); // remove back. 
             stateHistoryRef.current = [ state, ...stateHistoryRef.current ]; // add to front. 
@@ -30,13 +32,18 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         }
     }
 
-    const onMouseDown = (e: React.MouseEvent<HTMLElement>, draggablePieceRef: React.MutableRefObject<HTMLDivElement | null>) => {
+    const onMouseDown = (e: React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>) => {
         if (e.button !== 0) { return; }
-        let posLeft = draggablePieceRef.current?.offsetLeft;
-        let posTop = draggablePieceRef.current?.offsetTop;
+        let posLeft = child.current?.offsetLeft;
+        let posTop = child.current?.offsetTop;
 
         let left = posLeft ? posLeft : 0;
         let top = posTop ? posTop : 0;
+
+        
+        if (DoesPieceBreakBoundrisOfSiblings(child)) {
+            console.log("Hit in onMouseDown ->  ");
+        }
 
         setState((prevState: IState) => {
             handleHistoryUpdate(prevState);
@@ -55,14 +62,23 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         e.preventDefault();
     };
 
-    const onMouseUp = (e:  React.MouseEvent<HTMLElement>) => {
-        setState((prevState: IState) => ({...prevState, dragging: false}));
+    const handleIfDropLocationIsValid = (child: React.MutableRefObject<HTMLDivElement | null>) => {
+        let currentPosition = state.pos;
+        let shouldUpdatetoNewPosition = DoesPieceBreakBoundrisOfSiblings(child);
+        setState((prevState: IState) => ({...prevState, 
+            pos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : prevState.pos, 
+            lastSavedPos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : currentPosition, 
+            dragging: false}));
+    }
+
+    const onMouseUp = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>) => {
+        handleIfDropLocationIsValid(child);
         e.stopPropagation();
         e.preventDefault();
     };
 
-    const onMouseLeave = (e:  React.MouseEvent<HTMLElement>) => {
-        setState((prevState: IState) => ({...prevState, dragging: false}));
+    const onMouseLeave = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>) => {
+        handleIfDropLocationIsValid(child);
         e.stopPropagation();
         e.preventDefault();
     };
@@ -81,6 +97,10 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
 
         // We hand boundry just right... 
         let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);
+
+        if (DoesPieceBreakBoundrisOfSiblingsUsingNewPoint(child, p)) {
+            console.log("hit in mouse move -> ");
+        }
 
         setState((prevState:IState) => {
             handleHistoryUpdate(prevState)
@@ -128,7 +148,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             .filter((e: Element) => !e.className.includes(childId));
     }
 
-    const DoesPieceBreakBoundrisOfSiblings = (child: React.MutableRefObject<HTMLDivElement | null>, ID: string) => {
+    const DoesPieceBreakBoundrisOfSiblings = (child: React.MutableRefObject<HTMLDivElement | null>) => {
         
         if (child.current) {
             let childRect = child.current.getBoundingClientRect();
@@ -146,6 +166,43 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             });
         }
     };
+
+
+    const windBackStateUntilSquaresDontIntersect = (child: React.MutableRefObject<HTMLDivElement | null>) => {
+        let ar = [ ...stateHistoryRef.current ];
+        let [ first, ...rest ] = ar;
+
+        while(DoesPieceBreakBoundrisOfSiblingsUsingNewPoint(child, first.pos) && rest.length > 0) {
+            let [f, ...r] = rest;
+            first = f;
+            rest = r;
+        }
+        
+
+        stateHistoryRef.current = rest;
+        console.log(stateHistoryRef.current.length);
+        return first;
+    }
+
+    const DoesPieceBreakBoundrisOfSiblingsUsingNewPoint = (child: React.MutableRefObject<HTMLDivElement | null>, point: Point) => {
+        
+        if (child.current) {
+            let childRect = child.current.getBoundingClientRect();
+            let childId = child.current?.className.split(" ")[1].trim();
+            let siblings = Array.from(document.getElementsByClassName("pz"))
+                            .filter((e: Element) => !e.className.includes(childId));
+
+            return siblings.some((e: Element) => {
+                let sibRect = e.getBoundingClientRect();
+                
+                let res = rectanglesIntersectingDomRectWithPoint(point, sibRect);
+                if (res) { }
+
+                return res;
+            });
+        }
+    };
+
 
     return {
         state: state,
