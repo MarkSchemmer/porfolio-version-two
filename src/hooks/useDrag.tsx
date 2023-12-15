@@ -61,17 +61,65 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             dragging: false}));
     }
 
+    const determineSectionInXAxis = (x: number) => {
+        return x > 304-105 ? 304 : x >= 152-105 ? 152 : 
+        x >= 30 ? 152 : 0;
+    }
+
+    const determineSectionInYAxis = (y: number) => {
+        return y >= 456 - 75 ? 456 :
+               y >= 304 - 75 ? 304 : 
+               y >= 152 - 75 ? 152 : 
+               0; 
+    }
+
     const onMouseUp = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
         let [x, y] = handleClickForGridCoordinates(e, parent.current)
-        console.log(`${x * 152}-${Math.ceil(y * 151.5)}`);
-        let p = new Point(Math.ceil(x*152), Math.ceil(y*152));
+        //console.log(`${x * 152}-${y * 152}`);
+        let additionalXMovement = Math.floor(e.pageX - (child.current?.getBoundingClientRect().x || 0));
+        let additionalYMovement = Math.floor(e.pageY - (child.current?.getBoundingClientRect().y || 0));
+        //console.log(`${x} - ${y}`);
+        let p = new Point(determineSectionInXAxis((x*152)), determineSectionInYAxis(Math.ceil(y*152)));
+
+
+        /*
+        
+            if moveX is true then we are moving X
+
+            if moveY is true then we are moving y
+
+
+            we need to check if the current location of the new point is going to intersect... 
+
+
+            if it is we need to change go back or forwards 
+
+            What are the 3 sections of x -> 0 - 152 - 304
+
+            Note 0 is left side and 152 is 
+        
+        */
+
+
+
+        // console.log(`${state.moveX} - ${state.moveY}`);
         handleIfDropLocationIsValid(child, p);
         e.stopPropagation();
         e.preventDefault();
     };
 
     const onMouseLeave = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
-        handleIfDropLocationIsValid(child);
+        let p = undefined;
+        if (state.dragging) {
+            let [x, y] = handleClickForGridCoordinates(e, parent.current)
+            //console.log(`${x * 152}-${y * 152}`);
+            let additionalXMovement = Math.floor(e.pageX - (child.current?.getBoundingClientRect().x || 0));
+            let additionalYMovement = Math.floor(e.pageY - (child.current?.getBoundingClientRect().y || 0));
+            //console.log(`${x} - ${y}`);
+            let p = new Point(determineSectionInXAxis((x*152)), determineSectionInYAxis(Math.ceil(y*152)));
+            console.log(p);
+        }
+        handleIfDropLocationIsValid(child, p);
         e.stopPropagation();
         e.preventDefault();
     };
@@ -91,23 +139,19 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         // We hand boundry just right... 
         let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);
 
-        // if (parent.current && child.current) {
-        //     console.log(
-        //         (state.pos.x + child.current.getBoundingClientRect().width) 
-        //     );
-        // }
+        if (state.dragging) {
+            setState((prevState:IState) => {
+                let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
+                let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
+                return {
+                    ...prevState,
+                    moveX,
+                    moveY,
+                    pos: new Point(moveX ? p.x : prevState.pos.x, moveY ? p.y : prevState.pos.y)
+                };
+            });
+        }
 
-
-        setState((prevState:IState) => {
-            let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
-            let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
-            return {
-                ...prevState,
-                moveX,
-                moveY,
-                pos: new Point(moveX ? p.x : prevState.pos.x, moveY ? p.y : prevState.pos.y)
-            };
-        });
 
         e.stopPropagation();
         e.preventDefault();

@@ -31,7 +31,7 @@ export const PuzzleDrag = (props:any) => {
     let [sq, setSquares] = useState(baseSquare);
 
     let squares = sq.map((row, x) => {
-        return row.map((c, y) => ({ boardRef, ID: e2(), styleProps: {backgroundColor: sq[y][x]}, initialProps: {...initialState, pos: new Point(151 * x, 151 * y), lastSavedPos: new Point(151 * x, 151 * y)} }));
+        return row.map((c, y) => ({ boardRef, ID: e2(), styleProps: {backgroundColor: sq[y][x]}, initialProps: {...initialState, pos: new Point(152 * x, 152 * y), lastSavedPos: new Point(152 * x, 152 * y)} }));
     })
     .reduce(
         (acc, cur) => { return [ ...acc, ...cur ]; }, []

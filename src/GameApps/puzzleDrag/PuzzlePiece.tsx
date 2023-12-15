@@ -33,10 +33,6 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
             onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID); }}
             onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef, props.boardRef); }}
             onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef, props.boardRef); }}
-            // onDragStart={(e) => {console.log("start")}}
-            // onDragOver={(e) => {console.log("moving")}}
-            // onDrag={(e) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID);}}
-            // onDragEnd={(e) => { console.log("ended. ")}}
             style={pieceStyles}>
               {state.pos.x} - {state.pos.y}
         </div>
@@ -266,5 +262,7 @@ World.prototype = {
       }
     }());
 
-
+  You can only know true peace when you feel you true pain. 
+  
+  Falsy accused
 */
