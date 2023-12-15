@@ -56,7 +56,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         setState((prevState: IState) => ({
             ...prevState,
             moveX: null, moveY: null, 
-            pos: p ? p : shouldUpdatetoNewPosition ? prevState.lastSavedPos : prevState.pos, 
+            pos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : p ? p : prevState.pos, 
             lastSavedPos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : currentPosition, 
             dragging: false}));
     }
@@ -64,7 +64,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
     const onMouseUp = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
         let [x, y] = handleClickForGridCoordinates(e, parent.current)
         console.log(`${x * 152}-${Math.ceil(y * 151.5)}`);
-        let p = new Point(x*152, Math.ceil(y*151.5));
+        let p = new Point(Math.ceil(x*152), Math.ceil(y*152));
         handleIfDropLocationIsValid(child, p);
         e.stopPropagation();
         e.preventDefault();
