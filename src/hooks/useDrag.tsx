@@ -19,18 +19,6 @@ export let initialState: IState = {
 
 export const useDragging = (element: React.MutableRefObject<HTMLDivElement | null>, init: IState = initialState) => {
     let [state, setState] = useState<IState>(init || initialState);
-    let stateHistoryRef = useRef<IState[]>([]);
-
-    const handleHistoryUpdate = (state: IState) => {
-        if (stateHistoryRef.current.length >= 200) {
-            // add to front and remove from back
-            stateHistoryRef.current.pop(); // remove back. 
-            stateHistoryRef.current = [ state, ...stateHistoryRef.current ]; // add to front. 
-        } else {
-            // add to front
-            stateHistoryRef.current = [ state, ...stateHistoryRef.current ]
-        }
-    }
 
     const onMouseDown = (e: React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>) => {
         if (e.button !== 0) { return; }
@@ -40,13 +28,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         let left = posLeft ? posLeft : 0;
         let top = posTop ? posTop : 0;
 
-        
-        if (DoesPieceBreakBoundrisOfSiblings(child)) {
-            console.log("Hit in onMouseDown ->  ");
-        }
-
         setState((prevState: IState) => {
-            handleHistoryUpdate(prevState);
             return {
                 ...prevState,
                 dragging: true,
@@ -103,7 +85,6 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         }
 
         setState((prevState:IState) => {
-            handleHistoryUpdate(prevState)
             return {
                 ...prevState,
                 pos: new Point(p.x, p.y)
@@ -121,8 +102,8 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             const pieceResolution = child.current.getBoundingClientRect();
             const boardResolution = parent.current?.getBoundingClientRect();
 
-            let x = p.x < 0 ? 0 : p.x + pieceResolution.width >= boardResolution.width - 2 ? boardResolution.width - pieceResolution.width - 2 : p.x;
-            let y = p.y < 0 ? 0 : p.y + pieceResolution.height >= boardResolution.height - 2 ? boardResolution.height - pieceResolution.height - 2 : p.y;
+            let x = p.x < 0 ? 0 : p.x + pieceResolution.width >= boardResolution.width ? boardResolution.width - pieceResolution.width : p.x;
+            let y = p.y < 0 ? 0 : p.y + pieceResolution.height >= boardResolution.height ? boardResolution.height - pieceResolution.height : p.y;
             // Logic here so it can't intersect with any siblings. 
             // loop siblings, and compare to the current ID. 
             // with all the others, then do a similar transformation to 
@@ -166,23 +147,6 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             });
         }
     };
-
-
-    const windBackStateUntilSquaresDontIntersect = (child: React.MutableRefObject<HTMLDivElement | null>) => {
-        let ar = [ ...stateHistoryRef.current ];
-        let [ first, ...rest ] = ar;
-
-        while(DoesPieceBreakBoundrisOfSiblingsUsingNewPoint(child, first.pos) && rest.length > 0) {
-            let [f, ...r] = rest;
-            first = f;
-            rest = r;
-        }
-        
-
-        stateHistoryRef.current = rest;
-        console.log(stateHistoryRef.current.length);
-        return first;
-    }
 
     const DoesPieceBreakBoundrisOfSiblingsUsingNewPoint = (child: React.MutableRefObject<HTMLDivElement | null>, point: Point) => {
         
