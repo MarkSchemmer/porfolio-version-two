@@ -20,8 +20,8 @@ export interface IAdvancedMouseDirections {
     prevYDelta: number | null;
 }
 
-type XAxisMovement = Directions.LEFT | Directions.RIGHT | null;
-type YAxisMovement = Directions.UP | Directions.DOWN | null;
+export type XAxisMovement = Directions.LEFT | Directions.RIGHT | null;
+export type YAxisMovement = Directions.UP | Directions.DOWN | null;
 
 export const initialData : IAdvancedMouseDirections = {
     xDirection: null,

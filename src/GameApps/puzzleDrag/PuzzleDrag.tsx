@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import "../puzzleDrag/styles/main.css";
 import { Point, e2 } from "../../Utils/Util";
 import { initialState, useDragging } from "../../hooks/useDrag";
@@ -28,15 +28,18 @@ export const baseSquare = [
 export const PuzzleDrag = (props:any) => {
     let boardRef = useRef<HTMLDivElement>(null);
 
-    let squares = baseSquare.map((row, x) => {
-        return row.map((c, y) => ({ boardRef, ID: e2(), styleProps: {backgroundColor: baseSquare[y][x]}, initialProps: {...initialState, pos: new Point(151 * x, 151 * y), lastSavedPos: new Point(151 * x, 151 * y)} }));
+    let [sq, setSquares] = useState(baseSquare);
+
+    let squares = sq.map((row, x) => {
+        return row.map((c, y) => ({ boardRef, ID: e2(), styleProps: {backgroundColor: sq[y][x]}, initialProps: {...initialState, pos: new Point(151 * x, 151 * y), lastSavedPos: new Point(151 * x, 151 * y)} }));
     })
     .reduce(
         (acc, cur) => { return [ ...acc, ...cur ]; }, []
     );
 
     return (
-        <div className="board" style={{
+        <div className="board" 
+        style={{
             position: "absolute",
             left: "40%"
         }} ref={boardRef}>
@@ -51,3 +54,19 @@ export const PuzzleDrag = (props:any) => {
         </div>
     )
 };
+
+
+export const handleClickForGridCoordinates = (e:any, parent: any) => {
+    if (parent) {
+        const rect = parent.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Calculate the grid square based on mouse coordinates
+        const col = Math.floor(mouseX / 152);
+        const row = Math.floor(mouseY / 152);
+        return [col, row];
+    }
+
+      return [];
+}

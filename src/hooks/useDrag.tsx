@@ -1,5 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Point, rectanglesIntersectingDomRect, rectanglesIntersectingDomRectWithPoint } from "../Utils/Util";
+import { IAdvancedMouseDirections, XAxisMovement, YAxisMovement, distanceFormula, initialData, useMousePositionAdvanced, whichDirectionXAxis, whichDirectionYAxis } from "../GameApps/MouseCurserGame/useMousePositionAdvanced";
+import { handleClickForGridCoordinates } from "../GameApps/puzzleDrag/PuzzleDrag";
 
 let defaultProps = new Point(0, 0);
 
@@ -8,13 +10,17 @@ export interface IState {
     dragging: boolean;
     rel: Point | null;
     lastSavedPos: Point;
+    moveX: boolean | null;
+    moveY: boolean | null;
 }
 
 export let initialState: IState = {
     pos: defaultProps,
     dragging: false,
     rel: null,
-    lastSavedPos: defaultProps
+    lastSavedPos: defaultProps,
+    moveX: null,
+    moveY: null
 };
 
 export const useDragging = (element: React.MutableRefObject<HTMLDivElement | null>, init: IState = initialState) => {
@@ -44,22 +50,27 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         e.preventDefault();
     };
 
-    const handleIfDropLocationIsValid = (child: React.MutableRefObject<HTMLDivElement | null>) => {
+    const handleIfDropLocationIsValid = (child: React.MutableRefObject<HTMLDivElement | null>, p?: Point) => {
         let currentPosition = state.pos;
         let shouldUpdatetoNewPosition = DoesPieceBreakBoundrisOfSiblings(child);
-        setState((prevState: IState) => ({...prevState, 
-            pos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : prevState.pos, 
+        setState((prevState: IState) => ({
+            ...prevState,
+            moveX: null, moveY: null, 
+            pos: p ? p : shouldUpdatetoNewPosition ? prevState.lastSavedPos : prevState.pos, 
             lastSavedPos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : currentPosition, 
             dragging: false}));
     }
 
-    const onMouseUp = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>) => {
-        handleIfDropLocationIsValid(child);
+    const onMouseUp = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
+        let [x, y] = handleClickForGridCoordinates(e, parent.current)
+        console.log(`${x * 152}-${Math.ceil(y * 151.5)}`);
+        let p = new Point(x*152, Math.ceil(y*151.5));
+        handleIfDropLocationIsValid(child, p);
         e.stopPropagation();
         e.preventDefault();
     };
 
-    const onMouseLeave = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>) => {
+    const onMouseLeave = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
         handleIfDropLocationIsValid(child);
         e.stopPropagation();
         e.preventDefault();
@@ -80,10 +91,21 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         // We hand boundry just right... 
         let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);
 
+        // if (parent.current && child.current) {
+        //     console.log(
+        //         (state.pos.x + child.current.getBoundingClientRect().width) 
+        //     );
+        // }
+
+
         setState((prevState:IState) => {
+            let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
+            let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
             return {
                 ...prevState,
-                pos: new Point(p.x, p.y)
+                moveX,
+                moveY,
+                pos: new Point(moveX ? p.x : prevState.pos.x, moveY ? p.y : prevState.pos.y)
             };
         });
 
@@ -98,8 +120,8 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             const pieceResolution = child.current.getBoundingClientRect();
             const boardResolution = parent.current?.getBoundingClientRect();
 
-            let x = p.x < 0 ? 0 : p.x + pieceResolution.width > boardResolution.width ? Math.floor(boardResolution.width - pieceResolution.width) : p.x;
-            let y = p.y < 0 ? 0 : p.y + pieceResolution.height > boardResolution.height ? Math.floor(boardResolution.height - pieceResolution.height) : p.y;
+            let x = p.x < 0 ? 0 : p.x + pieceResolution.width > boardResolution.width ? Math.floor(boardResolution.width - pieceResolution.width) - 2 : p.x;
+            let y = p.y < 0 ? 0 : p.y + pieceResolution.height > boardResolution.height ? Math.floor(boardResolution.height - pieceResolution.height) - 2 : p.y;
             // Logic here so it can't intersect with any siblings. 
             // loop siblings, and compare to the current ID. 
             // with all the others, then do a similar transformation to 

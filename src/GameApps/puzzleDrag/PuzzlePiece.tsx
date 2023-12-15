@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { IState, useDragging } from "../../hooks/useDrag";
+import { useMousePositionAdvanced } from "../MouseCurserGame/useMousePositionAdvanced";
 
 export interface IPuzzlePiece {
     boardRef: React.RefObject<HTMLDivElement>;
@@ -13,6 +14,8 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
     let pzDivRef = useRef<HTMLDivElement>(null);
     let { state, onMouseDown, onMouseMove, onMouseUp, onMouseLeave } = useDragging(props.boardRef, props.initialProps);
 
+
+
     const pieceStyles: React.CSSProperties = {
             position: "absolute",
             left: `${state.pos.x}px`,
@@ -22,12 +25,18 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
     }
 
     return (
-        <div className={"pz " + props.ID}
+        <div 
+        draggable={true}
+        className={"pz " + props.ID}
             ref={pzDivRef} 
             onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef); }}
             onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID); }}
-            onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef); }}
-            onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef); }}
+            onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef, props.boardRef); }}
+            onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef, props.boardRef); }}
+            // onDragStart={(e) => {console.log("start")}}
+            // onDragOver={(e) => {console.log("moving")}}
+            // onDrag={(e) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID);}}
+            // onDragEnd={(e) => { console.log("ended. ")}}
             style={pieceStyles}>
               {state.pos.x} - {state.pos.y}
         </div>
