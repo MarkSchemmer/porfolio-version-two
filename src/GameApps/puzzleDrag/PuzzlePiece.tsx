@@ -29,6 +29,7 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
             onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef); }}
             onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef); }}
             style={pieceStyles}>
+              {state.pos.x} - {state.pos.y}
         </div>
     );
 }

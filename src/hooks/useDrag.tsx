@@ -80,10 +80,6 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         // We hand boundry just right... 
         let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);
 
-        if (DoesPieceBreakBoundrisOfSiblingsUsingNewPoint(child, p)) {
-            console.log("hit in mouse move -> ");
-        }
-
         setState((prevState:IState) => {
             return {
                 ...prevState,
@@ -102,8 +98,8 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             const pieceResolution = child.current.getBoundingClientRect();
             const boardResolution = parent.current?.getBoundingClientRect();
 
-            let x = p.x < 0 ? 0 : p.x + pieceResolution.width >= boardResolution.width ? boardResolution.width - pieceResolution.width : p.x;
-            let y = p.y < 0 ? 0 : p.y + pieceResolution.height >= boardResolution.height ? boardResolution.height - pieceResolution.height : p.y;
+            let x = p.x < 0 ? 0 : p.x + pieceResolution.width > boardResolution.width ? Math.floor(boardResolution.width - pieceResolution.width) : p.x;
+            let y = p.y < 0 ? 0 : p.y + pieceResolution.height > boardResolution.height ? Math.floor(boardResolution.height - pieceResolution.height) : p.y;
             // Logic here so it can't intersect with any siblings. 
             // loop siblings, and compare to the current ID. 
             // with all the others, then do a similar transformation to 
