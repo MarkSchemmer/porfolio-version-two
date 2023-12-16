@@ -21,6 +21,16 @@ export interface IPuzzlePiece {
     grid sqaure that we recorded for this puzzle drop game. 
 
     This relieves many problems with out game I believe. 
+
+
+    Also I need to explore the concept of canDrag -> basically a way to calculate the direction we're going... and the future coordinates we might be able
+    to move to. if the next coordinate is already filled, then we need to not be able to drag in that direction
+
+    Also if we know we're going moveX are we going moveLeft or moveRight 
+
+    And vica versa with moveY are we going moveUp or MoveDown
+
+    All these details are needed to be taken in calculated when we start the process of dragging an element across the board. 
 */
 
 export const PuzzlePiece = (props:IPuzzlePiece) => {
@@ -40,7 +50,7 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
         draggable={true}
         className={"pz " + props.ID}
             ref={pzDivRef} 
-            onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef);  /*console.log("mouse - down");*/ }}
+            onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - down");*/ }}
             onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID);/*console.log("mouse - move");*/ }}
             onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - up");*/ }}
             onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - leave");*/ }}
