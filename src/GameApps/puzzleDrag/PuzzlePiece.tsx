@@ -14,13 +14,20 @@ export interface IPuzzlePiece {
     I need to keep track of this through mouse move and up and leave... events... 
 
     This way is as I drag the piece everytime I enter a new grid i update the current to the prev and the current to this
-    new location we are at 
+    new location we are at -> the nuance is we are tracking the coordinate location of the puzzle piece and storing 
+    new coordinate location then also storing the old and as well we track if there is an intersection if there is an 
+    intersection we set drag to false and we revert to previous stored coordinate location.
+
+    This will resolve many errors I believe and make the game a bit more rigid and layed out... 
+
+    we can even add an animation for the 
 
     The update will only happen when no intersections have happened... 
     if this happens we will make sure to revert to the last optimal 
     grid sqaure that we recorded for this puzzle drop game. 
 
     This relieves many problems with out game I believe. 
+
 */
 
 export const PuzzlePiece = (props:IPuzzlePiece) => {
@@ -49,7 +56,6 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
         </div>
     );
 }
-
 
 /*
 
