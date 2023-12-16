@@ -65,8 +65,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
 
     }
 
-    const handleIfDropLocationIsValidWithoutE = () => {
-        
+    const handleIfDropLocationIsValidWithoutE = () => { 
         flushSync(() => {
             setState((prevState: IState) => ({
                 ...prevState,

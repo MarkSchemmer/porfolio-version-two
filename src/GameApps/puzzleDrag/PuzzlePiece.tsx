@@ -47,7 +47,7 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
         draggable={true}
         className={"pz " + props.ID}
             ref={pzDivRef} 
-            onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef);  /*console.log("mouse - down");*/ }}
+            onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - down");*/ }}
             onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID);/*console.log("mouse - move");*/ }}
             onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - up");*/ }}
             onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - leave");*/ }}
