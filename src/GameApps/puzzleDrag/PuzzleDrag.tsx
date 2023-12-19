@@ -37,7 +37,13 @@ export const PuzzleDrag = (props:any) => {
               initialProps: {
                                 ...initialState, 
                                 pos: new Point(152 * x, 152 * y), 
-                                lastSavedPos: new Point(152 * x, 152 * y)
+                                lastSavedPos: new Point(152 * x, 152 * y),
+                                coordinates: {
+                                    prevCoordinate: null,
+                                    coordinate: new Point(x, y),
+                                    prevPoint: null,
+                                    currentPoint: new Point(152 * x, 152 * y)
+                                }
                             } 
             }
             ));

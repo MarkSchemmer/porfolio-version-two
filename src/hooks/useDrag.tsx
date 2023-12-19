@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Point, rectanglesIntersectingDomRect, rectanglesIntersectingDomRectWithPoint } from "../Utils/Util";
+import { ArePointsEqual, Point, rectanglesIntersectingDomRect, rectanglesIntersectingDomRectWithPoint } from "../Utils/Util";
 import { handleClickForGridCoordinates } from "../GameApps/puzzleDrag/PuzzleDrag";
 import { flushSync } from "react-dom";
 
@@ -12,6 +12,12 @@ export interface IState {
     lastSavedPos: Point;
     moveX: boolean | null;
     moveY: boolean | null;
+    coordinates: {
+        prevCoordinate: Point | null,
+        coordinate: Point | null,
+        currentPoint: Point | null,
+        prevPoint: Point | null
+      }
 }
 
 export let initialState: IState = {
@@ -20,7 +26,12 @@ export let initialState: IState = {
     rel: null,
     lastSavedPos: defaultProps,
     moveX: null,
-    moveY: null
+    moveY: null,
+    coordinates: {
+        prevCoordinate: null,
+        coordinate: null,
+        currentPoint: null, prevPoint: null
+      }
 };
 
 export const useDragging = (element: React.MutableRefObject<HTMLDivElement | null>, init: IState = initialState) => {
@@ -168,11 +179,21 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
                 setState((prevState:IState) => {
                     let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
                     let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
+                    let [x, y] = handleClickForGridCoordinates(e, parent.current);
+                    // console.log("Previous Point: ", prevState.coordinates.prevPoint?.x);
+                    // console.log("Current Point: ", newPoint.x);
                     return {
                         ...prevState,
                         moveX,
                         moveY,
-                        pos: new Point(moveX ? p.x : prevState.pos.x, moveY ? p.y : prevState.pos.y)
+                        pos: new Point(moveX ? p.x : prevState.pos.x, moveY ? p.y : prevState.pos.y),
+                        coordinates: {
+                            prevCoordinate: prevState.coordinates.coordinate,
+                            coordinate: new Point(x, y),
+                            prevPoint: !ArePointsEqual(newPoint, prevState.coordinates.prevPoint) 
+                                       ? prevState.coordinates.currentPoint : prevState.coordinates.prevPoint,
+                            currentPoint: newPoint
+                        }
                     };
                 });
 

@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { IState, useDragging } from "../../hooks/useDrag";
 import { useMousePositionAdvanced } from "../MouseCurserGame/useMousePositionAdvanced";
+import { Point } from "../../Utils/Util";
 
 export interface IPuzzlePiece {
     boardRef: React.RefObject<HTMLDivElement>;
@@ -61,7 +62,7 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
             onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - up");*/ }}
             onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - leave");*/ }}
             style={pieceStyles}>
-              {state.pos.x} - {state.pos.y}
+              {state.coordinates.coordinate?.x} - {state.coordinates.coordinate?.y}
         </div>
     );
 }

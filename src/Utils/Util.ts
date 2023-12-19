@@ -195,6 +195,13 @@ export const rectanglesIntersectingDomRectWithPoint = (rA: Point, rB: DOMRect): 
             && overLapping(aBottom, aTop, bBottom, bTop);
 };
 
+export const ArePointsEqual = (p1: Point | null, p2: Point | null) => {
+    if (p1 && p2)
+        return p1.x === p2.x && p1.y === p2.y;
+    else 
+        return false;
+}
+
 export const getSidesOfRectForCompare = (rA: DOMRect, rB: DOMRect) => {
 
     let size = rA.width; // perfect square the height is the same as the width... and is the size. 
