@@ -25,6 +25,17 @@ export enum Directions {
     DOWN = "down"
 };
 
+export type XAxisMovement = Directions.LEFT | Directions.RIGHT | null;
+export type YAxisMovement = Directions.UP | Directions.DOWN | null;
+
+export const whichDirectionXAxis = (prevDirction: XAxisMovement, delta: number): XAxisMovement => {
+    return delta < 0 ? Directions.LEFT : delta > 0 ? Directions.RIGHT : prevDirction;
+}
+
+export const whichDirectionYAxis = (prevDirction: YAxisMovement, delta: number): YAxisMovement => {
+    return delta < 0 ? Directions.UP : delta > 0 ? Directions.DOWN : prevDirction;
+}
+
 export enum KeyPressArrowValues {
     LEFT = "arrowleft",
     RIGHT = "arrowright",
@@ -200,6 +211,20 @@ export const ArePointsEqual = (p1: Point | null, p2: Point | null) => {
         return p1.x === p2.x && p1.y === p2.y;
     else 
         return false;
+}
+
+export const GetDeltaX = (p1: Point | null, p2: Point | null) => {
+    if (p1 && p2)
+        return p1.x - p2.x;
+    else 
+        return null;
+}
+
+export const GetXDirection = (delta: number | null) => {
+    if (delta)
+        return delta < 0 ? Directions.LEFT : delta > 0 ? Directions.RIGHT : null
+    else 
+        return null;
 }
 
 export const getSidesOfRectForCompare = (rA: DOMRect, rB: DOMRect) => {

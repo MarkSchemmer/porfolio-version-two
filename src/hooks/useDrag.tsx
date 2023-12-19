@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ArePointsEqual, Point, rectanglesIntersectingDomRect, rectanglesIntersectingDomRectWithPoint } from "../Utils/Util";
+import { ArePointsEqual, GetDeltaX, GetXDirection, Point, rectanglesIntersectingDomRect, rectanglesIntersectingDomRectWithPoint } from "../Utils/Util";
 import { handleClickForGridCoordinates } from "../GameApps/puzzleDrag/PuzzleDrag";
 import { flushSync } from "react-dom";
 
@@ -80,6 +80,16 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         flushSync(() => {
             setState((prevState: IState) => ({
                 ...prevState,
+                pos: new Point(determineSectionInXAxis(prevState.pos.x), determineSectionInYAxis(prevState.pos.y))
+            }));
+        })
+    }
+
+    const handleIfDropLocationIsValidAndStopDragging = () => { 
+        flushSync(() => {
+            setState((prevState: IState) => ({
+                ...prevState,
+                dragging: false,
                 pos: new Point(determineSectionInXAxis(prevState.pos.x), determineSectionInYAxis(prevState.pos.y))
             }));
         })
@@ -176,12 +186,34 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
 
         if (state.dragging) {
             
+
+                let shouldUpdatetoNewPosition = DoesPieceBreakBoundrisOfSiblings(child);
+
+                if (shouldUpdatetoNewPosition) {
+                    //console.log("intersecting X");
+                    handleIfDropLocationIsValidAndStopDragging();
+                    return;
+                }
+
+
                 setState((prevState:IState) => {
+                    let deltaX = GetDeltaX(newPoint, prevState.coordinates.prevPoint);
+                    // if (child.current) {
+                    //     let ch = child.current.getBoundingClientRect();
+
+                    //     console.log(ch.x - e.pageX);
+                    // }
                     let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
                     let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
                     let [x, y] = handleClickForGridCoordinates(e, parent.current);
                     // console.log("Previous Point: ", prevState.coordinates.prevPoint?.x);
                     // console.log("Current Point: ", newPoint.x);
+                    if (moveX) {
+                        // console.log(
+                        //     GetXDirection(GetDeltaX(newPoint, prevState.coordinates.prevPoint))
+                        // );
+                    }
+
                     return {
                         ...prevState,
                         moveX,

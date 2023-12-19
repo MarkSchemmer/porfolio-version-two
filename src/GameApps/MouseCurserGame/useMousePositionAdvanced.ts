@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Point } from "../../Utils/Util";
-
-
-enum Directions {
-    LEFT = "LEFT", RIGHT = "RIGHT", UP = "UP", DOWN = "DOWN"
-}
+import { Directions, Point, XAxisMovement, YAxisMovement, whichDirectionXAxis, whichDirectionYAxis } from "../../Utils/Util";
 
 export interface IAdvancedMouseDirections {
     xDirection: XAxisMovement;
@@ -20,8 +15,7 @@ export interface IAdvancedMouseDirections {
     prevYDelta: number | null;
 }
 
-export type XAxisMovement = Directions.LEFT | Directions.RIGHT | null;
-export type YAxisMovement = Directions.UP | Directions.DOWN | null;
+
 
 export const initialData : IAdvancedMouseDirections = {
     xDirection: null,
@@ -89,12 +83,4 @@ export const distanceFormula = (p1: Point, p2: Point) => {
     return Math.sqrt(
         Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)
     );
-}
-
-export const whichDirectionXAxis = (prevDirction: XAxisMovement, delta: number): XAxisMovement => {
-    return delta < 0 ? Directions.LEFT : delta > 0 ? Directions.RIGHT : prevDirction;
-}
-
-export const whichDirectionYAxis = (prevDirction: YAxisMovement, delta: number): YAxisMovement => {
-    return delta < 0 ? Directions.UP : delta > 0 ? Directions.DOWN : prevDirction;
 }
