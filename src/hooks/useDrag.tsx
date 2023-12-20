@@ -140,6 +140,9 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
     };
 
     const onMouseMove = (e: React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>, ID: string) => {
+       
+        console.log("I'm trying to drag. ");
+       
         let shouldUpdatetoNewPosition = DoesPieceBreakBoundrisOfSiblings(child);
 
         if (shouldUpdatetoNewPosition) {
@@ -152,6 +155,8 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             e.preventDefault();
             return; 
         }
+
+
 
         let x = state.rel?.x ? state.rel.x : 0;
         let y = state.rel?.y ? state.rel.y : 0;

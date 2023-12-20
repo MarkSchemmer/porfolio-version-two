@@ -58,7 +58,6 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
             top: `${state.pos.y}px`,
             zIndex: state.dragging ? 10000 : 10,
             opacity: getWinner() ? 1 : 0.5,
-            border: `1px solid ${( getWinner() ? "gold" : "black")}`,
             ...(props.styleProps || {})
     }
 
@@ -68,7 +67,7 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
         draggable={true}
         className={"pz " + props.ID}
             ref={pzDivRef} 
-            onMouseDown={(e: React.MouseEvent<HTMLElement>) => { onMouseDown(e, pzDivRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - down");*/ }}
+            onMouseDown={(e: React.MouseEvent<HTMLElement>) => { console.log("MouseDown"); onMouseDown(e, pzDivRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - down");*/ }}
             onMouseMove={(e:  React.MouseEvent<HTMLElement>) => { onMouseMove(e, pzDivRef, props.boardRef, props.ID);/*console.log("mouse - move");*/ }}
             onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - up");*/ }}
             onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - leave");*/ }}
