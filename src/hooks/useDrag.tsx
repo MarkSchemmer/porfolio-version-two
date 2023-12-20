@@ -189,11 +189,6 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
 
                 setState((prevState:IState) => {
                     let deltaX = GetDeltaX(newPoint, prevState.coordinates.prevPoint);
-                    // if (child.current) {
-                    //     let ch = child.current.getBoundingClientRect();
-
-                    //     console.log(ch.x - e.pageX);
-                    // }
                     let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
                     let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
                     let [x, y] = handleClickForGridCoordinates(e, parent.current);

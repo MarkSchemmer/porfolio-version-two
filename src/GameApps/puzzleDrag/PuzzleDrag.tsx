@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../puzzleDrag/styles/main.css";
 import { ArePointsEqual, Point, e2 } from "../../Utils/Util";
 import { initialState, useDragging } from "../../hooks/useDrag";
@@ -48,10 +48,22 @@ export const PuzzleDrag = (props:any) => {
 
     let boardRef = useRef<HTMLDivElement>(null);
     let luffy = useJpg().luffy;
-    console.log(luffy);
+    // console.log(luffy);
     let [sq, setSquares] = useState(luffy);
 
+    let p1 = useRef(false);
+    let p2 = useRef(false);
+    let p3 = useRef(false);
+    let p4 = useRef(false);
+    let p5 = useRef(false);
+    let p6 = useRef(false);
+    let p7 = useRef(false);
+    let p8 = useRef(false);
+    let p9 = useRef(false);
 
+    let setOfRefs = [
+        p1,p2,p3,p4,p5,p6,p7,p8,p9 
+    ];
 
     let squares = sq.map((row, x) => {
         return (row.map((c, y) => ({ boardRef, ID: e2(), 
@@ -72,8 +84,12 @@ export const PuzzleDrag = (props:any) => {
             })));
     })
     .reduce(
-        (acc, cur) => { return [ ...acc, ...cur ]; }, []
+        (acc, cur, idx) => { return [ ...acc, ...cur ]; }, []
     );
+
+    squares.forEach((i, idx) => {
+        setOfRefs[idx].current = i.isWinner;
+    });
 
     return (
         <div className="board" 
@@ -81,16 +97,16 @@ export const PuzzleDrag = (props:any) => {
             position: "absolute",
             left: "40%"
         }} ref={boardRef}>
-            {squares.map((i => {
+            {squares.map((i, idx) => {
                 return (<PuzzlePiece 
                 key={i.ID} 
                 ID={i.ID} 
-                isWinner={i.isWinner}
+                isWinner={setOfRefs[idx]}
                 validPieceGridLocation={i.validPieceGridLocation}
                 boardRef={boardRef} 
                 styleProps={i.styleProps} 
                 initialProps={i.initialProps} />);
-            }))}
+            })}
         </div>
     )
 };

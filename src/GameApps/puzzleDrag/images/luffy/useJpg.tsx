@@ -33,7 +33,7 @@ export const useJpg = () => {
         return (
             row.map((col, y) => new PuzzleImage(col, new Point(y, x)))
         )
-    })
+    });
 
     return {
         luffy

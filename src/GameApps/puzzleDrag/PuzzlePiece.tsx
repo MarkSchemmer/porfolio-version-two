@@ -9,7 +9,7 @@ export interface IPuzzlePiece {
     initialProps?: IState
     ID: string;
     validPieceGridLocation: Point;
-    isWinner: boolean;
+    isWinner: React.MutableRefObject<boolean>;
 };
 
 /*
@@ -45,11 +45,11 @@ export interface IPuzzlePiece {
 export const PuzzlePiece = (props:IPuzzlePiece) => {
     let pzDivRef = useRef<HTMLDivElement>(null);
     let { state, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, handleIfDropLocationIsValidWithoutE } = useDragging(props.boardRef, props.initialProps);
-
     
 
     let getWinner = () => {
-      return ArePointsEqual(state.coordinates.coordinate, props.validPieceGridLocation);
+      props.isWinner.current = ArePointsEqual(state.coordinates.coordinate, props.validPieceGridLocation);
+      return props.isWinner.current;
     }
 
     const pieceStyles: React.CSSProperties = {
