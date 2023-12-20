@@ -96,8 +96,8 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
     }
 
     const determineSectionInXAxis = (x: number) => {
-        return  x >= 304 - 75 ? 304 : 
-                x >= 152 - 75 ? 152 : 
+        return  x >= (304 - 75) ? 304 : 
+                x >= (152 - 105) ? 152 : 
                 0; 
     }
 
@@ -110,13 +110,9 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
 
     const onMouseUp = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
         let [x, y] = handleClickForGridCoordinates(e, parent.current)
-        //console.log(`${x * 152}-${y * 152}`);
         let additionalXMovement = Math.floor(e.pageX - (child.current?.getBoundingClientRect().x || 0));
         let additionalYMovement = Math.floor(e.pageY - (child.current?.getBoundingClientRect().y || 0));
-        //console.log(`${x} - ${y}`);
-        let p = new Point(determineSectionInXAxis((x*152)), determineSectionInYAxis(Math.ceil(y*152)));
-
-
+        let p = new Point(determineSectionInXAxis((x * 152)), determineSectionInYAxis((y * 152)));
         /*
         
             if moveX is true then we are moving X
@@ -134,11 +130,6 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
             Note 0 is left side and 152 is 
         
         */
-
-
-
-        // console.log(`${state.moveX} - ${state.moveY}`);
-      
         handleIfDropLocationIsValid(e, child, p);
     
        
