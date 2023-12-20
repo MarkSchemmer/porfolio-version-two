@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import "../puzzleDrag/styles/main.css";
-import { Point, e2 } from "../../Utils/Util";
+import { ArePointsEqual, Point, e2 } from "../../Utils/Util";
 import { initialState, useDragging } from "../../hooks/useDrag";
 import { PuzzlePiece } from "./PuzzlePiece";
 import { useJpg } from "./images/luffy/useJpg";
@@ -67,7 +67,8 @@ export const PuzzleDrag = (props:any) => {
                                     currentPoint: new Point(152 * x, 152 * y)
                                 }
                             },
-                validPieceGridLocation: sq[x][y].winningCoord
+                validPieceGridLocation: sq[x][y].winningCoord,
+                isWinner: ArePointsEqual(new Point(152 * x, 152 * y), sq[x][y].winningCoord)
             })));
     })
     .reduce(
@@ -84,6 +85,7 @@ export const PuzzleDrag = (props:any) => {
                 return (<PuzzlePiece 
                 key={i.ID} 
                 ID={i.ID} 
+                isWinner={i.isWinner}
                 validPieceGridLocation={i.validPieceGridLocation}
                 boardRef={boardRef} 
                 styleProps={i.styleProps} 
