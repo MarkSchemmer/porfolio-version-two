@@ -45,20 +45,22 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         let left = posLeft ? posLeft : 0;
         let top = posTop ? posTop : 0;
 
-        setState((prevState: IState) => {
-            return {
-                ...prevState,
-                dragging: true,
-                rel: new Point(
-                    e.pageX - left,
-                    e.pageY - top
-                ),
+        flushSync(() => {
+            setState((prevState: IState) => {
+                return {
+                    ...prevState,
+                    dragging: true,
+                    rel: new Point(
+                        e.pageX - left,
+                        e.pageY - top
+                    ),
+    
+                }
+            });
 
-            }
+            e.stopPropagation();
+            e.preventDefault();
         });
-
-        e.stopPropagation();
-        e.preventDefault();
     };
 
     const handleIfDropLocationIsValid = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, p?: Point | undefined) => {
@@ -72,8 +74,10 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
                 pos: shouldUpdatetoNewPosition ? (p?p:prevState.lastSavedPos) : p ? p : prevState.pos, 
                 lastSavedPos: shouldUpdatetoNewPosition ? prevState.lastSavedPos : currentPosition, 
                 dragging: false}));
-        })
 
+                e.stopPropagation();
+                e.preventDefault();
+        });
     }
 
     const handleIfDropLocationIsValidWithoutE = () => { 
@@ -109,9 +113,7 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
     }
 
     const onMouseUp = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
-        let [x, y] = handleClickForGridCoordinates(e, parent.current)
-        let additionalXMovement = Math.floor(e.pageX - (child.current?.getBoundingClientRect().x || 0));
-        let additionalYMovement = Math.floor(e.pageY - (child.current?.getBoundingClientRect().y || 0));
+        let [x, y] = handleClickForGridCoordinates(e, parent.current);
         let p = new Point(determineSectionInXAxis((x * 152)), determineSectionInYAxis((y * 152)));
         /*
         
@@ -122,7 +124,6 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
 
             we need to check if the current location of the new point is going to intersect... 
 
-
             if it is we need to change go back or forwards 
 
             What are the 3 sections of x -> 0 - 152 - 304
@@ -131,37 +132,27 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         
         */
         handleIfDropLocationIsValid(e, child, p);
-    
-       
-        e.stopPropagation();
-        e.preventDefault();
     };
 
     const onMouseLeave = (e:  React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
         let p: Point | undefined = undefined;
-        // if (state.dragging) {
-        //     let [x, y] = handleClickForGridCoordinates(e, parent.current)
-        //     //console.log(`${x * 152}-${y * 152}`);
-        //     let additionalXMovement = Math.floor(e.pageX - (child.current?.getBoundingClientRect().x || 0));
-        //     let additionalYMovement = Math.floor(e.pageY - (child.current?.getBoundingClientRect().y || 0));
-        //     //console.log(`${x} - ${y}`);
-        //     p = new Point(determineSectionInXAxis((x*152)), determineSectionInYAxis(Math.ceil(y*152)));
-        //     //console.log(p);
-        // }
-
-        
         handleIfDropLocationIsValid(e, child, p);
-
-        e.stopPropagation();
-        e.preventDefault();
     };
 
     const onMouseMove = (e: React.MouseEvent<HTMLElement>, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>, ID: string) => {
+        let shouldUpdatetoNewPosition = DoesPieceBreakBoundrisOfSiblings(child);
+
+        if (shouldUpdatetoNewPosition) {
+            handleIfDropLocationIsValidAndStopDragging();
+            return;
+        }
+
         if (state.dragging === false) {
             e.stopPropagation();
             e.preventDefault();
             return; 
         }
+
         let x = state.rel?.x ? state.rel.x : 0;
         let y = state.rel?.y ? state.rel.y : 0;
         // The question we need to know this simple ansewer...
@@ -173,48 +164,34 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
         );
 
         // We hand boundry just right... 
-        let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);
+        let p = DoesPieceBreakBoundriesOfParent(newPoint, child, parent);   
 
-        if (state.dragging) {
-            
-
-                let shouldUpdatetoNewPosition = DoesPieceBreakBoundrisOfSiblings(child);
-
-                if (shouldUpdatetoNewPosition) {
-                    //console.log("intersecting X");
-                    handleIfDropLocationIsValidAndStopDragging();
-                    return;
-                }
-
-
-                setState((prevState:IState) => {
-                    let deltaX = GetDeltaX(newPoint, prevState.coordinates.prevPoint);
-                    let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
-                    let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
-                    let [x, y] = handleClickForGridCoordinates(e, parent.current);
-                    // console.log("Previous Point: ", prevState.coordinates.prevPoint?.x);
-                    // console.log("Current Point: ", newPoint.x);
-
-                    return {
-                        ...prevState,
-                        moveX,
-                        moveY,
-                        pos: new Point(moveX ? p.x : prevState.pos.x, moveY ? p.y : prevState.pos.y),
-                        coordinates: {
-                            prevCoordinate: prevState.coordinates.coordinate,
-                            coordinate: new Point(x, y),
-                            prevPoint: !ArePointsEqual(newPoint, prevState.coordinates.prevPoint) 
-                                       ? prevState.coordinates.currentPoint : prevState.coordinates.prevPoint,
-                            currentPoint: newPoint
-                        }
-                    };
-                });
-
-        }
-
-
-        e.stopPropagation();
-        e.preventDefault();
+        flushSync(() => {
+            setState((prevState:IState) => {
+                let deltaX = GetDeltaX(newPoint, prevState.coordinates.prevPoint);
+                let moveX = prevState.moveX === null && prevState.moveY === null ? !(prevState.pos.x === p.x) : prevState.moveX;
+                let moveY = prevState.moveX === null && prevState.moveY === null ? !moveX : prevState.moveY;
+                let [x, y] = handleClickForGridCoordinates(e, parent.current);
+                // console.log("Previous Point: ", prevState.coordinates.prevPoint?.x);
+                // console.log("Current Point: ", newPoint.x);
+                return {
+                    ...prevState,
+                    moveX,
+                    moveY,
+                    pos: new Point(moveX ? p.x : prevState.pos.x, moveY ? p.y : prevState.pos.y),
+                    coordinates: {
+                        prevCoordinate: prevState.coordinates.coordinate,
+                        coordinate: new Point(x, y),
+                        prevPoint: !ArePointsEqual(newPoint, prevState.coordinates.prevPoint) 
+                                    ? prevState.coordinates.currentPoint : prevState.coordinates.prevPoint,
+                        currentPoint: newPoint
+                    }
+                };
+            });
+    
+            e.stopPropagation();
+            e.preventDefault();
+        });
     };
 
     const DoesPieceBreakBoundriesOfParent = (p: Point, child: React.MutableRefObject<HTMLDivElement | null>, parent: React.MutableRefObject<HTMLDivElement | null>) => {
