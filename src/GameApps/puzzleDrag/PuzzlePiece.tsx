@@ -1,13 +1,14 @@
 import React, { useRef } from "react";
 import { IState, useDragging } from "../../hooks/useDrag";
 import { useMousePositionAdvanced } from "../MouseCurserGame/useMousePositionAdvanced";
-import { Point } from "../../Utils/Util";
+import { ArePointsEqual, ArePointsEqualWithPxManipulation, ConvertPosToActualLocation, Point } from "../../Utils/Util";
 
 export interface IPuzzlePiece {
     boardRef: React.RefObject<HTMLDivElement>;
     styleProps?: React.CSSProperties;
     initialProps?: IState
     ID: string;
+    validPieceGridLocation: Point;
 };
 
 /*
@@ -48,9 +49,12 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
             position: "absolute",
             left: `${state.pos.x}px`,
             top: `${state.pos.y}px`,
-            zIndex: state.dragging ? 10000 : 0,
+            zIndex: state.dragging ? 10000 : 10,
+            opacity:0.7,
+            border: `1px solid ${(ArePointsEqual(state.coordinates.coordinate, props.validPieceGridLocation) ? "gold" : "black")}`,
             ...(props.styleProps || {})
     }
+
 
     return (
         <div 
@@ -62,6 +66,10 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
             onMouseUp={(e:  React.MouseEvent<HTMLElement>) => { onMouseUp(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - up");*/ }}
             onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { onMouseLeave(e, pzDivRef, props.boardRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - leave");*/ }}
             style={pieceStyles}>
+             Winning Location : {props.validPieceGridLocation.x} - {props.validPieceGridLocation.y}
+              <br />
+             Current pos: {state.pos.x} - {state.pos.y}
+              <br />
               {state.coordinates.coordinate?.x} - {state.coordinates.coordinate?.y}
         </div>
     );

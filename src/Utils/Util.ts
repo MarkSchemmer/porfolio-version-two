@@ -213,6 +213,35 @@ export const ArePointsEqual = (p1: Point | null, p2: Point | null) => {
         return false;
 }
 
+export const ArePointsEqualWithPxManipulation = (p1: Point | null, p11: Point | null, p2: Point | null) => {
+    if (p1 && p2 && p11) {
+        p1.x = Math.floor(p1.x / p11.x);
+        p1.y = Math.floor(p1.y / p11.y);
+        return p1.x === p2.x && p1.y === p2.y;
+    }
+
+    else 
+        return false;
+}
+
+export const pointConverter = (n: number) => {
+    switch(n) {
+        case 0 : {
+            return 0; 
+        }
+        default : {
+            return Math.floor(n / 152);
+        }
+    }
+}
+
+export const ConvertPosToActualLocation = (p1: Point | null) => {
+    if (p1) {
+        return new Point(pointConverter(p1.x), pointConverter(p1.y));
+    }
+    return null;
+} 
+
 export const GetDeltaX = (p1: Point | null, p2: Point | null) => {
     if (p1 && p2)
         return p1.x - p2.x;

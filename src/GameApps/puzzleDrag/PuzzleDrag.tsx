@@ -3,6 +3,7 @@ import "../puzzleDrag/styles/main.css";
 import { Point, e2 } from "../../Utils/Util";
 import { initialState, useDragging } from "../../hooks/useDrag";
 import { PuzzlePiece } from "./PuzzlePiece";
+import { useJpg } from "./images/luffy/useJpg";
 
 // To add to this game going to need to 
 // - Add other child divs and can't allow overlap
@@ -25,15 +26,36 @@ export const baseSquare = [
     [ "grey", "#AAF5EC", "#F5AADB" ]
 ];
 
-export const PuzzleDrag = (props:any) => {
-    let boardRef = useRef<HTMLDivElement>(null);
+function shuffle<T>(array:T[]) {
+    let currentIndex = array.length,  randomIndex;
+  
+    // While there remain elements to shuffle.
+    while (currentIndex > 0) {
+  
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+  }
 
-    let [sq, setSquares] = useState(baseSquare);
+export const PuzzleDrag = (props:any) => {
+
+    let boardRef = useRef<HTMLDivElement>(null);
+    let luffy = useJpg().luffy;
+    console.log(luffy);
+    let [sq, setSquares] = useState(luffy);
+
+
 
     let squares = sq.map((row, x) => {
-        return row.map((c, y) => (
-            { boardRef, ID: e2(), 
-              styleProps: { backgroundColor: sq[y][x] }, 
+        return (row.map((c, y) => ({ boardRef, ID: e2(), 
+              styleProps: { backgroundImage: `url(${sq[x][y].imagePath})`}, 
               initialProps: {
                                 ...initialState, 
                                 pos: new Point(152 * x, 152 * y), 
@@ -44,9 +66,9 @@ export const PuzzleDrag = (props:any) => {
                                     prevPoint: null,
                                     currentPoint: new Point(152 * x, 152 * y)
                                 }
-                            } 
-            }
-            ));
+                            },
+                validPieceGridLocation: sq[x][y].winningCoord
+            })));
     })
     .reduce(
         (acc, cur) => { return [ ...acc, ...cur ]; }, []
@@ -62,6 +84,7 @@ export const PuzzleDrag = (props:any) => {
                 return (<PuzzlePiece 
                 key={i.ID} 
                 ID={i.ID} 
+                validPieceGridLocation={i.validPieceGridLocation}
                 boardRef={boardRef} 
                 styleProps={i.styleProps} 
                 initialProps={i.initialProps} />);
