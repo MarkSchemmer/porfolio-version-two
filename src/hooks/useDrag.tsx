@@ -194,11 +194,6 @@ export const useDragging = (element: React.MutableRefObject<HTMLDivElement | nul
                     let [x, y] = handleClickForGridCoordinates(e, parent.current);
                     // console.log("Previous Point: ", prevState.coordinates.prevPoint?.x);
                     // console.log("Current Point: ", newPoint.x);
-                    if (moveX) {
-                        // console.log(
-                        //     GetXDirection(GetDeltaX(newPoint, prevState.coordinates.prevPoint))
-                        // );
-                    }
 
                     return {
                         ...prevState,
