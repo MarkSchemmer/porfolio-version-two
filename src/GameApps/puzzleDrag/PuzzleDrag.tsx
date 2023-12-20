@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import "../puzzleDrag/styles/main.css";
 import { ArePointsEqual, Point, e2 } from "../../Utils/Util";
-import { initialState, useDragging } from "../../hooks/useDrag";
+import { initialState } from "../../hooks/useDrag";
 import { PuzzlePiece } from "./PuzzlePiece";
 import { useJpg } from "./images/luffy/useJpg";
 

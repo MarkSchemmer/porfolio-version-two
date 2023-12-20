@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { IState, useDragging } from "../../hooks/useDrag";
-import { useMousePositionAdvanced } from "../MouseCurserGame/useMousePositionAdvanced";
-import { ArePointsEqual, ArePointsEqualWithPxManipulation, ConvertPosToActualLocation, Point } from "../../Utils/Util";
+import { ArePointsEqual, Point } from "../../Utils/Util";
 
 export interface IPuzzlePiece {
     boardRef: React.RefObject<HTMLDivElement>;
@@ -11,7 +10,6 @@ export interface IPuzzlePiece {
     validPieceGridLocation: Point;
     isWinner: React.MutableRefObject<boolean>;
 };
-
 /*
     Need to create an optimized history of current location and previous location using x-y grid system. 
     I need to keep track of this through mouse move and up and leave... events... 
@@ -46,7 +44,7 @@ export interface IPuzzlePiece {
     After enough thought and work, for the moment, I'm thinking creating 4 Triangles which pass the direction of the drag is best
     So we have a left arrow right arrow and down arrow and up arrow. 
 
-    
+
 */
 
 export const PuzzlePiece = (props:IPuzzlePiece) => {
@@ -67,7 +65,6 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
             opacity: getWinner() ? 1 : 0.5,
             ...(props.styleProps || {})
     }
-
 
     return (
         <div 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ArePointsEqual, GetDeltaX, GetXDirection, Point, rectanglesIntersectingDomRect, rectanglesIntersectingDomRectWithPoint } from "../Utils/Util";
+import { ArePointsEqual, GetDeltaX, Point, rectanglesIntersectingDomRect, rectanglesIntersectingDomRectWithPoint } from "../Utils/Util";
 import { handleClickForGridCoordinates } from "../GameApps/puzzleDrag/PuzzleDrag";
 import { flushSync } from "react-dom";
 
