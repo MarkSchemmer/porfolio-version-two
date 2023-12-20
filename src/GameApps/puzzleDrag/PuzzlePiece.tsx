@@ -40,6 +40,13 @@ export interface IPuzzlePiece {
     And vica versa with moveY are we going moveUp or MoveDown
 
     All these details are needed to be taken in calculated when we start the process of dragging an element across the board. 
+
+
+
+    After enough thought and work, for the moment, I'm thinking creating 4 Triangles which pass the direction of the drag is best
+    So we have a left arrow right arrow and down arrow and up arrow. 
+
+    
 */
 
 export const PuzzlePiece = (props:IPuzzlePiece) => {
@@ -64,7 +71,7 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
 
     return (
         <div 
-        draggable={true}
+        draggable={false}
         className={"pz " + props.ID}
             ref={pzDivRef} 
             onMouseDown={(e: React.MouseEvent<HTMLElement>) => { console.log("MouseDown"); onMouseDown(e, pzDivRef); handleIfDropLocationIsValidWithoutE(); /*console.log("mouse - down");*/ }}

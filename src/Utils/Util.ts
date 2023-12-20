@@ -249,6 +249,13 @@ export const GetDeltaX = (p1: Point | null, p2: Point | null) => {
         return null;
 }
 
+export const GetDeltaY = (p1: Point | null, p2: Point | null) => {
+    if (p1 && p2)
+        return p1.y - p2.y;
+    else 
+        return null;
+}
+
 export const GetXDirection = (delta: number | null) => {
     if (delta)
         return delta < 0 ? Directions.LEFT : delta > 0 ? Directions.RIGHT : null
