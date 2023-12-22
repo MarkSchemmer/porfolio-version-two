@@ -90,7 +90,6 @@ export class TwentyFortyEightRectangle extends Rectangle {
         return rect;
     }
 
-
     // Very important to take notes of this in the future, spacing between squares. 
     // This is important because I can create a sort of 2048 grid layout.
     public strokeRectWithoutAdditionalRes: (ctx: any) => void = (ctx:any) => {
@@ -103,8 +102,6 @@ export class TwentyFortyEightRectangle extends Rectangle {
     // And things are getting easier. Then to determin when a transition happens... 
     // Every grid rectangle has an point, an x, y -> then we create the transition... 
     // Basically  when a shift happpens -> we properly animate from (x, y) to (x, y)...
-
-
 }
 
 type Board = TwentyFortyEightRectangle[][];
@@ -257,14 +254,35 @@ export class TwentyFortyEightBoard {
         })
     }
 
+    public generateRandomValueOf2And4 = () => {
+        let arr = [ 2, 4 ];
+        let randomNewInteger = arr[getRandomInt(1)];
+
+
+        let x,y;
+
+
+        do {
+            x = getRandomInt(3);
+            y = getRandomInt(3);
+            if (this.Board[x][y].dataBlob.value === null) {
+                this.Board[x][y].dataBlob.value = randomNewInteger;
+                return;
+            }
+        }
+        while (this.Board[x][y].dataBlob.value != null)
+    }
+
     public handleArrowKeyPress = (e: KeyboardEvent) => {
+
         let left = KeyPressArrowValues.LEFT, right = KeyPressArrowValues.RIGHT, 
         up = KeyPressArrowValues.UP, down = KeyPressArrowValues.DOWN;
+
         let val = e.key.toString().toLocaleLowerCase();
-        if (val === left) { this.shiftLeft(); }
-        else if (val === right) { this.shiftRight(); }
-        else if (val === down) {this.shiftDown(); }
-        else if (val === up) { this.shiftUp(); }
+        if (val === left) { this.shiftLeft(); this.generateRandomValueOf2And4(); }
+        else if (val === right) { this.shiftRight(); this.generateRandomValueOf2And4(); }
+        else if (val === down) {this.shiftDown(); this.generateRandomValueOf2And4(); }
+        else if (val === up) { this.shiftUp(); this.generateRandomValueOf2And4(); }
     }
 
     public DeepCopyTwentyEightBoard = () => {
@@ -317,7 +335,6 @@ export const TwentyFortyEightCalculationForShiftingRight = (arr:any): any => {
         let nextVal = array[idx-1];
 
         if (acc.shouldSkip) {
-
             return {
                 ...acc,
                 shouldSkip:false
