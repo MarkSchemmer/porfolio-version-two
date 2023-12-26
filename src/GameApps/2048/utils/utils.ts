@@ -36,7 +36,8 @@ export class DataBlob {
         ctx.font="20px Georgia";
         ctx.textAlign="center"; 
         ctx.fillStyle = "black";
-        ctx.fillText((this.value ? this.value : "").toString(), x + (this.resolution / 2), y + (this.resolution / 1.8));
+        // ${this.point.x} - ${this.point.y} \n
+        ctx.fillText((this.point ? ` ${(this.value ? this.value : "")}` : "").toString(), x + (this.resolution / 2), y + (this.resolution / 1.8));
     }
 
     public DeepCopy = () => {
@@ -123,6 +124,40 @@ export class TwentyFortyEightBoard {
         pos2.dataBlob = new DataBlob(pos2.point, pos2.resolution);
         pos2.dataBlob.value = 2;
         this.Board[1][2] = pos2;
+
+        // maniuplate a row which is up and down Y-axis
+        this.Board[0].map(i => { 
+            i.dataBlob = new DataBlob(i.point, i.resolution);
+            i.dataBlob.bakcgroundColor = "green"
+            return i;
+        });
+
+        // manipulate a column which is left to right or X-axis
+        let column = this.getColumn(0).forEach(i => {
+            //i.dataBlob = new DataBlob(i.point, i.resolution);
+            i.dataBlob.bakcgroundColor = "blue"
+        })
+
+    }
+
+    public getRow = (idx:number) => {
+        return this.Board[idx];
+    }
+
+    public getColumn = (idx: number) => {
+        let column = [];
+
+        for (let i = 0; i < this.Board.length; i++) {
+            column.push(this.Board[i][idx]);
+        }
+
+        return column;
+    }
+
+    public setColumn = (idx: number, column: TwentyFortyEightRectangle[], copyOfBoard: TwentyFortyEightRectangle[][]) => {
+        for (let i = 0; i < this.Board.length; i++) {
+            copyOfBoard[i][idx] = column[i];
+        }
     }
     // I'm needing to determine where to generate a new square once a translation has happened.
     // Basically if going left -> we need to generate a 2 or 4 but on the right side, or 
@@ -141,101 +176,101 @@ export class TwentyFortyEightBoard {
     }
 
     public shiftLeft = () => {
+        let newBoard = this.DeepCopyTwentyEightBoard();
+        let columnsToShift = [ 0, 1, 2, 3 ];
+        let fm: boolean[] = [];
 
-        let board = this.DeepCopyTwentyEightBoard();
-        let getRow = (row: number) => {
-            return board.map(xrow => {
-                return xrow[row].dataBlob.value;
-            }).filter(isValue);
-        }
+        columnsToShift.forEach(i => {
+            let column = this.getColumn(i).map(r => r.DeepCopy2048());
+            let values = column.map(x => x.dataBlob.value).filter(isValue);
+            let {row, foundMatch} = shiftValuesLeft(values, 4);
 
-        
-        let shiftedValuesLeftRow0 = TwentyFortyEightCalculation(shiftValuesLeft((getRow(0)), 4), []).reverse();
-        let shiftedValuesLeftRow1 = TwentyFortyEightCalculation(shiftValuesLeft((getRow(1)), 4), []).reverse();
-        let shiftedValuesLeftRow2 = TwentyFortyEightCalculation(shiftValuesLeft((getRow(2)), 4), []).reverse();
-        let shiftedValuesLeftRow3 = TwentyFortyEightCalculation(shiftValuesLeft((getRow(3)), 4), []).reverse();
-        
+            let oldBoardColumn = this.getColumn(i);
+            let hc = !oldBoardColumn.every((r, idx) => r.dataBlob.value === column[idx].dataBlob.value);
+            fm.push(foundMatch);
+            fm.push(hc)
 
-        board.forEach((rl, idx) => {
-            rl[0].dataBlob.value = shiftedValuesLeftRow0[idx];
-            rl[1].dataBlob.value = shiftedValuesLeftRow1[idx];
-            rl[2].dataBlob.value = shiftedValuesLeftRow2[idx];
-            rl[3].dataBlob.value = shiftedValuesLeftRow3[idx];
+            column = column.map((r, ii) => (r.dataBlob.value = row[ii], r));
+
+            this.setColumn(i, column, newBoard);
+
         });
 
-        this.Board = board;
+        let hasChanged = this.hasBoardChanged(this.Board, newBoard);
+        console.log(hasChanged);
+        this.Board = newBoard;
+
+        if (hasChanged || fm.some(i => i === true)) this.generateRandomValueOf2And4();
+
     }
 
     public shiftRight = () => {
-        let board = this.DeepCopyTwentyEightBoard();
-        let getRow = (row: number) => {
-            return board.map(xrow => {
-                return xrow[row].dataBlob.value;
-            }).filter(isValue);
-        }
-        
-        let shiftedValuesLeftRow0 = (TwentyFortyEightCalculationForShiftingRight(getRow(0)));
-        let shiftedValuesLeftRow1 = (TwentyFortyEightCalculationForShiftingRight(getRow(1)));
-        let shiftedValuesLeftRow2 = (TwentyFortyEightCalculationForShiftingRight(getRow(2)));
-        let shiftedValuesLeftRow3 = (TwentyFortyEightCalculationForShiftingRight(getRow(3)));
-        
+        let newBoard = this.DeepCopyTwentyEightBoard();
+        let columnsToShift = [ 0, 1, 2, 3 ];
+        let fm: boolean[] = [];
 
-        board.forEach((rl, idx) => {
-            rl[0].dataBlob.value = shiftedValuesLeftRow0[idx];
-            rl[1].dataBlob.value = shiftedValuesLeftRow1[idx];
-            rl[2].dataBlob.value = shiftedValuesLeftRow2[idx];
-            rl[3].dataBlob.value = shiftedValuesLeftRow3[idx];
+        columnsToShift.forEach(i => {
+            let column = this.getColumn(i).map(r => r.DeepCopy2048());
+            let values = column.map(x => x.dataBlob.value).filter(isValue);
+            let {row, foundMatch} = shiftValuesRight(values, 4);
+
+            let oldBoardColumn = this.getColumn(i);
+            let hc = !oldBoardColumn.every((r, idx) => r.dataBlob.value === column[idx].dataBlob.value);
+            fm.push(foundMatch);
+            fm.push(hc)
+
+            column = column.map((r, ii) => (r.dataBlob.value = row[ii], r));
+
+            this.setColumn(i, column, newBoard);
+
         });
 
-        this.Board = board;
+
+        let hasChanged = this.hasBoardChanged(this.Board, newBoard);
+        console.log(hasChanged);
+        this.Board = newBoard;
+
+        if (hasChanged || fm.some(i => i === true)) this.generateRandomValueOf2And4();
     }
 
     public shiftDown = () => {
-        // this is basically
+        // this is basically Y-axis shift down is to the right
+        let fm: boolean[] = [];
         let newBoard = this.DeepCopyTwentyEightBoard();
-        this.Board = newBoard.map((rl:TwentyFortyEightRectangle[]) => {
-            let shiftedUp = rl.map((r:TwentyFortyEightRectangle) => r.dataBlob.value).filter(isValue);
-            
-            let shiftedDown = shiftValuesRight(shiftedUp, 4);
-            // Need to compress array and add reduce right 
-
-            let calculatedDown = TwentyFortyEightCalculation(shiftedDown.reverse(), []);
-
-
-            let newcopy = rl.map((r:TwentyFortyEightRectangle) => r.DeepCopy2048());
-            return newcopy.map((r: TwentyFortyEightRectangle, i: number) => {
-                try {
-                    r.dataBlob.value = calculatedDown[i];
-                } catch(e) {
-                    r.dataBlob.value = null;
-                }
-
-                return r;
-            });
+        
+        
+        newBoard.map((YaxisRow, i) => {
+            let values = YaxisRow.map(y=> y.dataBlob.value).filter(isValue);
+            let {row, foundMatch} = shiftValuesRight(values, 4);
+            fm.push(foundMatch);
+            let newYaxisRow = YaxisRow.map((y, idx) => (y.dataBlob.value = row[idx], y));
+            return newYaxisRow;
         });
+
+        let hasChanged = this.hasBoardChanged(this.Board, newBoard);
+        console.log(hasChanged);
+        this.Board = newBoard;
+
+        if (hasChanged || fm.some(i => i === true)) this.generateRandomValueOf2And4();
     }
 
     public shiftUp = () => {
-        // this is basically
-        let newBoard = this.DeepCopyTwentyEightBoard();
-        this.Board = newBoard.map((rl:TwentyFortyEightRectangle[]) => {
-            let shiftedUp = rl.map((r:TwentyFortyEightRectangle) => r.dataBlob.value).filter(isValue);
-
-            let calculatedUp = TwentyFortyEightCalculation(shiftedUp, []);
-
-            calculatedUp.reverse();
-
-            let newcopy = rl.map((r:TwentyFortyEightRectangle) => r.DeepCopy2048());
-            return newcopy.map((r: TwentyFortyEightRectangle, i: number) => {
-                try {
-                    r.dataBlob.value = calculatedUp[i];
-                } catch(e) {
-                    r.dataBlob.value = null;
-                }
-
-                return r;
-            });
+        // this is basically Y-axis shift up is to the left 
+        let fm: boolean[] = [];
+        let newBoard = this.DeepCopyTwentyEightBoard().map((YaxisRow, i) => {
+            let values = YaxisRow.map(y=> y.dataBlob.value).filter(isValue);
+            let {row, foundMatch} = shiftValuesLeft(values, 4);
+            fm.push(foundMatch);
+            let newYaxisRow = YaxisRow.map((y, idx) => (y.dataBlob.value = row[idx], y));
+            return newYaxisRow;
         });
+
+        let hasChanged = this.hasBoardChanged(this.Board, newBoard);
+        console.log(hasChanged);
+        this.Board = newBoard;
+
+        if (hasChanged || fm.some(i => i === true)) this.generateRandomValueOf2And4();
+
     }
 
     // When drawing the board... what is that going to look like...?
@@ -254,6 +289,19 @@ export class TwentyFortyEightBoard {
         })
     }
 
+    public hasBoardChanged = (oldBoard: TwentyFortyEightRectangle[][], newBoard: TwentyFortyEightRectangle[][]) => {
+        for (let x = 0; x < oldBoard.length; x++) {
+            for (let y = 0; y < oldBoard[x].length; y++) {
+                if (oldBoard[y][x].dataBlob.value !== newBoard[y][x].dataBlob.value) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // re-write this to just use brute force in the future. 
     public generateRandomValueOf2And4 = () => {
         let arr = [ 2, 4 ];
         let randomNewInteger = arr[getRandomInt(1)];
@@ -261,17 +309,21 @@ export class TwentyFortyEightBoard {
 
         let x,y;
 
+        let counter = 0;
 
         do {
-            x = getRandomInt(3);
-            y = getRandomInt(3);
-            if (this.Board[x][y].dataBlob.value === null) {
+            x = getRandomInt(4);
+            y = getRandomInt(4);
+            if (!IsValue(this.Board[x][y].dataBlob.value)) {
                 this.Board[x][y].dataBlob.value = randomNewInteger;
                 return;
             }
         }
-        while (this.Board[x][y].dataBlob.value != null)
+        while (!IsValue(this.Board[x][y].dataBlob.value) && counter++ < 100)
     }
+
+    // Going to need to fix the shif left and right on the game. 
+    // mutating the screen results is wrong and broken. 
 
     public handleArrowKeyPress = (e: KeyboardEvent) => {
 
@@ -279,10 +331,10 @@ export class TwentyFortyEightBoard {
         up = KeyPressArrowValues.UP, down = KeyPressArrowValues.DOWN;
 
         let val = e.key.toString().toLocaleLowerCase();
-        if (val === left) { this.shiftLeft(); this.generateRandomValueOf2And4(); }
-        else if (val === right) { this.shiftRight(); this.generateRandomValueOf2And4(); }
-        else if (val === down) {this.shiftDown(); this.generateRandomValueOf2And4(); }
-        else if (val === up) { this.shiftUp(); this.generateRandomValueOf2And4(); }
+        if (val === left) { this.shiftLeft(); }
+        else if (val === right) { this.shiftRight(); }
+        else if (val === down) {this.shiftDown(); }
+        else if (val === up) { this.shiftUp(); }
     }
 
     public DeepCopyTwentyEightBoard = () => {
@@ -299,25 +351,17 @@ export class TwentyFortyEightBoard {
 }
 
 export const shiftValuesLeft = (arr:any, expectedLen:number) => {
-    let len = arr.length;
-    let newRange = range(1, expectedLen - len).map(i => null);
-    return [...arr, ...newRange].filter((i, idx) => idx < expectedLen);
+    let ar = arr.filter(isValue);
+    let len = ar.length;
+    let newArr = [...Array(4 - len)].map(i => null);
+    return shiftRowLeft([...ar, ...newArr]);
 }
 
 export const shiftValuesRight = (arr:any, expectedLen:number) => {
-    let len = arr.length;
-    let newRange = range(1, expectedLen - len).map(i => null);
-    return [...newRange, ...arr].filter((i, idx) => idx < expectedLen);
-}
-
-export const TwentyFortyEightCalculation = (arr:any, newArray:any): any => {
-    if (newArray.length === 4) return newArray;
-    let [f, s, ...r] = arr;
-    if (f === s && f != null) {
-        return TwentyFortyEightCalculation(r, [f+s, ...newArray]);
-    } else {
-        return TwentyFortyEightCalculation([s, ...r], [f, ...newArray]);
-    }
+    let ar = arr.filter(isValue);
+    let len = ar.length;
+    let newArr = [...Array(4 - len)].map(i => null);
+    return shiftRowRight([...newArr, ...ar]);
 }
 
 type ComplexRightCalculation = {
@@ -330,7 +374,21 @@ const newComplexRightCalculation: ComplexRightCalculation = {
     shouldSkip: false
 }
 
+
+/*
+    Note: 
+
+    TwentyFortyEightCalculationForShiftingRight and for TwentyFortyEightCalculationForShiftingLeft
+
+    You're going to need to move the shifting of arrays towards the top of the calculation
+
+    so it's 
+
+    shift then calc 
+*/
+
 export const TwentyFortyEightCalculationForShiftingRight = (arr:any): any => {
+    // console.log(ar);
     let res: ComplexRightCalculation = arr.reduceRight((acc:ComplexRightCalculation, currentVal:any, idx:number, array:any) => {
         let nextVal = array[idx-1];
 
@@ -359,6 +417,87 @@ export const TwentyFortyEightCalculationForShiftingRight = (arr:any): any => {
     }, newComplexRightCalculation);
 
     return shiftValuesRight(res.newArr, 4);
+}
+
+export const convertZeroToNull = (row: number[]) => {
+    return row.map(i => i === 0 ? null : i);
+}
+
+export const shiftRowRight = (row: number[]) => {
+    row = row.filter(isValue);
+    let foundMatch = false;
+    for (let i = row.length - 1; i > 0; i--) {
+        if (row[i] === row[i - 1]) {
+            row[i] *= 2;
+            foundMatch = true;
+            row[i - 1] = 0;
+        }
+    }
+
+    row = row.filter(element => element !== 0);
+
+    while (row.length < 4) {
+        row.unshift(0);
+    }
+
+
+    let r = convertZeroToNull(row);
+
+    return { row : r, foundMatch };
+}
+
+export const shiftRowLeft = (row: number[]) => {
+    let foundMatch = false;
+    row = row.filter(isValue);
+
+    for (let i = 0; i < row.length - 1; i++) {
+        if (row[i] === row[i + 1]) {
+            row[i] *= 2;
+            foundMatch = true;
+            row[i + 1] = 0;
+        }
+    }
+
+    row = row.filter(element => element !== 0);
+
+    while (row.length < 4) {
+        row.push(0);
+    }
+
+    let r = convertZeroToNull(row);
+
+    return { row: r, foundMatch };
+}
+
+export const TwentyFortyEightCalculationForShiftingLeft = (arr:any): any => {
+    let res: ComplexRightCalculation = arr.reduceRight((acc:ComplexRightCalculation, currentVal:any, idx:number, array:any) => {
+        let nextVal = array[idx-1];
+
+        if (acc.shouldSkip) {
+            return {
+                ...acc,
+                shouldSkip:false
+            }
+        } 
+
+        if (currentVal === nextVal && currentVal != null) {
+
+            const nextComplexCalc: ComplexRightCalculation = {
+                newArr: [...acc.newArr, currentVal + nextVal],
+                shouldSkip: true
+            };
+
+            return nextComplexCalc;
+        } else {
+            const nextComplexCalcElse : ComplexRightCalculation = {
+                newArr: [nextVal, ...acc.newArr], shouldSkip: false
+            };
+
+            return nextComplexCalcElse;
+        }
+    }, newComplexRightCalculation);
+
+    return shiftValuesLeft(res.newArr, 4);
 }
 
 
