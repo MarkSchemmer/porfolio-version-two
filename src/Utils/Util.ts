@@ -1,3 +1,4 @@
+import { PaddleBoard, Pong } from "../GameApps/Pong/pong";
 
 // This is a public library of functions that can be shared between apps regardless of use. 
 export const replaceAll = function(thisString: string, str1: string, str2: string, ignore: boolean) 
@@ -308,6 +309,67 @@ export const rectanglesIntersecting = (rA: Rectangle, rB: Rectangle): boolean =>
     return overLapping(aLeft, aRight, bLeft, bRight) 
             && overLapping(aBottom, aTop, bBottom, bTop);
 };
+
+export const CircleHittingTopOfBoard = (boardRef: React.MutableRefObject<HTMLDivElement | null>, pong: Pong) => {
+    if (boardRef.current) {
+        const dims = boardRef.current.getBoundingClientRect();
+        console.log(dims.height);
+        console.log(pong.radius + pong.point.y);
+        if (pong.point.y - pong.radius < 0) {
+            console.log("hitting");
+            
+            pong.point.y = 0 + pong.radius;
+            pong.deltaY = pong.directionY;
+        }
+    }
+};
+
+export const CircleHittingBottomOfBoard = (boardRef: React.MutableRefObject<HTMLDivElement | null>, pong: Pong) => {
+    if (boardRef.current) {
+        const { height } = boardRef.current.getBoundingClientRect();
+        // if (pong.radius + pong.point.y >= height) {
+        //     pong.point.y = height - pong.radius - 5;
+        //     pong.deltaY = -pong.directionY;
+        // }
+    }
+}
+
+export const CircleReactingToLeftPaddle = () => {
+
+}
+
+export const CircleReactingToRightPaddle = (pong: Pong, paddle: PaddleBoard) => {
+    if(pong.deltaY > 0 && pong.point.y <= paddle.point.y){ 
+        //console.log("hit");
+        pong.point.y = paddle.point.y - pong.radius - 10;
+        pong.deltaY =  -pong.direction - 0.5;
+    }else if(pong.deltaY < 0 && pong.point.y + pong.radius >= paddle.point.y + paddle.height) { // do bottom check
+        //console.log("hit 2");
+        pong.point.y = paddle.point.y + paddle.height + 10;
+        pong.deltaY =  pong.direction + 0.5;
+    } else {
+        // ball hit front of bat
+        //console.log("hit 3");
+        pong.point.x = paddle.point.x - paddle.width - 10;
+        pong.deltaX =  -pong.direction - 0.5;
+    }
+}
+
+export const CircleHittingPaddle = (pong: Pong, paddle: PaddleBoard) => {
+    let distX = Math.abs(pong.point.x - paddle.point.x - paddle.width / 2);
+    let distY = Math.abs(pong.point.y - paddle.point.y - paddle.height / 2);
+
+    if (distX > (paddle.width / 2 + pong.radius)) { return false; }
+    if (distY > (paddle.height / 2 + pong.radius)) { return false; }
+
+    if (distX <= (paddle.width / 2)) { return true; } 
+    if (distY <= (paddle.height / 2)) { return true; }
+
+    let dx = distX - paddle.width / 2;
+    let dy = distY - paddle.height / 2;
+
+    return (dx * dx + dy * dy <= (pong.radius * pong.radius));
+}
 
 export const rectanglesIntersecting2nd = (rA: Rectangle, rB: Rectangle): boolean => {
     let width = 1;
