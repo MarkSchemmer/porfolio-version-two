@@ -126,17 +126,17 @@ export class TwentyFortyEightBoard {
         this.Board[1][2] = pos2;
 
         // maniuplate a row which is up and down Y-axis
-        this.Board[0].map(i => { 
-            i.dataBlob = new DataBlob(i.point, i.resolution);
-            i.dataBlob.bakcgroundColor = "green"
-            return i;
-        });
+        // this.Board[0].map(i => { 
+        //     i.dataBlob = new DataBlob(i.point, i.resolution);
+        //     i.dataBlob.bakcgroundColor = "green"
+        //     return i;
+        // });
 
-        // manipulate a column which is left to right or X-axis
-        let column = this.getColumn(0).forEach(i => {
-            //i.dataBlob = new DataBlob(i.point, i.resolution);
-            i.dataBlob.bakcgroundColor = "blue"
-        })
+        // // manipulate a column which is left to right or X-axis
+        // let column = this.getColumn(0).forEach(i => {
+        //     //i.dataBlob = new DataBlob(i.point, i.resolution);
+        //     i.dataBlob.bakcgroundColor = "blue"
+        // })
 
     }
 
@@ -306,20 +306,22 @@ export class TwentyFortyEightBoard {
         let arr = [ 2, 4 ];
         let randomNewInteger = arr[getRandomInt(1)];
 
+        let randomLocation = []
 
-        let x,y;
-
-        let counter = 0;
-
-        do {
-            x = getRandomInt(4);
-            y = getRandomInt(4);
-            if (!IsValue(this.Board[x][y].dataBlob.value)) {
-                this.Board[x][y].dataBlob.value = randomNewInteger;
-                return;
+        for (let x = 0; x < this.Board.length; x++) {
+            for (let y = 0; y < this.Board[x].length; y++) {
+                if (this.Board[y][x].dataBlob.value === null) {
+                    randomLocation.push(this.Board[y][x]);
+                }
             }
         }
-        while (!IsValue(this.Board[x][y].dataBlob.value) && counter++ < 100)
+
+
+        let anotherRandomInt = getRandomInt(randomLocation.length);
+
+        randomLocation[anotherRandomInt].dataBlob.value = randomNewInteger;
+
+
     }
 
     // Going to need to fix the shif left and right on the game. 
