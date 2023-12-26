@@ -1,0 +1,17 @@
+:root {
+    --clr-pink1: #AAF5EC;
+}
+
+.board {
+    border: 1px solid black;
+    width: 456px;
+    height: 606px;
+    top: 50px;
+    margin:auto;
+}
+
+.pz {
+    background-color: var(--clr-pink1);
+    width: 149px;
+    height: 149px;
+}

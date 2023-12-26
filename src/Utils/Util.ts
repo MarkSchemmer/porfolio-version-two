@@ -18,13 +18,23 @@ export const IsNullOrUndefined = (obj: any) => obj === null || obj === undefined
 
 export const IsValue = (obj: any) => !IsNullOrUndefined(obj); 
 
-
 export enum Directions {
     LEFT = "left",
     RIGHT = "right", 
     UP = "up", 
     DOWN = "down"
 };
+
+export type XAxisMovement = Directions.LEFT | Directions.RIGHT | null;
+export type YAxisMovement = Directions.UP | Directions.DOWN | null;
+
+export const whichDirectionXAxis = (prevDirction: XAxisMovement, delta: number): XAxisMovement => {
+    return delta < 0 ? Directions.LEFT : delta > 0 ? Directions.RIGHT : prevDirction;
+}
+
+export const whichDirectionYAxis = (prevDirction: YAxisMovement, delta: number): YAxisMovement => {
+    return delta < 0 ? Directions.UP : delta > 0 ? Directions.DOWN : prevDirction;
+}
 
 export enum KeyPressArrowValues {
     LEFT = "arrowleft",
@@ -156,9 +166,130 @@ export class Rectangle extends Shape {
     }
 }
 
-const overLapping = (minA: number, maxA: number, minB: number, maxB: number) => {
+export const overLapping = (minA: number, maxA: number, minB: number, maxB: number) => {
     return minB <= maxA && minA <= maxB;
 };
+
+export const rectanglesIntersectingDomRect = (rA: DOMRect, rB: DOMRect): boolean => {
+
+    // For some reason the size of the square is exactly 1, I don't know how exactly to change that.
+    let size = rA.width; // perfect square the height is the same as the width... and is the size. 
+    let aLeft = rA.x;
+    let aRight = aLeft + size;
+    let bLeft = rB.x;
+    let bRight = bLeft + size;
+
+    let aBottom = rA.y;
+    let aTop = aBottom + size;
+    let bBottom = rB.y;
+    let bTop = bBottom + size; 
+
+    return overLapping(aLeft, aRight, bLeft, bRight) 
+            && overLapping(aBottom, aTop, bBottom, bTop);
+};
+
+export const rectanglesIntersectingDomRectWithPoint = (rA: Point, rB: DOMRect): boolean => {
+
+    // For some reason the size of the square is exactly 1, I don't know how exactly to change that.
+    let size = rB.width; // perfect square the height is the same as the width... and is the size. 
+    let aLeft = rA.x;
+    let aRight = aLeft + size;
+    let bLeft = rB.x;
+    let bRight = bLeft + size;
+
+    let aBottom = rA.y;
+    let aTop = aBottom + size;
+    let bBottom = rB.y;
+    let bTop = bBottom + size; 
+
+    return overLapping(aLeft, aRight, bLeft, bRight) 
+            && overLapping(aBottom, aTop, bBottom, bTop);
+};
+
+export const ArePointsEqual = (p1: Point | null, p2: Point | null) => {
+    if (p1 && p2)
+        return p1.x === p2.x && p1.y === p2.y;
+    else 
+        return false;
+}
+
+export const ArePointsEqualWithPxManipulation = (p1: Point | null, p11: Point | null, p2: Point | null) => {
+    if (p1 && p2 && p11) {
+        p1.x = Math.floor(p1.x / p11.x);
+        p1.y = Math.floor(p1.y / p11.y);
+        return p1.x === p2.x && p1.y === p2.y;
+    }
+
+    else 
+        return false;
+}
+
+export const pointConverter = (n: number) => {
+    switch(n) {
+        case 0 : {
+            return 0; 
+        }
+        default : {
+            return Math.floor(n / 152);
+        }
+    }
+}
+
+export const ConvertPosToActualLocation = (p1: Point | null) => {
+    if (p1) {
+        return new Point(pointConverter(p1.x), pointConverter(p1.y));
+    }
+    return null;
+} 
+
+export const GetDeltaX = (p1: Point | null, p2: Point | null) => {
+    if (p1 && p2)
+        return p1.x - p2.x;
+    else 
+        return null;
+}
+
+export const GetDeltaY = (p1: Point | null, p2: Point | null) => {
+    if (p1 && p2)
+        return p1.y - p2.y;
+    else 
+        return null;
+}
+
+export const GetXDirection = (delta: number | null) => {
+    if (delta)
+        return delta < 0 ? Directions.LEFT : delta > 0 ? Directions.RIGHT : null
+    else 
+        return null;
+}
+
+export const getSidesOfRectForCompare = (rA: DOMRect, rB: DOMRect) => {
+
+    let size = rA.width; // perfect square the height is the same as the width... and is the size. 
+    let aLeft = rA.x;
+    let aRight = aLeft + size;
+    let bLeft = rB.x;
+    let bRight = bLeft + size;
+
+    let aBottom = rA.y;
+    let aTop = aBottom + size;
+    let bBottom = rB.y;
+    let bTop = bBottom + size; 
+
+    return {
+        size,
+        aLeft,
+        aRight,
+        bLeft,
+        bRight,
+        aBottom,
+        aTop,
+        bBottom,
+        bTop
+    }
+}
+
+
 
 export const rectanglesIntersecting = (rA: Rectangle, rB: Rectangle): boolean => {
 
