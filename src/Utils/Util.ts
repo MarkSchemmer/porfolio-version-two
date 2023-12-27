@@ -313,11 +313,10 @@ export const rectanglesIntersecting = (rA: Rectangle, rB: Rectangle): boolean =>
 export const CircleHittingTopOfBoard = (boardRef: React.MutableRefObject<HTMLDivElement | null>, pong: Pong) => {
     if (boardRef.current) {
         const dims = boardRef.current.getBoundingClientRect();
-        console.log(dims.height);
-        console.log(pong.radius + pong.point.y);
+        // console.log(dims.height);
+        // console.log(pong.radius + pong.point.y);
         if (pong.point.y - pong.radius < 0) {
-            console.log("hitting");
-            
+            // console.log("hitting");
             pong.point.y = 0 + pong.radius;
             pong.deltaY = pong.directionY;
         }
@@ -326,16 +325,54 @@ export const CircleHittingTopOfBoard = (boardRef: React.MutableRefObject<HTMLDiv
 
 export const CircleHittingBottomOfBoard = (boardRef: React.MutableRefObject<HTMLDivElement | null>, pong: Pong) => {
     if (boardRef.current) {
-        const { height } = boardRef.current.getBoundingClientRect();
-        // if (pong.radius + pong.point.y >= height) {
-        //     pong.point.y = height - pong.radius - 5;
-        //     pong.deltaY = -pong.directionY;
-        // }
+        const dims = boardRef.current.getBoundingClientRect();
+        if (pong.radius + pong.point.y >= dims.height) {
+            pong.point.y = dims.height - pong.radius - 5;
+            pong.deltaY = -pong.directionY;
+        }
     }
 }
 
-export const CircleReactingToLeftPaddle = () => {
+export enum PointSystem {
+    LeftPoint = "LeftPoint",
+    RightPoint = "RightPoint",
+    None = "None"
+};
 
+export const hasBallScoredPoint = (boardRef: React.MutableRefObject<HTMLDivElement | null>, pong: Pong) => {
+    if (boardRef.current) {
+        let dims = boardRef.current.getBoundingClientRect();
+
+        if (pong.point.x - pong.radius < 0) {
+            // console.log("ball crossed left side");
+            return PointSystem.LeftPoint;
+        } else if (pong.point.x + pong.radius >= dims.width) {
+            // console.log("ball crossed right side");
+            return PointSystem.RightPoint;
+        } else {
+            return PointSystem.None;
+        }
+
+    } else {
+        return PointSystem.None;
+    }
+}
+
+export const CircleReactingToLeftPaddle = (pong: Pong, paddle: PaddleBoard) => {
+    if(pong.deltaY > 0 && pong.point.y <= paddle.point.y){ 
+        //console.log("hit");
+        pong.point.y = paddle.point.y + pong.radius + 10;
+        pong.deltaY =  pong.direction + 0.5;
+    }else if(pong.deltaY < 0 && pong.point.y + pong.radius >= paddle.point.y + paddle.height) { // do bottom check
+        //console.log("hit 2");
+        pong.point.y = paddle.point.y + paddle.height + 10;
+        pong.deltaY =  pong.direction + 0.5;
+    } else {
+        // ball hit front of bat
+        //console.log("hit 3");
+        pong.point.x = paddle.point.x + paddle.width + 20;
+        pong.deltaX =  pong.direction + 0.5;
+    }
 }
 
 export const CircleReactingToRightPaddle = (pong: Pong, paddle: PaddleBoard) => {

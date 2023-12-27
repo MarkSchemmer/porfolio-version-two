@@ -1,4 +1,13 @@
-import { Circle, CircleHittingBottomOfBoard, CircleHittingPaddle, CircleHittingTopOfBoard, CircleReactingToRightPaddle, Point, Rectangle } from "../../Utils/Util";
+import { 
+    Circle, 
+    CircleHittingBottomOfBoard, 
+    CircleHittingPaddle, CircleHittingTopOfBoard, 
+    CircleReactingToLeftPaddle, 
+    CircleReactingToRightPaddle, Point, 
+    PointSystem, 
+    Rectangle, hasBallScoredPoint } from "../../Utils/Util";
+
+
 
 export class Pong extends Circle {
 
@@ -9,8 +18,6 @@ export class Pong extends Circle {
 
     public directionX: number = 2.5;
     public directionY: number = 1;
-
-
 
     constructor(point: Point, dimensions: number, radius: number) {
         super(point, dimensions, radius);
@@ -54,8 +61,16 @@ export interface KeyPressCommands {
 
 export class PongGameController {
 
+
+    public leftPaddle: PaddleBoard = new PaddleBoard(new Point(1, 2), 200);
+    public rightPaddle: PaddleBoard = new PaddleBoard(new Point(489, 2), 200);
+    public ball: Pong = new Pong(new Point(250, 200), 20, 15);
+
     public canRun: boolean = false;
     public action: string = "";
+
+    public leftPaddleScore: number = 0;
+    public rightPaddleScore: number = 0;
 
     public boardRef: React.MutableRefObject<HTMLDivElement | null>;
 
@@ -75,14 +90,31 @@ export class PongGameController {
         "arrowup": () => { this.leftPaddle.movePaddleUp(); }
     }
 
-    public leftPaddle: PaddleBoard = new PaddleBoard(new Point(1, 2), 200);
-    public rightPaddle: PaddleBoard = new PaddleBoard(new Point(489, 2), 200);
-    public ball: Pong = new Pong(new Point(250, 200), 20, 15);
+    private setGameObjectsToDefault = () => {
+        this.leftPaddle = new PaddleBoard(new Point(1, 2), 200);
+        this.rightPaddle = new PaddleBoard(new Point(489, 2), 200);
+        this.ball = new Pong(new Point(250, 200), 20, 15);
+    }
 
+    public handleRestart = () => {
+        // pause game
+        this.keyPressCommands["p"]();
+        this.setGameObjectsToDefault();
+    }
 
     public handleKeyUp = () => {
         this.canRun = false;
         this.action = "";
+    }
+
+    public handleScore = (winner: PointSystem) => {
+        if (winner === PointSystem.LeftPoint) {
+            // console.log("scored");
+            this.leftPaddleScore += 1;
+        } else if (winner === PointSystem.RightPoint) {
+            // console.log("scored right");
+            this.rightPaddleScore += 1;
+        }
     }
 
     public handleKeyDown = (e:KeyboardEvent) => {
@@ -104,17 +136,45 @@ export class PongGameController {
 
         // calculation hit
         if (CircleHittingPaddle(this.ball, this.leftPaddle)) {
-            console.log("hit left paddle");
+            // console.log("hit left paddle");
+            CircleReactingToLeftPaddle(this.ball, this.leftPaddle);
         }
 
         if (CircleHittingPaddle(this.ball, this.rightPaddle)) {
-            console.log("hit right paddle");
+            // console.log("hit right paddle");
             CircleReactingToRightPaddle(this.ball, this.rightPaddle);
         }
 
         CircleHittingTopOfBoard(boardRef, this.ball);
         CircleHittingBottomOfBoard(boardRef, this.ball);
+        let someoneScored = hasBallScoredPoint(boardRef, this.ball);
 
-        this.ball.handlePongDeltaX();
+        if (someoneScored === PointSystem.LeftPoint || someoneScored === PointSystem.RightPoint) {
+            this.handleScore(someoneScored);
+            this.handleRestart();
+        } else {
+            this.ball.handlePongDeltaX();
+            // handle ai change here. 
+            this.handleAiMovement(boardRef);
+        }
+    }
+
+    public handleAiMovement = (boardRef: React.MutableRefObject<HTMLDivElement | null>) => {
+
+        if (boardRef.current) {
+            let dims = boardRef.current.getBoundingClientRect();
+
+            if (this.ball.point.x + this.ball.radius > dims.width / 2 && this.ball.deltaX > 0) {
+                console.log("bigger than x ");
+
+                if (this.ball.point.y + this.ball.radius >= this.rightPaddle.point.y + this.rightPaddle.height) {
+                    // console.log("I'm going up. ");
+                    this.rightPaddle.point.y += 2;
+                } else if (this.ball.point.y + this.ball.radius <= this.rightPaddle.point.y + this.rightPaddle.height / 2) {
+                    this.rightPaddle.point.y -= 2;
+                }
+            }
+        }
+
     }
 }
