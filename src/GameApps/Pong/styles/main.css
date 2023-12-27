@@ -1,0 +1,8 @@
+.pong-container {
+    margin-top: 100px;
+}
+
+.scores {
+    border: 1px solid blue;
+    padding: 15px;
+}
