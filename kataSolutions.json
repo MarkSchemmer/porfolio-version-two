@@ -1,0 +1,22 @@
+[
+  {
+    "id": "5467e4d82edf8bbf40000155",
+    "name": "Descending Order",
+    "solutions": [
+      {
+        "lanugage": "javascript",
+        "solution": "const descendingOrder = (n) => parseInt(n.toString().split('').sort().reverse().join(''))"
+      }
+    ]
+  },
+  {
+    "id": "514b92a657cdc65150000006",
+    "name": "Multiples of 3 or 5",
+    "solutions": [
+      {
+        "lanugage": "javascript",
+        "solution": "const solution = n => n <= 0 ? 0 : [...Array(n).keys()].map(i => i).reduce((acc, cur) => (cur % 3 === 0 || cur % 5 === 0) && cur >= 3 ? acc + cur : acc);"
+      }
+    ]
+  }
+]
