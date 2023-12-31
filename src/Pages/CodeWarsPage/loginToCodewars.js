@@ -1,4 +1,5 @@
 const { Builder, By, Key } = require('selenium-webdriver');
+require('dotenv').config(); 
 
 async function getNumberOfPagesAndKatas(url) {
     let jdata = await fetch(url);
@@ -18,9 +19,9 @@ async function getKataObject(page) {
 
 // Usage:
 const credentials = {
-    username: "Saku-Hasu",
-    password: "Se*1293#",
-    email: "mjs.schemmer@gmail.com"
+    username: process.env.USERNAME,
+    password: process.env.PASSWORD,
+    email: process.env.EMAIL
 };
 
 const urls = {
