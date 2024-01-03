@@ -1,17 +1,12 @@
-* {
-    text-decoration: none;
-  }
-  
-  /* body {
-    background: #ffde59;
-  } */
-  
+
+/* Re-write using react-jss */
+
+
+/*
   .container {
-    /*   background: #000; */
     display: flex;
     margin-left: 15rem;
     margin-top: 100px;
-    /*   border: 1px solid #000; */
     height: 10rem;
   }
   
@@ -37,17 +32,14 @@
   
   nav {
     display: flex;
-    /*   border: 1px solid white; */
     z-index: 1;
   }
   
   nav a {
     margin: 0 2rem;
     padding-top: 4.6rem;
-    /*   font-weight: bold; */
     font-family: lucida sans unicode;
     color: white;
-    /*   border: 1px solid white; */
   }
   
   nav a:hover {
@@ -62,7 +54,6 @@
     display: flex;
     z-index: 3;
     position: relative;
-    /*   border: 1px solid white; */
     width: 34rem;
     top: 11rem;
     left: 40rem;
@@ -88,4 +79,4 @@
     position: relative;
     left: 9px;
   }
-  
+*/
