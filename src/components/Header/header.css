@@ -1,3 +1,204 @@
-.another {
-    border: 1px solid black;
-}
+.header {
+    display: flex;
+    justify-content: space-around;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background: #000;
+    /*   height: 10em; */
+    -webkit-padding-block: 1.5rem;
+    -moz-padding-block: 1.5rem;
+    -ms-padding-block: 1.5rem;
+    padding-block: 1.5rem;
+  }
+  
+  .logo {
+    font: bold 1.5em lucida sans unicode;
+    color: #fff;
+  }
+  
+  .navbar {
+    display: flex;
+  }
+  
+  button {
+    visibility: hidden;
+  }
+  
+  ul {
+    display: flex;
+    list-style: none;
+  }
+  
+  li {
+    transition: 0.3s;
+  }
+  
+  li:hover {
+    translate: 0 2px;
+    transition: 0.3s;
+  }
+  
+  a {
+    text-decoration: none;
+    font: bold 1em sans-serif;
+    margin: 0 1.5rem;
+    color: #fff;
+  }
+  
+  a:hover {
+  }
+  
+  #cont:hover {
+    transform: translateY(1rem);
+    color: #ffa3e5;
+  }
+  
+  #cont:after {
+    content: "🌸";
+  }
+
+
+  @media (width <= 944px) {
+    h1 {
+      font-size: 6.5em;
+      transition: 0.2s;
+    }
+  
+    .home-sub-heading {
+      font-size: 3.5em;
+      transition: 0.2s;
+    }
+  }
+  
+  @media (width <= 877px) {
+    h1 {
+      font-size: 6em;
+      transition: 0.2s;
+    }
+  
+    .home-sub-heading {
+      font-size: 3em;
+      transition: 0.2s;
+    }
+  }
+  
+  @media (width <= 811px) {
+    h1 {
+      font-size: 5.5em;
+      transition: 0.2s;
+    }
+  
+    .home-sub-heading {
+      font-size: 2.5em;
+      transition: 0.2s;
+    }
+  }
+  
+  @media (width <= 745px) {
+    h1 {
+      font-size: 5em;
+      transition: 0.2s;
+    }
+  
+    ul {
+      position: absolute;
+      display: flex;
+      flex-flow: column;
+      background: #000;
+      border: 1px solid #fff;
+      z-index: 100;
+      margin-right: 2rem;
+      height: 15rem;
+      top: 1.8rem;
+    }
+  
+    .navbox {
+      /* border: 1px solid #fff; */
+      width: 10rem;
+      height: 0rem;
+      overflow: hidden;
+      /* background: #000; */
+      z-index: 200;
+      display: inline-block;
+      position: absolute;
+      margin-left: 2.7rem;
+    }
+  
+    button {
+      visibility: visible;
+      z-index: 300;
+      position: relative;
+      bottom: 1.5rem;
+      font-size: 3em;
+      color: #fff;
+      background: #000;
+      border: none;
+      left: 8rem;
+    }
+  
+    button:hover {
+      cursor: pointer;
+      color: #eeeeee;
+    }
+  
+    button:active {
+      color: #dbdbdb;
+    }
+  
+    li {
+      z-index: 999;
+      /* background: #000; */
+      position: relative;
+      right: 2rem;
+      top: 1rem;
+      padding-bottom: 10px;
+      height: 6rem;
+      /* top: 4rem; */
+      /* border-bottom: 1px solid #fff; */
+      /*     border: 1px solid #fff; */
+    }
+  
+    .navbar {
+      margin-right: 5rem;
+      background: #000;
+      /*     border: 1px solid #fff; */
+    }
+  
+    .logo {
+      position: relative;
+      inset: 0 0 0 -2rem;
+    }
+  
+    .home-sub-heading {
+      font-size: 2em;
+      transition: 0.2s;
+      margin-top: 3.2rem;
+    }
+  }
+  
+  @media (width <= 677px) {
+    .home-sub-heading {
+      margin-top: 5rem;
+    }
+  
+    h1::after {
+      content: "🍥";
+    }
+  
+    a {
+    }
+  }
+  
+  @media (width <= 509px) {
+    h1 {
+      font-size: 4.5em;
+      transition: 0.2s;
+    }
+  
+    .home-sub-heading {
+      transition: 0.2s;
+    }
+  }
+  

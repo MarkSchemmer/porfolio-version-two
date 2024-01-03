@@ -1,4 +1,4 @@
-import { loginToCodeWars } from "../Pages/CodeWarsPage/loginToCodewars";
+//import { loginToCodeWars } from "../Pages/CodeWarsPage/loginToCodewars";
 
 
 export const useCodeWarsData = async () => {
