@@ -160,13 +160,10 @@ export class PongGameController {
     }
 
     public handleAiMovement = (boardRef: React.MutableRefObject<HTMLDivElement | null>) => {
-
         if (boardRef.current) {
             let dims = boardRef.current.getBoundingClientRect();
-
             if (this.ball.point.x + this.ball.radius > dims.width / 2 && this.ball.deltaX > 0) {
-                console.log("bigger than x ");
-
+                // console.log("bigger than x ");
                 if (this.ball.point.y + this.ball.radius >= this.rightPaddle.point.y + this.rightPaddle.height) {
                     // console.log("I'm going up. ");
                     this.rightPaddle.point.y += 2;
@@ -175,6 +172,5 @@ export class PongGameController {
                 }
             }
         }
-
     }
 }

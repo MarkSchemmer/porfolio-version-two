@@ -10,6 +10,7 @@ import { TwentyFortyEightComponent } from "../GameApps/2048/canvas-version/2048C
 import { MouseCurserComponent } from "../GameApps/MouseCurserGame/MouseCurser";
 import { PuzzleDrag } from "../GameApps/puzzleDrag/PuzzleDrag";
 import { PongComponent } from "../GameApps/Pong/PongComponent";
+import { CodeWarsPage } from "../Pages/CodeWarsPage/CodeWarsPage";
 
 export default function Router() {
     return (
@@ -17,6 +18,7 @@ export default function Router() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<HomePage /> } />
+                    <Route path="/cw" element={<CodeWarsPage /> } />
                     <Route path="/todo" element={<TodoMVC />} />
                     <Route path="/tic" element={<TicTacToe />} />
                     <Route path="/con" element={<ConWaysGameOfLife /> } />
