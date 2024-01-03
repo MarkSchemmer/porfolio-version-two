@@ -1,0 +1,15 @@
+
+.header {
+    border: 1px solid blue;
+
+    .button {
+        visibility: hidden;
+    }
+    
+    @media(max-width: 500px) {
+        .button {
+            visibility: visible;
+        }
+    }
+}
+

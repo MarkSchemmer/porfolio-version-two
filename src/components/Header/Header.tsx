@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "../Header/header.css";
+import classes from "../Header/header.module.scss";
 
 // credit: Saku-Hasu --
 
@@ -64,19 +64,11 @@ const handleResize = (e: any) => {
 
 export default function Header() {
 
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    }
-  }, []);
-
   return (
-    <div className="header">
+    <div className={classes.header}>
       <div className="logo">Webpage.</div>
       <nav className="navbar">
-        <button onClick={(e) => { handleClick.click(e); }}>☰</button>
+        <button className={classes.button} onClick={(e) => { handleClick.click(e); }}>☰</button>
         <div className="navbox">
           <ul>
             <li className="cont"><a href="">Home</a></li>
