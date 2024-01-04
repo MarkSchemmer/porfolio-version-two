@@ -2,9 +2,6 @@ import React, { useEffect } from "react";
 import classes from "../Header/header.module.scss";
 
 // credit: Saku-Hasu --
-
-// let toggle = false;
-
 const addStyles = (navbox: HTMLDivElement) => {
   navbox.style.height = "20rem";
   navbox.style.transition = "0.5s";
@@ -25,6 +22,7 @@ const handleClick = (() => {
 }
 })();
 
+// Move to util file. 
 function getWidth() {
   return Math.max(
     document.body.scrollWidth,
@@ -35,6 +33,7 @@ function getWidth() {
   );
 }
 
+// move to util file. 
 function getHeight() {
   return Math.max(
     document.body.scrollHeight,
@@ -46,20 +45,16 @@ function getHeight() {
 }
 
 /*
-  
-        Possible refactor for future, instead of having a global variable, we can just create 
-        toggle on the fly by testing against the height of the navbox then applying the needed 
-        styles... 
-  
-  */
-
+    Possible refactor for future, instead of having a global variable, we can just create 
+    toggle on the fly by testing against the height of the navbox then applying the needed 
+    styles... 
+*/
 const handleResize = (e: any) => {
   const navbox: HTMLDivElement = Array.from(document.getElementsByClassName("navbox"))[0] as unknown as HTMLDivElement;
   const navBoxHeight = parseInt(navbox.style.height.split("")[0]) > 0;
   if (getWidth() >= 745 && navbox && navBoxHeight) {
     removeStyles(navbox);
   }
-  // console.log(getWidth());
 };
 
 export default function Header() {
