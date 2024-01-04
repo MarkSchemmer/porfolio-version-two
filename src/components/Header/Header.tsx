@@ -66,10 +66,10 @@ export default function Header() {
         <button className={classes.button} onClick={(e) => { handleClick.click(e); }}>☰</button>
         <div className="navbox">
           <ul>
-            <li className="cont"><a href="">Home</a></li>
-            <li className="cont"><a href="">Skills</a></li>
-            <li className="cont"><a href="">Projects</a></li>
-            <li className="cont"><a href="">Contact</a></li>
+            <li className={classes.cont}><a href="">Home</a></li>
+            <li className={classes.cont}><a href="">Skills</a></li>
+            <li className={classes.cont}><a href="">Projects</a></li>
+            <li className={classes.cont}><a href="">Contact</a></li>
           </ul>
         </div>
       </nav>
