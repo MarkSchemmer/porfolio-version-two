@@ -1,27 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "../Header/header.module.scss";
 // import Sword from "../Header/header-images/dark-sword.png"; Note: Add Later
 
 // credit: Saku-Hasu --
-const addStyles = (navbox: HTMLDivElement) => {
-  navbox.style.height = "20rem";
-  navbox.style.transition = "0.5s";
-};
-
-const removeStyles = (navbox: HTMLDivElement) => {
-  navbox.style.height = "0rem";
-};
-
-const handleClick = (() => {
-  return {
-    click: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const navbox = Array.from(document.getElementsByClassName("navbox"))[0] as unknown as HTMLDivElement;
-    let toggle = navbox.style.height === "0rem" || navbox.style.height === "";
-    // console.log(navbox.style.height);
-    toggle ? addStyles(navbox) : removeStyles(navbox);
-  }
-}
-})();
 
 // Move to util file. 
 function getWidth() {
@@ -50,15 +31,26 @@ function getHeight() {
     toggle on the fly by testing against the height of the navbox then applying the needed 
     styles... 
 */
-const handleResize = (e: any) => {
-  const navbox: HTMLDivElement = Array.from(document.getElementsByClassName("navbox"))[0] as unknown as HTMLDivElement;
-  const navBoxHeight = parseInt(navbox.style.height.split("")[0]) > 0;
-  if (getWidth() >= 745 && navbox && navBoxHeight) {
-    removeStyles(navbox);
-  }
-};
-
 export default function Header() {
+
+  let [toggle, setToggle] = useState(false);
+
+  let handleToggle = () => {
+    setToggle(!toggle);
+  }
+
+  useEffect(() => {
+    let handleResize = () => {
+      if (getWidth() >= 823) {
+        setToggle(false);
+      }
+    }
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    }
+  }, []);
 
   return (
     // Markup
@@ -66,9 +58,9 @@ export default function Header() {
       {/* <img className={classes.sword} src={Sword} alt="dark blade" /> */}
       <div className={classes.logo}>Saku <span className={classes.style}>Hasu.</span></div>
       <nav className="navbar">
-        <button className={classes.button} onClick={(e) => { e.preventDefault(); }}>☰</button>
+        <button className={classes.button} onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => { handleToggle(); }}>☰</button>
         <div className="navbox">
-          <ul>
+          <ul id="ul-nav" className={toggle ? classes.show : classes.hide}>
             <li className={classes.cont}><a href="/">Home</a></li>
             <li className={classes.cont}><a href="/">Skills</a></li>
             <li className={classes.cont}><a href="/">Projects</a></li>
