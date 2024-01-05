@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import classes from "../Header/header.module.scss";
+// import Sword from "../Header/header-images/dark-sword.png"; Note: Add Later
 
 // credit: Saku-Hasu --
 const addStyles = (navbox: HTMLDivElement) => {
@@ -60,8 +61,10 @@ const handleResize = (e: any) => {
 export default function Header() {
 
   return (
+    // Markup
     <div className={classes.header}>
-      <div className={classes.logo}>Saku Hasu.</div>
+      {/* <img className={classes.sword} src={Sword} alt="dark blade" /> */}
+      <div className={classes.logo}>Saku <span className={classes.style}>Hasu.</span></div>
       <nav className="navbar">
         <button className={classes.button} onClick={(e) => { e.preventDefault(); }}>☰</button>
         <div className="navbox">
