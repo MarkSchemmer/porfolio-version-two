@@ -1,4 +1,4 @@
-
+// Header Styles
 .header {
     display: flex;
     justify-content: space-around;
@@ -6,7 +6,6 @@
     background: #000;
     background-attachment: fixed;
     background-repeat: no-repeat;
-    // width: 97.8vw;
 
     .style {
         color: #FF2121;
@@ -21,12 +20,8 @@
     .logo {
         font: bold 1.7em lucida sans unicode;
         color: #fff;
-        // border: 1px solid #000;
+        // border: 1px solid #fff;
     }
-
-    // ::-webkit-scrollbar {
-    //     display: none;
-    //   }
 
     .button {
         visibility: hidden;
@@ -38,36 +33,34 @@
         height: 2rem;
         .cont {
             margin: 0 2rem;
-            font: bold 1em sans-serif;
+            font: bold 1em Lucida sans unicode;
         }
 
-        li:hover {
-            translate: 0 2px;
-            transition: 0.3s;
-        }
 
         li {
             transition: 0.3s;
+            &:hover {
+                translate: 0 2px;
+                transition: 0.3s;
+            }
             a {
                 text-decoration: none;
                 color: #fff;
+                &:hover {
+                    color: #FF8235;
+                    transition: 0.3s;
+                    translateY: -1rem;
+                }
             }
         }
 
-        li {
-            a:hover{
-              color: #FF8235;
-              transition: 0.3s;
-              translateY: -1rem;
-            }
-        }
     }
 
+// Media Queries
     @media(max-width: 823px) {
           .button {
             visibility: visible;
             position: absolute;
-            // bottom: 1.5rem;
             font-size: 3em;
             color: #fff;
             background: #000;
@@ -75,10 +68,11 @@
             // transition: 1s;
             margin-left: 3rem;
             right: 4rem; 
-            // left: 8rem;
-          }
 
-       
+            &:hover {
+                cursor: pointer;
+            }
+          }
 
           .logo {
             margin-top: 1rem;
