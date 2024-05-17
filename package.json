@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
@@ -17,6 +20,7 @@
     "@types/react": "^18.2.7",
     "@types/react-dom": "^18.2.4",
     "dotenv": "^16.3.1",
+    "framer-motion": "^11.2.4",
     "immutable": "^5.0.0-beta.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
