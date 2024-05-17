@@ -1,12 +1,14 @@
+import { Box, Flex } from "@chakra-ui/react";
 import "../../components/component.css"
 
 export default function Footer() {
     return (
-        <div className="footer">
-            <div className="footertexts">
-                <div className="footertext1">SS Engineers INC</div> 
-                <div className="footertext2">Conversion Developers LLC</div>
-            </div>
-        </div>
+        <Flex direction={"column"} minH={"100vh"}>
+            <Box as="footer" bg={"gray.800"} color={"white"} py={"4"} mt={"auto"}>
+                <Flex justifyContent={"center"}>
+                    Porfolio - SS Engineers 
+                </Flex>
+            </Box>
+        </Flex>
     );
 }
