@@ -1,5 +1,4 @@
 import { Box, Flex } from "@chakra-ui/react";
-import "../../components/component.css"
 
 export default function Footer() {
     return (
