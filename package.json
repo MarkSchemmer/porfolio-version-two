@@ -60,6 +60,6 @@
   },
   "devDependencies": {
     "@types/selenium-webdriver": "^4.1.21",
-    "react-router-dom": "^6.15.0"
+    "react-router-dom": "^6.23.1"
   }
 }

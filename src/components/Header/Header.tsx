@@ -1,13 +1,17 @@
 import { Menu, MenuButton, IconButton, MenuList, MenuItem, Flex, Box, HStack, Text, useMediaQuery} from "@chakra-ui/react";
 import { HamburgerIcon, ExternalLinkIcon, AddIcon, RepeatIcon, EditIcon } from '@chakra-ui/icons'
 import React, { useEffect, useState } from "react";
-
+import { useNavigate } from 'react-router-dom';
 
 let menuItemList = [
-  "Home", "About", "Game Apps", "Contact"
+  {display: "Home", path: "/"}, 
+  {display: "About", path: "/about"}, 
+  {display: "Game Apps", path: "/apps"}, 
+  {display: "Contact", path: "/contact"}
 ];
 
 const DropDownMenu = () => {
+  const navigate = useNavigate();
   return (
     <Flex bg="teal.500" maxHeight={"100px"} padding="1.5rem" className="dropdown">
       <Menu>
@@ -21,7 +25,7 @@ const DropDownMenu = () => {
         variant='outline'
       />
   <MenuList>
-    { menuItemList.map(i => <MenuItem>{i}</MenuItem>)}
+    {menuItemList.map(i => <MenuItem onClick={() => navigate(i.path) }>{i.display}</MenuItem>)}
   </MenuList>
   </Menu>
   </Flex>
@@ -40,7 +44,7 @@ const StackMenu = () => {
         <HStack spacing="10px" as="nav" marginLeft="auto">
               {(menuItemList.map(i =>     
                   <Box p="5px" w='100px' h='60px' pt={"15px"}>
-                    <Text fontSize={"md"}>{(i)}</Text>
+                    <Text fontSize={"md"}>{(i.display)}</Text>
                   </Box>
               ))}
         </HStack>
