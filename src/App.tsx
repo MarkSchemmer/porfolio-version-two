@@ -4,14 +4,15 @@ import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
 import Router from './router/Router';
 import "../src/App.css";
+import { Box } from '@chakra-ui/react';
 
 function App() {
   return (
-    <div className="App">
+    <Box>
         <Header />
           <Router /> 
         <Footer />
-    </div>
+    </Box>
   );
 }
 

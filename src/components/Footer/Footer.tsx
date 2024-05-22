@@ -1,5 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 
+
 export default function Footer() {
     return (
         <Flex direction={"column"} minH={"100vh"}>

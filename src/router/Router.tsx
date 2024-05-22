@@ -14,7 +14,6 @@ import { CodeWarsPage } from "../Pages/CodeWarsPage/CodeWarsPage";
 
 export default function Router() {
     return (
-        <div className="router">
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<HomePage /> } />
@@ -30,6 +29,5 @@ export default function Router() {
                     <Route path="/pong" element={<PongComponent />} />
                 </Routes>
             </BrowserRouter>
-        </div>
     );
 }
