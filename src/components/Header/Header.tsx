@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 let menuItemList = [
   {display: "Home", path: "/"}, 
-  {display: "About", path: "/about"}, 
-  {display: "Game Apps", path: "/apps"}, 
-  {display: "Contact", path: "/contact"}
+  {display: "About", path: "about"}, 
+  {display: "Game Apps", path: "apps"}, 
+  {display: "Contact", path: "contact"}
 ];
 
 const DropDownMenu = () => {
