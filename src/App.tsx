@@ -18,6 +18,8 @@ import HomePage from './Pages/HomePage/HomePage';
 import { About } from './Pages/About/About';
 import { Contact } from './Pages/Contact/Contact';
 import { GameApps } from './Pages/GameApps/GameApps';
+import { LeetCode } from './Pages/LeetCode/LeetCode';
+import { PuzzleDrag } from './GameApps/puzzleDrag/PuzzleDrag';
 
 const Layout = () => {
   return (
@@ -40,6 +42,8 @@ function App() {
                   <Route path="about" element={<About />}></Route>
                   <Route path="contact" element={<Contact />}></Route>
                   <Route path="apps" element={<GameApps />}></Route>
+                  <Route path="leet" element={<LeetCode />}></Route>
+                  <Route path="puz" element={<PuzzleDrag />}></Route>
               </Route>
           </Routes>
       </BrowserRouter>

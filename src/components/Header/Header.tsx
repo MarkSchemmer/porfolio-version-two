@@ -1,12 +1,13 @@
 import { Menu, MenuButton, IconButton, MenuList, MenuItem, Flex, Box, HStack, Text, useMediaQuery} from "@chakra-ui/react";
-import { HamburgerIcon, ExternalLinkIcon, AddIcon, RepeatIcon, EditIcon } from '@chakra-ui/icons'
-import React, { useEffect, useState } from "react";
+import { HamburgerIcon } from '@chakra-ui/icons'
+import React from "react";
 import { useNavigate } from 'react-router-dom';
 
 let menuItemList = [
   {display: "Home", path: "/"}, 
   {display: "About", path: "about"}, 
   {display: "Game Apps", path: "apps"}, 
+  {display: "LeetCode", path: "leet"}, 
   {display: "Contact", path: "contact"}
 ];
 
@@ -33,17 +34,33 @@ const DropDownMenu = () => {
 }
 
 const StackMenu = () => {
+  const navigate = useNavigate();
   return (
     <>
     <Flex as="nav" padding="1rem" bg="teal.500" color={"white"} alignItems="center" className="bg-nav">
-      <Flex p={"5px"} maxWidth="100px" justifyContent="flex-start">
-        <Box>
+      <Flex maxWidth="100px" justifyContent="flex-start">
+        <Box 
+        onClick={() => navigate("/") } 
+        sx={{
+              '&:hover': {
+                cursor: 'pointer',
+              }
+          }}>
           Saku Hasu
         </Box>
       </Flex>
-        <HStack spacing="10px" as="nav" marginLeft="auto">
+        <HStack as="nav" marginLeft="auto">
               {(menuItemList.map(i =>     
-                  <Box p="5px" w='100px' h='60px' pt={"15px"}>
+                  <Box 
+                  sx={{
+                      '&:hover': {
+                        cursor: 'pointer',
+                      }
+                  }}
+                  onClick={() => navigate(i.path) } 
+                  maxWidth='100px'
+                  pr="15px"
+                  h='60px' pt={"15px"}>
                     <Text fontSize={"md"}>{(i.display)}</Text>
                   </Box>
               ))}
@@ -55,8 +72,6 @@ const StackMenu = () => {
 
 export default function Header() {
   const [isSmallerThan700] = useMediaQuery('(max-width: 600px)');
-  // State to toggle component visibility
-  // const [isVisible, setIsVisible] = useState(true);
   return (
         <Flex  direction={"column"}>
            {isSmallerThan700 ? <DropDownMenu /> : <StackMenu />}       
