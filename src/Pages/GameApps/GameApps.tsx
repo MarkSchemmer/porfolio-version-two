@@ -9,22 +9,28 @@ import { MouseCurserComponent } from "../../GameApps/MouseCurserGame/MouseCurser
 
 const gameApps = {
     "Puzzle Drag" : {
-        Src : PuzzleDrag
+        Src : PuzzleDrag,
+        useIframe: false
     },
     "2048": {
-        Src: TwentyFortyEightComponent
+        Src: TwentyFortyEightComponent,
+        useIframe: false
     },
     "Conways Game Of Life": {
-        Src: ConWaysGameOfLife
+        Src: ConWaysGameOfLife,
+        useIframe: false
     },
     "Solar": {
-        Src: SolarComponent
+        Src: SolarComponent,
+        useIframe: false
     },
     "Pong": {
-        Src: PongComponent
+        Src: PongComponent,
+        useIframe: false
     },
     "Mouse Game": {
-        Src: MouseCurserComponent
+        Src: MouseCurserComponent,
+        useIframe: true
     }
 }
 
@@ -37,11 +43,22 @@ const renderGameApp = (key: any, value: any) => {
     )
 }
 
+const renderGameAppIframe = (key: any, value: any) => {
+    const Src = value.Src;
+    return (
+        <Box w={500} h={500} p={0} m={"auto"} mt={150}>
+            <Iframe styles={{width: "500px",  height:"500px"}}>
+                <Src />
+            </Iframe>
+        </Box>
+    )
+}
+
 export const GameApps = () => {
     return (
         <>
             Game Apps : 
-            {Object.entries(gameApps).map(([key, value]) => renderGameApp(key, value))}
+            {Object.entries(gameApps).map(([key, value]) => value.useIframe ? renderGameAppIframe(key, value) : renderGameApp(key, value))}
         </>
     )
 }
