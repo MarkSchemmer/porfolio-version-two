@@ -39,10 +39,12 @@
     5. investigate payment using bitcoin for betting on app?
 */
 
+import { ChessBoard } from "./board/Board"
+
 export const ChessApp = () => {
     return (
         <>
-            Chess app. 
+           <ChessBoard />
         </>
     )
 }

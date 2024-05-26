@@ -58,7 +58,7 @@ export const GameApps = () => {
     return (
         <>
             Game Apps : 
-            {Object.entries(gameApps).map(([key, value]) => value.useIframe ? renderGameAppIframe(key, value) : renderGameApp(key, value))}
+            {Object.entries(gameApps).map(([key, value]) => value.useIframe ? renderGameApp(key, value) : renderGameApp(key, value))}
         </>
     )
 }
