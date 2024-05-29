@@ -1,39 +1,33 @@
-import { Box, Flex } from "@chakra-ui/layout"
-import { useState } from "react"
 
-const RowHolder = (props: any) => {
-    return (
-        <Flex wrap="wrap" justifyContent="space-between" bg={(props.bg || "none")}>
-            <BoardPiece /><BoardPiece /><BoardPiece />
-            <BoardPiece /><BoardPiece /><BoardPiece />
-            <BoardPiece /><BoardPiece />
-        </Flex>
-    )
-}
+// will calculate the moves ect here. 
+/*
+    A board is 64 squares connected. 
 
-const BoardPiece = () => {
-    const [state, setState] = useState({color: "none"})
-    return (
-        <Box 
-        onClick={() => setState(prevState => {
-            return {...prevState, color: "blue"}
-        })}
-        w={"99px"} h={"100px"} border={"1px solid blue"} display={"inline-block"} bg={state.color}>
-        </Box>
-    );
-}
+    left - right
+    forward back
+    dialeft diaright
+    diabackleft diabackright 
+    each connected to the next. 
 
-export const ChessBoard = () => {
-    return (
-        <Box w={"802px"} h={"802px"} border={"1px solid black"} m={"auto"} mt={"50px"}>
-            <RowHolder />
-            <RowHolder />
-            <RowHolder />
-            <RowHolder />
-            <RowHolder />
-            <RowHolder />
-            <RowHolder />
-            <RowHolder />
-        </Box>
-    )
+    Each square has a coordinate. 
+
+    Every square if a piece is on that square dictactes how we look and move then additional layer
+    of logic is overlayed. 
+
+    pieces we will implement and in order are: 
+
+    1. Pond
+    2. Rook
+    3. Knight
+    4. Bishop
+    5. Queen
+
+*/
+
+
+
+export class Board {
+    constructor() {
+
+    }
 }

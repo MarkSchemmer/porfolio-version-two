@@ -1,5 +1,10 @@
 
 /*
+
+    Some development rules, all methods should pure, and in their stand alone file. 
+
+    All classes need to be in their own file as well. 
+
     In the game of chess we have a board with squares. 
     And pieces, the pieces all have rules applied to them
     And the game functions in a turn base sequence. 
@@ -39,7 +44,7 @@
     5. investigate payment using bitcoin for betting on app?
 */
 
-import { ChessBoard } from "./board/Board"
+import { ChessBoard } from "./board/ChessBoard"
 
 export const ChessApp = () => {
     return (
