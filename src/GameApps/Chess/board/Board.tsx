@@ -24,10 +24,30 @@
 
 */
 
+/*
+
+        I generated a board or better yet graph board... so board is a graph that takes 
+        a Square[][]. 
+
+        That has a root 1-1 Node, which is a Square, then we can use iteration or 
+        Recursion ot some point that design decision can be made later. 
+
+        I'm thinking we will just 
+*/
+
+import { generateBoardOfSquares } from "../utils/Utils";
+import { Square } from "./Square";
+
 
 
 export class Board {
-    constructor() {
+    // baord needs to be changed for root, 
+    // then in constuctor we have a method that will create our 
+    // graph, we will have a root, then methods for iteration ect. 
+    // we can create a method for spliting the all the nodes (squares)
+    // into chunks which will then be rendered. 
+    public board: Square[][] = generateBoardOfSquares();
+    constructor(primitiveBoard: Square[][]) {
 
     }
 }
