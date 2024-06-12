@@ -8,6 +8,8 @@
 
 import { uuidv4 } from "../utils/Utils";
 
+export type MathCoordinate = [ number, number ]; 
+
 export class Square {
 
     public id = uuidv4();
@@ -21,7 +23,11 @@ export class Square {
     public diagonalBackLeft?: Square;
     public diagonalBackRight?: Square;
 
-    public mathematicalCoordinate: [number, number];
+    public mathematicalCoordinate: MathCoordinate;
+
+    // Testing props will be commented out later.
+    // Do not use.
+    public SquareBgColor: string = "none";
 
     constructor(mathematicalCoordinate: [number, number]) {
         this.mathematicalCoordinate = mathematicalCoordinate;

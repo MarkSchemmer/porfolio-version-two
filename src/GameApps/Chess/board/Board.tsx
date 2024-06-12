@@ -35,7 +35,7 @@
         I'm thinking we will just 
 */
 
-import { generateBoardOfSquares } from "../utils/Utils";
+import { connectAllSquares, generateBoardOfSquares, getHorizontalRow, getNode, getVerticalColumn } from "../utils/Utils";
 import { Square } from "./Square";
 
 
@@ -47,7 +47,41 @@ export class Board {
     // we can create a method for spliting the all the nodes (squares)
     // into chunks which will then be rendered. 
     public board: Square[][] = generateBoardOfSquares();
-    constructor(primitiveBoard: Square[][]) {
+    public rootNode: Square | undefined = getNode([1, 1], this.board);
 
+    constructor() {
+        // console.log("rootNode: ", this.rootNode);
+        // for testing only 
+        connectAllSquares(this.board, this.rootNode as Square);
+        this.make1_1RowRed();
+        this.make2_1ColBlue();
+    }
+
+
+
+    /*
+        Mehtods below this comment are for testing 
+
+        And will be moved enventually into a unit test 
+
+        Type format... 
+    */
+    // Testing method only. - will comment out later
+    // testing left to right 
+    public make1_1RowRed = () => {
+        const sqs = getHorizontalRow(this.rootNode, []);
+        sqs.forEach((sq: Square) => {
+            sq.SquareBgColor = "red";
+        })
+    }
+
+    // testing method only - will comment out later
+    // for testing only
+    public make2_1ColBlue = () => {
+        const node2_1 = getNode([2, 1], this.board);
+        const sqs = getVerticalColumn(node2_1, []);
+        sqs.forEach((sq: Square) => {
+            sq.SquareBgColor = "blue";
+        })
     }
 }

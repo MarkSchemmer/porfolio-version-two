@@ -1,8 +1,8 @@
-import { Box, Flex } from "@chakra-ui/layout"
-import { useState } from "react"
-import { Pond } from "../pieces/Pond"
-import { Board } from "./Board"
-import { Square } from "./Square"
+import { Box, Flex } from "@chakra-ui/layout";
+import { useState } from "react";
+import { Pond } from "../pieces/Pond";
+import { Board } from "./Board";
+import { Square } from "./Square";
 
 
 
@@ -20,10 +20,9 @@ const BoardPiece = (props: any) => {
     const [x, y] = props.sq.mathematicalCoordinate;
     return (
         <Box 
-        onClick={() => setState(prevState => {
-            return {...prevState, color: "blue"}
-        })}
-        w={"99px"} h={"100px"} border={"1px solid blue"} display={"inline-block"} bg={state.color}>
+        onClick={() =>{}}
+        // bg={(x=== 1 && y === 1) ? "red": state.color}
+        w={"99px"} h={"100px"} border={"1px solid blue"} display={"inline-block"} bg={props.sq.SquareBgColor}>
             {x+"-"+y}
         </Box>
     );
@@ -31,7 +30,7 @@ const BoardPiece = (props: any) => {
 
 export const ChessBoard = () => {
     // will update the input into Board later to be proper. 
-    const [chB, setBoard] = useState(new Board([]))
+    const [chB, setBoard] = useState(new Board())
 
     return (
         <Box w={"802px"} h={"802px"} border={"1px solid black"} m={"auto"} mt={"50px"}>
