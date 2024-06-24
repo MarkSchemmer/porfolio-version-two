@@ -6,6 +6,10 @@
 
 import { MathCoordinate, Square } from "../board/Square";
 
+
+export const isNullOrUndefined = (obj:any) => obj === null || obj === undefined;
+export const isValue = (obj:any) => !isNullOrUndefined(obj); 
+
 export enum PieceNames {
     POND = "POND",
     ROOK = "ROOK",
@@ -48,7 +52,7 @@ export const generateBoardOfSquares = (): Square[][] => {
 }
 
 export const getNode = ([x, y]: MathCoordinate, board: Square[][]): Square | undefined => {
-    for (let row = 0; row < 8; row++){
+    for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
             const sq = board[row][col];
             const [sqX, sqY] = sq.mathematicalCoordinate;
@@ -77,8 +81,10 @@ const connectLToR = (board: Square[][], rootNode: Square) => {
     let nextNode = getNode([rootX, rootY+1], board);
 
     if (nextNode) {
-        rootNode.right = nextNode;
-        nextNode.left = rootNode;
+        if (isNullOrUndefined(rootNode.right))
+            rootNode.right = nextNode;
+        if (isNullOrUndefined(nextNode.left))
+            nextNode.left = rootNode;
         connectLToR(board, nextNode);
     }
 }
@@ -93,20 +99,50 @@ const connectBToT = (board: Square[][], rootNode: Square) => {
     let nextNode = getNode([rootX+1, rootY], board);
 
     if (nextNode) {
-        rootNode.forward = nextNode;
-        nextNode.back = rootNode;
+        if (isNullOrUndefined(rootNode.forward))
+            rootNode.forward = nextNode;
+        if (isNullOrUndefined(rootNode.back))
+            nextNode.back = rootNode;
         connectBToT(board, nextNode);
     }
 }
 
 // connect diagonal left to diagonal right
-const connectDiagLToDiagR = () => {
+const connectDiagLToDiagR = (board: Square[][], rootNode: Square) => {
+    // break guard
+    if (rootNode === null || rootNode === undefined) {return;}
+    // connecting 1-1 to 1-8
+    // connecting only one line  left to right.
+    const [rootX, rootY] = rootNode.mathematicalCoordinate;
+    let nextNode = getNode([rootX+1, rootY+1], board);
 
+    if (nextNode) {
+        
+        if (isNullOrUndefined(rootNode.diagonalRight))
+            rootNode.diagonalRight = nextNode;
+        if (isNullOrUndefined(rootNode.diagonalBackLeft))
+            nextNode.diagonalBackLeft = rootNode;
+        connectDiagLToDiagR(board, nextNode);
+    }
 }
 
 // connect diagonal right to diagonal left
-const connectDiagRToDiagL = () => {
+const connectDiagRToDiagL = (board: Square[][], rootNode: Square) => {
+    // break guard
+    if (rootNode === null || rootNode === undefined) {return;}
+    // connecting 1-1 to 1-8
+    // connecting only one line  left to right.
+    const [rootX, rootY] = rootNode.mathematicalCoordinate;
+    let nextNode = getNode([rootX+1, rootY-1], board);
 
+    if (nextNode) {
+        // && rootNode.diagonalLeft === undefined && nextNode.diagonalBackRight
+        if (isNullOrUndefined(rootNode.diagonalLeft))
+            rootNode.diagonalLeft = nextNode;
+        if (isNullOrUndefined(rootNode.diagonalBackRight))
+            nextNode.diagonalBackRight = rootNode;
+        connectDiagRToDiagL(board, nextNode);
+    }
 }
 
 export const connectAllSquares = (board: Square[][], rootNode: Square) => {
@@ -117,6 +153,13 @@ export const connectAllSquares = (board: Square[][], rootNode: Square) => {
     // connecting bottom top
     // so for example 1-1 will be all connected with 8-1
     connectBToT(board, rootNode);
+
+    // connecting diagonals, so 1-1 to 8-8...
+    connectDiagLToDiagR(board, rootNode);
+
+    // connecting diagonals from right to left so for example
+    // 1-8 to 8-1
+    connectDiagRToDiagL(board, rootNode);
 }
 
 // I can add a layer of chess rules to determine if we can get that square. 
@@ -129,6 +172,14 @@ export const getHorizontalRow = (node: Square | undefined, squares: Square[]): a
 // and the pieces themselves can use these methods for finding next moves ect. 
 export const getVerticalColumn = (node: Square | undefined, squares: Square[]): any => {
     return node === undefined ? squares : getVerticalColumn(node.forward, [...squares, node])
+}
+
+export const getDiagonalLeftToRight = (node: Square | undefined, squares: Square[]): any => {
+    return node === undefined ? squares : getDiagonalLeftToRight(node.diagonalRight, [...squares, node])
+}
+
+export const getDiagonalRightToLeft = (node: Square | undefined, squares: Square[]): any => {
+    return node === undefined ? squares : getDiagonalRightToLeft(node.diagonalLeft, [...squares, node])
 }
 
 export function uuidv4() {
