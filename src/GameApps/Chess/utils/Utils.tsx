@@ -164,9 +164,21 @@ export const connectAllSquares = (board: Square[][], rootNode: Square) => {
 
 // I can add a layer of chess rules to determine if we can get that square. 
 // and the pieces themselves can use these methods for finding next moves ect. 
-export const getHorizontalRow = (node: Square | undefined, squares: Square[]): any => {
-    return node === undefined ? squares : getHorizontalRow(node.right, [...squares, node])
+export const getHorizontalRightRow = (node: Square | undefined, squares: Square[]): any => {
+    return node === undefined ? squares : getHorizontalRightRow(node.right, [...squares, node])
 }
+
+export const getHorizontalLeftRow = (node: Square | undefined, squares: Square[]): any => {
+    return node === undefined ? squares : getHorizontalLeftRow(node.left, [...squares, node])
+}
+
+export const getHorizontalRow = (node: Square | undefined, squares: Square[]): any => {
+    const rightRow = getHorizontalRightRow(node?.right, []);
+    const leftRow = getHorizontalLeftRow(node?.left, []);
+    return [...leftRow, node, ...rightRow];
+}
+
+
 
 // I can add a layer of chess rules to determine if we can get that square. 
 // and the pieces themselves can use these methods for finding next moves ect. 

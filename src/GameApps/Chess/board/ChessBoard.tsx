@@ -1,8 +1,11 @@
 import { Box, Flex } from "@chakra-ui/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pond } from "../pieces/Pond";
 import { Board } from "./Board";
 import { Square } from "./Square";
+import { useDispatch, useSelector } from "react-redux";
+import { UpdateChessBoard, getBoard, getTestingState } from "../../../store/slices/chessSlice";
+import { getHorizontalRow, getNode } from "../utils/Utils";
 
 
 
@@ -18,9 +21,21 @@ const RowHolder = (props: any) => {
 const BoardPiece = (props: any) => {
     const [state, setState] = useState({color: "none"})
     const [x, y] = props.sq.mathematicalCoordinate;
+    const dispatch = useDispatch();
+    const testing = useSelector(getTestingState);
+    const boardobj = useSelector(getBoard)
+    const board = boardobj.board;
     return (
         <Box 
-        onClick={() =>{}}
+        onClick={() =>{
+            if (testing.detectHorizontalSquares) {
+                // get left and right squares make them blue and 
+                // the selected root node of this square gold...
+                boardobj.clearBoardBgColor(); 
+                boardobj.updateBoardHorizontal([x, y]);
+                dispatch(UpdateChessBoard(boardobj));
+            }
+        }}
         // bg={(x=== 1 && y === 1) ? "red": state.color}
         w={"99px"} h={"100px"} border={"1px solid blue"} display={"inline-block"} bg={props.sq.SquareBgColor}>
             {x+"-"+y}
@@ -30,11 +45,12 @@ const BoardPiece = (props: any) => {
 
 export const ChessBoard = () => {
     // will update the input into Board later to be proper. 
-    const [chB, setBoard] = useState(new Board())
+    const boardobj = useSelector(getBoard);
+    const chB = boardobj.board;
 
     return (
         <Box w={"802px"} h={"802px"} border={"1px solid black"} m={"auto"} mt={"50px"}>
-            { chB.board.map((row: Square[], idx: number) => <RowHolder key={idx} squares={row} /> )}
+            { chB.map((row: Square[], idx: number) => <RowHolder key={idx} squares={row} /> )}
         </Box>
     )
 }

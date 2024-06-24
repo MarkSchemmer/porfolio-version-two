@@ -49,6 +49,8 @@ export class Board {
     public board: Square[][] = generateBoardOfSquares();
     public rootNode: Square | undefined = getNode([1, 1], this.board);
 
+    public triggerUpdate: any = Date.now();
+
     constructor() {
         this.boardSetup();
         this.testingMethodsSetupAndOperation();
@@ -58,11 +60,13 @@ export class Board {
         this.connectSquares();
     }
 
+
+
     // for testing and visiual testing
     // if I want to test additional things I 
     // add all the logic if. 
     public testingMethodsSetupAndOperation = () => {
-        this.make8_1Green();
+        //this.make8_1Green();
     }
     // setup up method.
     public connectSquares = () => {
@@ -73,7 +77,6 @@ export class Board {
             }
         }
     }
-
     /*
         Mehtods below this comment are for testing 
 
@@ -117,5 +120,23 @@ export class Board {
         sqs.forEach((sq: Square) => {
             sq.SquareBgColor = "green";
         });
+    }
+
+    public clearBoardBgColor = () => {
+        for (let i = 0; i < this.board.length; i++) {
+            for (let j = 0; j < this.board[i].length; j++) {
+                let rootNode = this.board[i][j];
+                rootNode.SquareBgColor = "";
+            }
+        }
+    }
+
+    // testing only
+    public updateBoardHorizontal = (coordinate:any) => {
+        const node = getNode(coordinate, this.board) as Square;
+        const sqs = getHorizontalRow(node, []);
+        sqs.forEach((sq: Square) => { sq.SquareBgColor = "blue"; });
+        node.SquareBgColor = "gold";
+        console.log(sqs);
     }
 }
