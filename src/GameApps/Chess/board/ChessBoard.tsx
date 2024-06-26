@@ -35,6 +35,14 @@ const BoardPiece = (props: any) => {
                 boardobj.updateBoardHorizontal([x, y]);
                 dispatch(UpdateChessBoard(boardobj));
             }
+
+            if (testing.vertical) {
+                // get left and right squares make them blue and 
+                // the selected root node of this square gold...
+                boardobj.clearBoardBgColor(); 
+                boardobj.updateBoardVertical([x, y]);
+                dispatch(UpdateChessBoard(boardobj));
+            }
         }}
         // bg={(x=== 1 && y === 1) ? "red": state.color}
         w={"99px"} h={"100px"} border={"1px solid blue"} display={"inline-block"} bg={props.sq.SquareBgColor}>

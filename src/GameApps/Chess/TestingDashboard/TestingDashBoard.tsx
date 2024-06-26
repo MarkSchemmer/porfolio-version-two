@@ -77,16 +77,24 @@ export const TestingDashboard = () => {
                             }} id='vertical' isChecked={testing.vertical} />
 
                             <FormLabel htmlFor='diagonal'>Diagonal squares click: :</FormLabel>
-                            <Switch id='diagonal' />
+                            <Switch id='diagonal' onChange={(evt: any) => {
+                                handleChange(evt, testing, dispatch, boardobj);
+                            }} isChecked={testing.diagonal} />
 
                             <FormLabel htmlFor='knight'>Knight squares click:</FormLabel>
-                            <Switch id='knight' />
+                            <Switch id='knight' onChange={(evt: any) => {
+                                handleChange(evt, testing, dispatch, boardobj);
+                            }} isChecked={testing.knight} />
 
                             <FormLabel htmlFor='rook'>Rook squares click:</FormLabel>
-                            <Switch id='rook' />
+                            <Switch id='rook' onChange={(evt: any) => {
+                                handleChange(evt, testing, dispatch, boardobj);
+                            }} isChecked={testing.rook} />
 
                             <FormLabel htmlFor='queen'>Queen squares click:</FormLabel>
-                            <Switch id='queen' />
+                            <Switch id='queen' onChange={(evt: any) => {
+                                handleChange(evt, testing, dispatch, boardobj);
+                            }} isChecked={testing.queen} />
                         </FormControl>
                     </Flex>
                 </VStack>

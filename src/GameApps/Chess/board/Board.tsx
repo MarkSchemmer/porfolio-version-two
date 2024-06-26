@@ -35,7 +35,7 @@
         I'm thinking we will just 
 */
 
-import { connectAllSquares, generateBoardOfSquares, getDiagonalLeftToRight, getDiagonalRightToLeft, getHorizontalRow, getNode, getVerticalColumn } from "../utils/Utils";
+import { connectAllSquares, generateBoardOfSquares, getDiagonalLeftToRight, getDiagonalRightToLeft, getHorizontalRow, getNode, getVerticalRow } from "../utils/Utils";
 import { Square } from "./Square";
 
 
@@ -97,7 +97,7 @@ export class Board {
     // for testing only
     public make2_1ColBlue = () => {
         const node2_1 = getNode([2, 1], this.board);
-        const sqs = getVerticalColumn(node2_1, []);
+        const sqs = getVerticalRow(node2_1, []);
         sqs.forEach((sq: Square) => {
             sq.SquareBgColor = "blue";
         });
@@ -137,6 +137,14 @@ export class Board {
         const sqs = getHorizontalRow(node, []);
         sqs.forEach((sq: Square) => { sq.SquareBgColor = "blue"; });
         node.SquareBgColor = "gold";
-        console.log(sqs);
+        // console.log(sqs);
+    }
+
+    public updateBoardVertical = (coordinate:any) => {
+        const node = getNode(coordinate, this.board) as Square;
+        const sqs = getVerticalRow(node, []);
+        sqs.forEach((sq: Square) => { sq.SquareBgColor = "blue"; });
+        node.SquareBgColor = "gold";
+        // console.log(sqs);
     }
 }

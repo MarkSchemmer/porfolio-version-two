@@ -180,10 +180,22 @@ export const getHorizontalRow = (node: Square | undefined, squares: Square[]): a
 
 
 
+
+
 // I can add a layer of chess rules to determine if we can get that square. 
 // and the pieces themselves can use these methods for finding next moves ect. 
-export const getVerticalColumn = (node: Square | undefined, squares: Square[]): any => {
-    return node === undefined ? squares : getVerticalColumn(node.forward, [...squares, node])
+export const getVerticalForwardColumn = (node: Square | undefined, squares: Square[]): any => {
+    return node === undefined ? squares : getVerticalForwardColumn(node.forward, [...squares, node])
+}
+
+export const getVerticalBackColumn = (node: Square | undefined, squares: Square[]): any => {
+    return node === undefined ? squares : getVerticalBackColumn(node.back, [...squares, node])
+}
+
+export const getVerticalRow = (node: Square | undefined, squares: Square[]): any => {
+    const forwardRow = getVerticalForwardColumn(node?.forward, []);
+    const backwardRow = getVerticalBackColumn(node?.back, []);
+    return [...forwardRow, node, ...backwardRow];
 }
 
 export const getDiagonalLeftToRight = (node: Square | undefined, squares: Square[]): any => {
