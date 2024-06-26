@@ -28,7 +28,7 @@ const BoardPiece = (props: any) => {
     return (
         <Box 
         onClick={() =>{
-            if (testing.detectHorizontalSquares) {
+            if (testing.horozontal) {
                 // get left and right squares make them blue and 
                 // the selected root node of this square gold...
                 boardobj.clearBoardBgColor(); 
@@ -50,7 +50,7 @@ export const ChessBoard = () => {
 
     return (
         <Box w={"802px"} h={"802px"} border={"1px solid black"} m={"auto"} mt={"50px"}>
-            { chB.map((row: Square[], idx: number) => <RowHolder key={idx} squares={row} /> )}
+            { chB.map((row: Square[], idx: number) => <RowHolder key={idx} squares={row} /> ) }
         </Box>
     )
 }

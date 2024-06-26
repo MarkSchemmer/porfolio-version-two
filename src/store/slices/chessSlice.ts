@@ -11,9 +11,11 @@ import { Board } from '../../GameApps/Chess/board/Board';
 */
 
 const localTesting = {
-    detectHorizontalSquares: false
+    horozontal: false,
+    vertical: false,
+    diagonal: false,
+    knight: false,
 }
-
 
 const initialState = {
     testing: localTesting,

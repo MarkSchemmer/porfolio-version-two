@@ -27,6 +27,23 @@ export const TestingDashboard = () => {
     const testing = useSelector(getTestingState);
     const dispatch = useDispatch();
     const boardobj = useSelector(getBoard);
+
+    const handleChange = (evt: any, tst: any, dsp: any, bdobj: any) => {
+        const name = evt.target.id; 
+        const newValue = !tst[name];
+
+        const newobj = Object.keys(tst).reduce((acc, cur:string) => {
+            acc[cur] = false;
+            return acc;
+        }, {...tst});
+
+        bdobj.clearBoardBgColor();
+        dsp(UpdateChessBoard(boardobj));
+        dsp(
+            UpdateChessTestingState({...newobj, [name]: newValue})
+        );
+    };
+
     // console.log(testing);
     return (
             <Card align='center'>
@@ -51,30 +68,25 @@ export const TestingDashboard = () => {
                         <FormControl as={SimpleGrid} columns={{ base: 2, lg: 4 }}>
                             <FormLabel htmlFor='horozontal'>Horizontal squares click:</FormLabel>
                             <Switch onChange={(evt:any) => { 
-                                const newValue = !testing.detectHorizontalSquares;
-                                if (newValue === false) {
-                                    boardobj.clearBoardBgColor();
-                                    dispatch(UpdateChessBoard(boardobj));
-                                }
-                                dispatch(
-                                    UpdateChessTestingState({...testing, detectHorizontalSquares: newValue})
-                                ) 
-                            }} id='horozontal' isChecked={testing.detectHorizontalSquares} />
+                                handleChange(evt, testing, dispatch, boardobj);
+                            }} id='horozontal' isChecked={testing.horozontal} />
 
-                            <FormLabel htmlFor='isDisabled'>isDisabled:</FormLabel>
-                            <Switch id='isDisabled' />
+                            <FormLabel htmlFor='vertical'>Vertical squares click:</FormLabel>
+                            <Switch onChange={(evt: any) => {
+                                handleChange(evt, testing, dispatch, boardobj);
+                            }} id='vertical' isChecked={testing.vertical} />
 
-                            <FormLabel htmlFor='isFocusable'>isFocusable:</FormLabel>
-                            <Switch id='isFocusable' />
+                            <FormLabel htmlFor='diagonal'>Diagonal squares click: :</FormLabel>
+                            <Switch id='diagonal' />
 
-                            <FormLabel htmlFor='isInvalid'>isInvalid:</FormLabel>
-                            <Switch id='isInvalid' />
+                            <FormLabel htmlFor='knight'>Knight squares click:</FormLabel>
+                            <Switch id='knight' />
 
-                            <FormLabel htmlFor='isReadOnly'>isReadOnly:</FormLabel>
-                            <Switch id='isReadOnly' />
+                            <FormLabel htmlFor='rook'>Rook squares click:</FormLabel>
+                            <Switch id='rook' />
 
-                            <FormLabel htmlFor='isRequired'>isRequired:</FormLabel>
-                            <Switch id='isRequired' />
+                            <FormLabel htmlFor='queen'>Queen squares click:</FormLabel>
+                            <Switch id='queen' />
                         </FormControl>
                     </Flex>
                 </VStack>
@@ -83,3 +95,4 @@ export const TestingDashboard = () => {
             </Card>
     )
 }
+
