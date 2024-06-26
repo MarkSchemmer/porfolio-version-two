@@ -28,6 +28,7 @@ const BoardPiece = (props: any) => {
     return (
         <Box 
         onClick={() =>{
+
             if (testing.horozontal) {
                 // get left and right squares make them blue and 
                 // the selected root node of this square gold...
@@ -41,6 +42,18 @@ const BoardPiece = (props: any) => {
                 // the selected root node of this square gold...
                 boardobj.clearBoardBgColor(); 
                 boardobj.updateBoardVertical([x, y]);
+                dispatch(UpdateChessBoard(boardobj));
+            }
+
+            if (testing.diagonal) {
+                boardobj.clearBoardBgColor(); 
+                boardobj.updateBoardDiagonal([x, y]);
+                dispatch(UpdateChessBoard(boardobj));
+            }
+
+            if (testing.rook) {
+                boardobj.clearBoardBgColor(); 
+                boardobj.updateRookMoves([x, y]);
                 dispatch(UpdateChessBoard(boardobj));
             }
         }}

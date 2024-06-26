@@ -127,6 +127,7 @@ const connectDiagLToDiagR = (board: Square[][], rootNode: Square) => {
 }
 
 // connect diagonal right to diagonal left
+// diagonal forward left to backward right
 const connectDiagRToDiagL = (board: Square[][], rootNode: Square) => {
     // break guard
     if (rootNode === null || rootNode === undefined) {return;}
@@ -141,9 +142,32 @@ const connectDiagRToDiagL = (board: Square[][], rootNode: Square) => {
             rootNode.diagonalLeft = nextNode;
         if (isNullOrUndefined(rootNode.diagonalBackRight))
             nextNode.diagonalBackRight = rootNode;
+
         connectDiagRToDiagL(board, nextNode);
     }
 }
+
+// connect diagonal right to diagonal left
+// diagonal forward left to backward right
+const connectDiagLToDiagRBack = (board: Square[][], rootNode: Square) => {
+    // break guard
+    if (rootNode === null || rootNode === undefined) {return;}
+    // connecting 1-1 to 1-8
+    // connecting only one line  left to right.
+    const [rootX, rootY] = rootNode.mathematicalCoordinate;
+    let nextNode = getNode([rootX-1, rootY+1], board);
+
+    if (nextNode) {
+        // && rootNode.diagonalLeft === undefined && nextNode.diagonalBackRight
+        //if (isNullOrUndefined(rootNode.diagonalBackRight))
+            rootNode.diagonalBackRight = nextNode;
+       // if (isNullOrUndefined(rootNode.diagonalBackRight))
+            nextNode.diagonalLeft = rootNode;
+
+        connectDiagLToDiagRBack(board, nextNode);
+    }
+}
+
 
 export const connectAllSquares = (board: Square[][], rootNode: Square) => {
     // connect left to right -> now we can iterate forwards and backwards
@@ -160,6 +184,8 @@ export const connectAllSquares = (board: Square[][], rootNode: Square) => {
     // connecting diagonals from right to left so for example
     // 1-8 to 8-1
     connectDiagRToDiagL(board, rootNode);
+
+    connectDiagLToDiagRBack(board, rootNode);
 }
 
 // I can add a layer of chess rules to determine if we can get that square. 
@@ -178,10 +204,6 @@ export const getHorizontalRow = (node: Square | undefined, squares: Square[]): a
     return [...leftRow, node, ...rightRow];
 }
 
-
-
-
-
 // I can add a layer of chess rules to determine if we can get that square. 
 // and the pieces themselves can use these methods for finding next moves ect. 
 export const getVerticalForwardColumn = (node: Square | undefined, squares: Square[]): any => {
@@ -198,12 +220,40 @@ export const getVerticalRow = (node: Square | undefined, squares: Square[]): any
     return [...forwardRow, node, ...backwardRow];
 }
 
+export const getRookMoves = (node: Square | undefined, squares: Square[]): any => {
+    const forwardRow = getVerticalForwardColumn(node?.forward, []);
+    const backwardRow = getVerticalBackColumn(node?.back, []);
+    const rightRow = getHorizontalRightRow(node?.right, []);
+    const leftRow = getHorizontalLeftRow(node?.left, []);
+    return [...forwardRow, node, ...backwardRow, ...rightRow, ...leftRow];
+}
+
 export const getDiagonalLeftToRight = (node: Square | undefined, squares: Square[]): any => {
     return node === undefined ? squares : getDiagonalLeftToRight(node.diagonalRight, [...squares, node])
 }
 
+export const getDiagonalLeftToRightBack = (node: Square | undefined, squares: Square[]): any => {
+    return node === undefined ? squares : getDiagonalLeftToRightBack(node.diagonalBackRight, [...squares, node])
+}
+
+
 export const getDiagonalRightToLeft = (node: Square | undefined, squares: Square[]): any => {
     return node === undefined ? squares : getDiagonalRightToLeft(node.diagonalLeft, [...squares, node])
+}
+
+export const getDiagonalRightToLeftBack = (node: Square | undefined, squares: Square[]): any => {
+    return node === undefined ? squares : getDiagonalRightToLeftBack(node.diagonalBackLeft, [...squares, node])
+}
+
+export const getDiagonalRow = (node: Square | undefined, squares: Square[]): any => {
+    
+    const rightRow = getDiagonalLeftToRight(node?.diagonalRight, []);
+    const rightRowBack = getDiagonalLeftToRightBack(node?.diagonalBackRight, []);
+
+    const leftRow = getDiagonalRightToLeft(node?.diagonalLeft, []);
+    const leftRowBack = getDiagonalRightToLeftBack(node?.diagonalBackLeft, []);
+
+    return [...leftRowBack, ...leftRow, node, ...rightRow, ...rightRowBack];
 }
 
 export function uuidv4() {

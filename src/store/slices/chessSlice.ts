@@ -15,6 +15,8 @@ const localTesting = {
     vertical: false,
     diagonal: false,
     knight: false,
+    queen: false,
+    rook: false,
 }
 
 const initialState = {
