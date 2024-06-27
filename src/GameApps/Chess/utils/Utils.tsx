@@ -220,14 +220,6 @@ export const getVerticalRow = (node: Square | undefined, squares: Square[]): any
     return [...forwardRow, node, ...backwardRow];
 }
 
-export const getRookMoves = (node: Square | undefined, squares: Square[]): any => {
-    const forwardRow = getVerticalForwardColumn(node?.forward, []);
-    const backwardRow = getVerticalBackColumn(node?.back, []);
-    const rightRow = getHorizontalRightRow(node?.right, []);
-    const leftRow = getHorizontalLeftRow(node?.left, []);
-    return [...forwardRow, node, ...backwardRow, ...rightRow, ...leftRow];
-}
-
 export const getDiagonalLeftToRight = (node: Square | undefined, squares: Square[]): any => {
     return node === undefined ? squares : getDiagonalLeftToRight(node.diagonalRight, [...squares, node])
 }
@@ -245,7 +237,9 @@ export const getDiagonalRightToLeftBack = (node: Square | undefined, squares: Sq
     return node === undefined ? squares : getDiagonalRightToLeftBack(node.diagonalBackLeft, [...squares, node])
 }
 
-export const getDiagonalRow = (node: Square | undefined, squares: Square[]): any => {
+
+// Bishop moves 
+export const getBishopMoves = (node: Square | undefined, squares: Square[]): any => {
     
     const rightRow = getDiagonalLeftToRight(node?.diagonalRight, []);
     const rightRowBack = getDiagonalLeftToRightBack(node?.diagonalBackRight, []);
@@ -254,6 +248,51 @@ export const getDiagonalRow = (node: Square | undefined, squares: Square[]): any
     const leftRowBack = getDiagonalRightToLeftBack(node?.diagonalBackLeft, []);
 
     return [...leftRowBack, ...leftRow, node, ...rightRow, ...rightRowBack];
+}
+
+// Rook moves. 
+export const getRookMoves = (node: Square | undefined, squares: Square[]): any => {
+    const forwardRow = getVerticalForwardColumn(node?.forward, []);
+    const backwardRow = getVerticalBackColumn(node?.back, []);
+    const rightRow = getHorizontalRightRow(node?.right, []);
+    const leftRow = getHorizontalLeftRow(node?.left, []);
+    return [...forwardRow, node, ...backwardRow, ...rightRow, ...leftRow];
+}
+
+// Queen moves 
+export const getQueenMoves = (node: Square | undefined, squares: Square[]): any => {
+
+    let horzAndVertMoves = getRookMoves(node, []);
+    let diagMoves = getBishopMoves(node, []);
+
+    let allMovesWithoutNode = [...diagMoves, ...horzAndVertMoves].filter((sq: Square) => {
+            const [x, y] = sq.mathematicalCoordinate;
+            return (x === node?.mathematicalCoordinate[0] && y === node?.mathematicalCoordinate[1]) === false;
+    });
+
+    return [...allMovesWithoutNode, node];
+}
+
+// Knight moves
+export const getKnightMoves = (node: Square | undefined, squares: Square[]): any => {
+
+    let tpL = node?.forward?.forward?.left;
+    let tpR = node?.forward?.forward?.right;
+
+    let ltp = node?.left?.left?.forward;
+    let lbtm = node?.left?.left?.back;
+
+    let bl = node?.back?.back?.left;
+    let br = node?.back?.back?.right;
+
+    let rtp = node?.right?.right?.forward;
+    let rbtm = node?.right?.right?.back;
+
+    const knightMoves = [
+        tpL, tpR, ltp, lbtm, bl, br, rtp, rbtm
+    ].filter((sq: Square | undefined) => isValue(sq));
+
+    return [...knightMoves, node];
 }
 
 export function uuidv4() {

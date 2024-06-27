@@ -76,7 +76,7 @@ export const TestingDashboard = () => {
                                 handleChange(evt, testing, dispatch, boardobj);
                             }} id='vertical' isChecked={testing.vertical} />
 
-                            <FormLabel htmlFor='diagonal'>Diagonal squares click: :</FormLabel>
+                            <FormLabel htmlFor='diagonal'>Bishop squares click: :</FormLabel>
                             <Switch id='diagonal' onChange={(evt: any) => {
                                 handleChange(evt, testing, dispatch, boardobj);
                             }} isChecked={testing.diagonal} />

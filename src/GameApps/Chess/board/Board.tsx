@@ -35,7 +35,7 @@
         I'm thinking we will just 
 */
 
-import { connectAllSquares, generateBoardOfSquares, getDiagonalLeftToRight, getDiagonalRightToLeft, getDiagonalRow, getHorizontalRow, getNode, getRookMoves, getVerticalRow } from "../utils/Utils";
+import { connectAllSquares, generateBoardOfSquares, getDiagonalLeftToRight, getDiagonalRightToLeft, getBishopMoves, getHorizontalRow, getKnightMoves, getNode, getQueenMoves, getRookMoves, getVerticalRow } from "../utils/Utils";
 import { Square } from "./Square";
 
 
@@ -151,7 +151,7 @@ export class Board {
     
     public updateBoardDiagonal = (coordinate:any) => {
         const node = getNode(coordinate, this.board) as Square;
-        const sqs = getDiagonalRow(node, []);
+        const sqs = getBishopMoves(node, []);
         sqs.forEach((sq: Square) => { sq.SquareBgColor = "blue"; });
         node.SquareBgColor = "gold";
         // console.log(sqs);
@@ -160,6 +160,22 @@ export class Board {
     public updateRookMoves = (coordinate:any) => {
         const node = getNode(coordinate, this.board) as Square;
         const sqs = getRookMoves(node, []);
+        sqs.forEach((sq: Square) => { sq.SquareBgColor = "blue"; });
+        node.SquareBgColor = "gold";
+        // console.log(sqs);
+    }
+
+    public updateQueenMoves = (coordinate:any) => {
+        const node = getNode(coordinate, this.board) as Square;
+        const sqs = getQueenMoves(node, []);
+        sqs.forEach((sq: Square) => { sq.SquareBgColor = "blue"; });
+        node.SquareBgColor = "gold";
+        // console.log(sqs);
+    }
+
+    public updateKnightMoves = (coordinate:any) => {
+        const node = getNode(coordinate, this.board) as Square;
+        const sqs = getKnightMoves(node, []);
         sqs.forEach((sq: Square) => { sq.SquareBgColor = "blue"; });
         node.SquareBgColor = "gold";
         // console.log(sqs);
