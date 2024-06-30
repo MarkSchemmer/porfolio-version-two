@@ -5,7 +5,7 @@ import { Board } from "./Board";
 import { Square } from "./Square";
 import { useDispatch, useSelector } from "react-redux";
 import { UpdateChessBoard, getBoard, getTestingState } from "../../../store/slices/chessSlice";
-import { getHorizontalRow, getNode } from "../utils/Utils";
+import { coordinateToLetterValueMap, getHorizontalRow, getNode } from "../utils/Utils";
 
 
 
@@ -20,11 +20,14 @@ const RowHolder = (props: any) => {
 
 const BoardPiece = (props: any) => {
     const [state, setState] = useState({color: "none"})
-    const [x, y] = props.sq.mathematicalCoordinate;
+    const [x, y] = props.sq.mathematicalCoordinate as [number, number];
     const dispatch = useDispatch();
     const testing = useSelector(getTestingState);
     const boardobj = useSelector(getBoard)
     const board = boardobj.board;
+
+    const bottomRight = (coordinateToLetterValueMap as any)[y.toString()];
+
     return (
         <Box 
         onClick={() => {
@@ -70,9 +73,18 @@ const BoardPiece = (props: any) => {
         }}
         // bg={(x=== 1 && y === 1) ? "red": state.color}
         w={"99px"} h={"100px"} border={"1px solid blue"} display={"inline-block"} bg={props.sq.SquareBgColor}>
-            {x+"-"+y}
+            { y === 1 ? <strong style={{paddingLeft: "5px", paddingTop: "5px"}}>{x}</strong> : null }
+            { x === 1 ? <BottomRightLetter btr={bottomRight} mtp={y=== 1 ? "49%" : "74%"} /> : null}
         </Box>
     );
+}
+
+export const BottomRightLetter = (props: any) => {
+    return (
+        <Box position={"static"} textAlign={"right"} mt={props.mtp} pr={"5px"}>
+            <Box><strong>{ props.btr }</strong></Box>
+        </Box>
+    )
 }
 
 export const ChessBoard = () => {

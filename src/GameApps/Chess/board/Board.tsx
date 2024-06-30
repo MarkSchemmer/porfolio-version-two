@@ -62,6 +62,11 @@ export class Board {
 
 
 
+
+
+    // ******************************************************************
+    // Testing only - 
+    // ******************************************************************
     // for testing and visiual testing
     // if I want to test additional things I 
     // add all the logic if. 
