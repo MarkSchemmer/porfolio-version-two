@@ -35,6 +35,7 @@
         I'm thinking we will just 
 */
 
+import { Pond } from "../pieces/Pond";
 import { connectAllSquares, generateBoardOfSquares, getDiagonalLeftToRight, getDiagonalRightToLeft, getBishopMoves, getHorizontalRow, getKnightMoves, getNode, getQueenMoves, getRookMoves, getVerticalRow } from "../utils/Utils";
 import { Square } from "./Square";
 
@@ -58,6 +59,14 @@ export class Board {
 
     public boardSetup = () => {
         this.connectSquares();
+        if (this.rootNode)
+            this.rootNode.piece = new Pond();
+
+
+        let n  = getNode([2, 2], this.board);
+
+        if (n) 
+            n.piece = new Pond();
     }
 
 

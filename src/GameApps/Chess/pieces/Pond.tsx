@@ -9,6 +9,6 @@ export class Pond extends Piece {
     }
 
     public draw = () => {
-        return <img src={blackPond} />
+        return <img style={{ height: "75px", marginLeft: "12px", marginTop: "5px"}} src={blackPond} />
     }
 }

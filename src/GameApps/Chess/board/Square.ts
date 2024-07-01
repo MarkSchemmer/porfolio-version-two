@@ -6,6 +6,7 @@
     Then render all squares with mathematical coordinate
 */
 
+import { Piece } from "../pieces/Piece";
 import { uuidv4 } from "../utils/Utils";
 
 export type MathCoordinate = [ number, number ]; 
@@ -24,6 +25,8 @@ export class Square {
     public diagonalBackRight?: Square;
 
     public mathematicalCoordinate: MathCoordinate;
+
+    public piece: Piece | undefined = undefined;
 
     // Testing props will be commented out later.
     // Do not use.

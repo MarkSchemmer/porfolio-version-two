@@ -29,7 +29,8 @@ const BoardPiece = (props: any) => {
     const bottomRight = (coordinateToLetterValueMap as any)[y.toString()];
 
     return (
-        <Box 
+        <Flex 
+        alignItems={"center"}
         onClick={() => {
             if (testing.horozontal) {
                 // get left and right squares make them blue and 
@@ -71,20 +72,26 @@ const BoardPiece = (props: any) => {
                 dispatch(UpdateChessBoard(boardobj));
             }
         }}
+        /*
+        
+            position: relative;
+    top: -98px;
+        
+        
+        */
         // bg={(x=== 1 && y === 1) ? "red": state.color}
         w={"99px"} h={"100px"} border={"1px solid blue"} display={"inline-block"} bg={props.sq.SquareBgColor}>
-            { y === 1 ? <strong style={{paddingLeft: "5px", paddingTop: "5px"}}>{x}</strong> : null }
-            { x === 1 ? <BottomRightLetter btr={bottomRight} mtp={y=== 1 ? "49%" : "74%"} /> : null}
-        </Box>
-    );
-}
+            { y === 1 ? <strong style={{ paddingLeft: "5px", paddingTop: "5px", position: "absolute"}}>{x}</strong> : null }
+            {
+                props.sq.piece ? <Box position={"absolute"}>{props.sq.piece.draw()}</Box> : null 
+            }
+            {/*     
+                    width: 10px;
+                    margin-left: calc(100% - 20px); */}
+            { x === 1 ? <strong style={{position: "absolute", paddingLeft: "82px", paddingTop: "70px"}}>{bottomRight}</strong> : null }
 
-export const BottomRightLetter = (props: any) => {
-    return (
-        <Box position={"static"} textAlign={"right"} mt={props.mtp} pr={"5px"}>
-            <Box><strong>{ props.btr }</strong></Box>
-        </Box>
-    )
+        </Flex>
+    );
 }
 
 export const ChessBoard = () => {
