@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardHeader, CardBody, CardFooter, Button, Heading, Text, Switch, FormControl, FormLabel, Box, Flex, SimpleGrid, VStack } from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux';
 import { UpdateChessBoard, UpdateChessTestingState, getBoard, getTestingState } from '../../../store/slices/chessSlice';
+import { BoxPiece, Pond } from '../pieces/Pond';
 
 /*
     Let's create a styling dashboard where we can toggle: 
@@ -46,6 +47,7 @@ export const TestingDashboard = () => {
 
     // console.log(testing);
     return (
+        <Box>
             <Card align='center'>
             <CardHeader>
                 <Heading size='md'> Testing Dashboard</Heading>
@@ -55,52 +57,70 @@ export const TestingDashboard = () => {
                     <Text>You can add features or disable to enable the programmer to visually test</Text>
                     <Text>This is meant as a additional layer of testing other than unit tests.</Text>
             </CardBody>
-            <CardFooter>
-                <VStack spacing={"25px"}>
-                    <Box display='block'>
-                        <Button colorScheme='blue'>Testing tools below: </Button>
-                    </Box>
+                <CardFooter>
+                    <VStack spacing={"25px"}>
+                        <Box display='block'>
+                            <Button colorScheme='blue'>Testing tools below: </Button>
+                        </Box>
 
-                    <Box>
-                        <Text><strong>Square connectivity checks:</strong></Text>
-                    </Box>
-                    <Flex display={"block"}>
-                        <FormControl as={SimpleGrid} columns={{ base: 2, lg: 4 }}>
-                            <FormLabel htmlFor='horozontal'>Horizontal squares click:</FormLabel>
-                            <Switch onChange={(evt:any) => { 
-                                handleChange(evt, testing, dispatch, boardobj);
-                            }} id='horozontal' isChecked={testing.horozontal} />
+                        <Box>
+                            <Text><strong>Square connectivity checks:</strong></Text>
+                        </Box>
+                        <Flex display={"block"}>
+                            <FormControl as={SimpleGrid} columns={{ base: 2, lg: 4 }}>
+                                <FormLabel htmlFor='horozontal'>Horizontal squares click:</FormLabel>
+                                <Switch onChange={(evt:any) => { 
+                                    handleChange(evt, testing, dispatch, boardobj);
+                                }} id='horozontal' isChecked={testing.horozontal} />
 
-                            <FormLabel htmlFor='vertical'>Vertical squares click:</FormLabel>
-                            <Switch onChange={(evt: any) => {
-                                handleChange(evt, testing, dispatch, boardobj);
-                            }} id='vertical' isChecked={testing.vertical} />
+                                <FormLabel htmlFor='vertical'>Vertical squares click:</FormLabel>
+                                <Switch onChange={(evt: any) => {
+                                    handleChange(evt, testing, dispatch, boardobj);
+                                }} id='vertical' isChecked={testing.vertical} />
 
-                            <FormLabel htmlFor='diagonal'>Bishop squares click: :</FormLabel>
-                            <Switch id='diagonal' onChange={(evt: any) => {
-                                handleChange(evt, testing, dispatch, boardobj);
-                            }} isChecked={testing.diagonal} />
+                                <FormLabel htmlFor='diagonal'>Bishop squares click: :</FormLabel>
+                                <Switch id='diagonal' onChange={(evt: any) => {
+                                    handleChange(evt, testing, dispatch, boardobj);
+                                }} isChecked={testing.diagonal} />
 
-                            <FormLabel htmlFor='knight'>Knight squares click:</FormLabel>
-                            <Switch id='knight' onChange={(evt: any) => {
-                                handleChange(evt, testing, dispatch, boardobj);
-                            }} isChecked={testing.knight} />
+                                <FormLabel htmlFor='knight'>Knight squares click:</FormLabel>
+                                <Switch id='knight' onChange={(evt: any) => {
+                                    handleChange(evt, testing, dispatch, boardobj);
+                                }} isChecked={testing.knight} />
 
-                            <FormLabel htmlFor='rook'>Rook squares click:</FormLabel>
-                            <Switch id='rook' onChange={(evt: any) => {
-                                handleChange(evt, testing, dispatch, boardobj);
-                            }} isChecked={testing.rook} />
+                                <FormLabel htmlFor='rook'>Rook squares click:</FormLabel>
+                                <Switch id='rook' onChange={(evt: any) => {
+                                    handleChange(evt, testing, dispatch, boardobj);
+                                }} isChecked={testing.rook} />
 
-                            <FormLabel htmlFor='queen'>Queen squares click:</FormLabel>
-                            <Switch id='queen' onChange={(evt: any) => {
-                                handleChange(evt, testing, dispatch, boardobj);
-                            }} isChecked={testing.queen} />
-                        </FormControl>
-                    </Flex>
-                </VStack>
-  
-            </CardFooter>
+                                <FormLabel htmlFor='queen'>Queen squares click:</FormLabel>
+                                <Switch id='queen' onChange={(evt: any) => {
+                                    handleChange(evt, testing, dispatch, boardobj);
+                                }} isChecked={testing.queen} />
+                            </FormControl>
+                        </Flex>
+                    </VStack>
+                </CardFooter>
             </Card>
+
+            <Card align='center'>
+            <CardHeader>
+                <Heading size='md'>Piece Manipulation Board</Heading>
+            </CardHeader>
+            <CardBody>
+                    <Text>Activate button then select </Text>
+            </CardBody>
+                <CardFooter>
+                    <VStack spacing={"25px"}>
+                        <Flex display={"block"}>
+                            <FormControl as={SimpleGrid} columns={{ base: 2, lg: 4 }}>
+                                <BoxPiece />
+                            </FormControl>
+                        </Flex>
+                    </VStack>
+                </CardFooter>
+            </Card>
+        </Box>
     )
 }
 

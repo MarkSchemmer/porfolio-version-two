@@ -72,13 +72,6 @@ const BoardPiece = (props: any) => {
                 dispatch(UpdateChessBoard(boardobj));
             }
         }}
-        /*
-        
-            position: relative;
-    top: -98px;
-        
-        
-        */
         // bg={(x=== 1 && y === 1) ? "red": state.color}
         w={"99px"} h={"100px"} border={"1px solid blue"} display={"inline-block"} bg={props.sq.SquareBgColor}>
             { y === 1 ? <strong style={{ paddingLeft: "5px", paddingTop: "5px", position: "absolute"}}>{x}</strong> : null }

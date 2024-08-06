@@ -59,14 +59,12 @@ export class Board {
 
     public boardSetup = () => {
         this.connectSquares();
-        if (this.rootNode)
-            this.rootNode.piece = new Pond();
 
-
-        let n  = getNode([2, 2], this.board);
-
-        if (n) 
-            n.piece = new Pond();
+        // if (this.rootNode)
+        //     this.rootNode.piece = new Pond();
+        //let n  = getNode([2, 2], this.board);
+        // if (n) 
+        //     n.piece = new Pond();
     }
 
 
