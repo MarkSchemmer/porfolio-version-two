@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardHeader, CardBody, CardFooter, Button, Heading, Text, Switch, FormControl, FormLabel, Box, Flex, SimpleGrid, VStack } from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux';
 import { UpdateChessBoard, UpdateChessTestingState, getBoard, getTestingState } from '../../../store/slices/chessSlice';
-import { BoxPiece, Pond } from '../pieces/Pond';
+import { BoxPieces } from './PieceButtons/PieceButtons';
 
 /*
     Let's create a styling dashboard where we can toggle: 
@@ -113,8 +113,8 @@ export const TestingDashboard = () => {
                 <CardFooter>
                     <VStack spacing={"25px"}>
                         <Flex display={"block"}>
-                            <FormControl as={SimpleGrid} columns={{ base: 2, lg: 4 }}>
-                                <BoxPiece />
+                            <FormControl as={SimpleGrid} columns={{ base: 1, lg: 1 }}>
+                                <BoxPieces />
                             </FormControl>
                         </Flex>
                     </VStack>
