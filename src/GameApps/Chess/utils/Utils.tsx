@@ -19,6 +19,11 @@ export enum PieceNames {
     KING = "KING",
 }
 
+export enum PieceColor {
+    BLACK = "BLACK",
+    WHITE = "WHITE"
+}
+
 export enum letterCoordinate {
     A,
     B,

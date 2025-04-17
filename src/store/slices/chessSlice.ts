@@ -1,14 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Todo } from '../../GameApps/TodoMvc/entities/Todo';
 import { Board } from '../../GameApps/Chess/board/Board';
-
-/*
-
-  public AddTodo = (todo: string) => this.setTodoList([...this.list, new Todo(todo)])
-
-  public GetTodos = () => this.list
-
-*/
+import { PieceColor, PieceNames } from '../../GameApps/Chess/utils/Utils';
 
 const localTesting = {
     horozontal: false,
@@ -19,8 +12,24 @@ const localTesting = {
     rook: false,
 }
 
+type pieceManSelected = {
+    name: PieceNames | null,
+    pieceColor: PieceColor | null 
+}
+
+const initialPiecceSelected: pieceManSelected = {
+    name: null,
+    pieceColor: null 
+}
+
+const pieceManipulationTesting = {
+    active: false,
+    pieceSelected: initialPiecceSelected // will be object {color, pieceName} or null. if active {black, rook} or {white, queen} etc. etc. etc. 
+}
+
 const initialState = {
     testing: localTesting,
+    pieceManipulation: pieceManipulationTesting,
     board: new Board()
 }
 
@@ -36,12 +45,24 @@ export const chessSlice = createSlice({
             newBoard.board = action.payload.board;
             newBoard.rootNode = action.payload.rootNode;
             state.board = newBoard;
+        },
+        updatePieceManipulationTesting: (state, action: {type: string, payload: any}) => {
+            
+            if (action.payload.name === state.pieceManipulation?.pieceSelected?.name) {
+                state.pieceManipulation = pieceManipulationTesting
+            } else {
+                state.pieceManipulation = {
+                    pieceSelected: { ...action.payload },
+                    active: true
+                }
+            }
+
         }
     },
   });
 
-  export const { UpdateChessTestingState, UpdateChessBoard } = chessSlice.actions;
+  export const { UpdateChessTestingState, UpdateChessBoard, updatePieceManipulationTesting } = chessSlice.actions;
   export const getTestingState = (state:any) => state.chessState.testing;
   export const getBoard = (state: any) => state.chessState.board;
-  
+  export const getCurrentPieceBeingManipulated = (state:any) => state.chessState.pieceManipulation
   export default chessSlice.reducer
