@@ -46,8 +46,7 @@ export const chessSlice = createSlice({
             newBoard.rootNode = action.payload.rootNode;
             state.board = newBoard;
         },
-        updatePieceManipulationTesting: (state, action: {type: string, payload: any}) => {
-            
+        updatePieceManipulationTesting: (state, action: {type: string, payload: any}) => {    
             if (action.payload.name === state.pieceManipulation?.pieceSelected?.name) {
                 state.pieceManipulation = pieceManipulationTesting
             } else {
@@ -56,7 +55,6 @@ export const chessSlice = createSlice({
                     active: true
                 }
             }
-
         }
     },
   });

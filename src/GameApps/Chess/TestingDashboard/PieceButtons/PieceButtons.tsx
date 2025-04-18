@@ -1,7 +1,7 @@
 import { Box, Text, Flex, Grid, GridItem } from "@chakra-ui/react";
 import blackPond from "../../utils/GameImages/bp.png";
 import blackRook from "../../utils/GameImages/br.png";
-import blackKnight from "../../utils/GameImages/bk.png";
+import blackKnight from "../../utils/GameImages/bn.png";
 import blackBishop from "../../utils/GameImages/bb.png";
 import blackQueen from "../../utils/GameImages/bq.png";
 import blackKing from "../../utils/GameImages/bk.png";
@@ -10,9 +10,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { PieceColor, PieceNames } from "../../utils/Utils";
 import { getCurrentPieceBeingManipulated, updatePieceManipulationTesting } from "../../../../store/slices/chessSlice";
 
+// TODOS: 
 
 /*
-        
+        - Fix Knight button icon, currently it's a king and not a knight - DONE
+        - Need to activate piece then click chess board to place piece be able to do this for all pieces. 
+        - when pieces are on board be able to click piece see visible moves and move them. 
+        - Add row of white pieces as well to add white pieces
 
 */
 
@@ -48,9 +52,9 @@ import { getCurrentPieceBeingManipulated, updatePieceManipulationTesting } from 
 const pieces = [
     { name: PieceNames.POND, image: blackPond, pieceColor: PieceColor.BLACK }, 
     { name: PieceNames.KNIGHT, image: blackKnight,  pieceColor: PieceColor.BLACK }, 
+    { name: PieceNames.BISHOP, image: blackBishop,  pieceColor: PieceColor.BLACK }, 
     { name: PieceNames.ROOK, image: blackRook,  pieceColor: PieceColor.BLACK }, 
     { name: PieceNames.QUEEN, image: blackQueen,  pieceColor: PieceColor.BLACK }, 
-    { name: PieceNames.BISHOP, image: blackBishop,  pieceColor: PieceColor.BLACK }, 
     { name: PieceNames.KING, image: blackKing,  pieceColor: PieceColor.BLACK }
 ];
 
