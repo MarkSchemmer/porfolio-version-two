@@ -5,7 +5,12 @@
 */
 
 import { MathCoordinate, Square } from "../board/Square";
+import { BlackBishop, WhiteBishop } from "../pieces/Bishop";
+import { BlackKing, WhiteKing } from "../pieces/King";
+import { BlackKnight, WhiteKnight } from "../pieces/Knight";
 import { BlackPond, WhitePond } from "../pieces/Pond";
+import { BlackQueen, WhiteQueen } from "../pieces/Queen";
+import { BlackRook, WhiteRook } from "../pieces/Rook";
 
 export const isNullOrUndefined = (obj: any) =>
   obj === null || obj === undefined;
@@ -59,9 +64,25 @@ export const coordinateToLetterValueMap = {
 };
 
 export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
+  const isWhite = color === PieceColor.WHITE;
   switch (piece) {
     case PieceNames.POND: {
-      return color === PieceColor.WHITE ? new WhitePond() : new BlackPond();
+      return isWhite ? new WhitePond() : new BlackPond();
+    }
+    case PieceNames.KNIGHT: {
+      return isWhite ? new WhiteKnight() : new BlackKnight();
+    }
+    case PieceNames.BISHOP: {
+      return isWhite ? new WhiteBishop() : new BlackBishop();
+    }
+    case PieceNames.ROOK: {
+      return isWhite ? new WhiteRook() : new BlackRook();
+    }
+    case PieceNames.QUEEN: {
+      return isWhite ? new WhiteQueen() : new BlackQueen();
+    }
+    case PieceNames.KING: {
+      return isWhite ? new WhiteKing() : new BlackKing();
     }
     default: {
       return null;
