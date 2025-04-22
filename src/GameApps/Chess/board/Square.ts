@@ -26,7 +26,7 @@ export class Square {
 
     public mathematicalCoordinate: MathCoordinate;
 
-    public piece: Piece | undefined = undefined;
+    public piece: Piece | null | undefined = null;
 
     // Testing props will be commented out later.
     // Do not use.
@@ -34,5 +34,9 @@ export class Square {
 
     constructor(mathematicalCoordinate: [number, number]) {
         this.mathematicalCoordinate = mathematicalCoordinate;
+    }
+
+    public SquareHasPiece = (): boolean => {
+        return this.piece !== null && this.piece !== undefined;
     }
 }

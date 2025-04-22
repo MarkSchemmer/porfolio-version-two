@@ -168,7 +168,7 @@ export class Board {
     // console.log(sqs);
   };
 
-  public updateBoardDiagonal = (coordinate: any) => {
+  public updateBishopMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getBishopMoves(node, []);
     sqs.forEach((sq: Square) => {

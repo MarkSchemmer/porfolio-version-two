@@ -13,6 +13,7 @@ import {
   coordinateToLetterValueMap,
   getHorizontalRow,
   getNode,
+  HandleSquareClickWithPiece,
   PieceFactory,
 } from "../utils/Utils";
 
@@ -42,7 +43,9 @@ const BoardPiece = (props: any) => {
     <Flex
       alignItems={"center"}
       onClick={() => {
-        if (chessPieceManipulation.active === false) {
+        if (Object.values(testing).some(v => v)) {
+          // console.log('testing block')
+          // console.log(testing)
           if (testing.horozontal) {
             // get left and right squares make them blue and
             // the selected root node of this square gold...
@@ -61,7 +64,7 @@ const BoardPiece = (props: any) => {
 
           if (testing.diagonal) {
             boardobj.clearBoardBgColor();
-            boardobj.updateBoardDiagonal([x, y]);
+            boardobj.updateBishopMoves([x, y]);
             dispatch(UpdateChessBoard(boardobj));
           }
 
@@ -83,10 +86,28 @@ const BoardPiece = (props: any) => {
             dispatch(UpdateChessBoard(boardobj));
           }
         } else if (chessPieceManipulation.active === true) {
+            // console.log('piece manipulation block');
             const {name, color} = chessPieceManipulation.pieceSelected;
             const piece = PieceFactory(name, color);
             boardobj.populateSquareWithPiece([x, y], piece);
             dispatch(UpdateChessBoard(boardobj));
+        } else {
+          // console.log('Handle click else block')
+
+          // if the board is click check if piece is there then if the piece is there 
+          // we need a signal that activates and store active piece, [x, y] coordinate as well
+          // I'm guessing what I can do is I can pass the piecename, coordinate, and finally piece color
+          // use this information to check if a piece exists in this coordinate if so then we calculate the moves it can move
+          
+          // ------------------------------------------------------------------------------------------------------------------
+          // ------------------------------------------------------------------------------------------------------------------
+
+          // the code below this, will click a piece and render the moves on the board
+          // But now we need a mechanism for an active piece so... we can click a square and move that if it's 
+          // one of the valid squares it can actually move to. 
+          const chessBoard = HandleSquareClickWithPiece([x, y], boardobj);
+          dispatch(UpdateChessBoard(chessBoard));
+          
         }
       }}
       // bg={(x=== 1 && y === 1) ? "red": state.color}

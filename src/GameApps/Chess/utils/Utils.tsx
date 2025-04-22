@@ -4,6 +4,7 @@
     To avoid the issues of dealing with classes and types performing in their Typescript way. 
 */
 
+import { Board } from "../board/Board";
 import { MathCoordinate, Square } from "../board/Square";
 import { BlackBishop, WhiteBishop } from "../pieces/Bishop";
 import { BlackKing, WhiteKing } from "../pieces/King";
@@ -88,6 +89,53 @@ export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
       return null;
     }
   }
+};
+
+export const HandleSquareClickWithPiece = (
+  coordinate: [number, number],
+  chessBoard: Board
+) => {
+  const node = getNode(coordinate, chessBoard.board);
+  if (node?.SquareHasPiece()) {
+    const pieceName = node?.piece?.pieceName;
+    switch(pieceName) {
+      case PieceNames.POND: {
+        // need to implement pond moves later TODO: All scenarios - 
+        break;
+      }
+      case PieceNames.KNIGHT: {
+        chessBoard.clearBoardBgColor();
+        chessBoard.updateKnightMoves(coordinate);
+        return chessBoard;
+      }
+      case PieceNames.BISHOP: {
+       chessBoard.clearBoardBgColor();
+       chessBoard.updateBishopMoves(coordinate);
+       return chessBoard;
+      }
+      case PieceNames.ROOK: {
+        chessBoard.clearBoardBgColor();
+        chessBoard.updateRookMoves(coordinate);
+        return chessBoard;
+      }
+      case PieceNames.QUEEN: {
+        chessBoard.clearBoardBgColor();
+        chessBoard.updateQueenMoves(coordinate);
+        return chessBoard;
+      }
+      case PieceNames.KING: {
+        // need to implement king moves later on in the game. 
+        break;
+      }
+      default: {
+        // log and forget
+      }
+    }
+  } else {
+    chessBoard.clearBoardBgColor();
+  }
+
+  return chessBoard;
 };
 
 export const generateBoardOfSquares = (): Square[][] => {
