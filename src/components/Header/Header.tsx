@@ -53,6 +53,7 @@ const StackMenu = () => {
         <HStack as="nav" marginLeft="auto">
               {(menuItemList.map(i =>     
                   <Box 
+                  key={i.path.toString()}
                   sx={{
                       '&:hover': {
                         cursor: 'pointer',

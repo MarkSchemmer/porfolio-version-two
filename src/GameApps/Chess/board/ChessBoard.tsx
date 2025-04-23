@@ -87,8 +87,8 @@ const BoardPiece = (props: any) => {
           }
         } else if (chessPieceManipulation.active === true) {
             // console.log('piece manipulation block');
-            const {name, color} = chessPieceManipulation.pieceSelected;
-            const piece = PieceFactory(name, color);
+            const {name, pieceColor} = chessPieceManipulation.pieceSelected;
+            const piece = PieceFactory(name, pieceColor);
             boardobj.populateSquareWithPiece([x, y], piece);
             dispatch(UpdateChessBoard(boardobj));
         } else {
@@ -113,7 +113,7 @@ const BoardPiece = (props: any) => {
       // bg={(x=== 1 && y === 1) ? "red": state.color}
       w={"99px"}
       h={"100px"}
-      border={"1px solid blue"}
+      border={"1px solid black"}
       display={"inline-block"}
       bg={props.sq.SquareBgColor}
     >
