@@ -34,6 +34,7 @@
         I'm thinking we will just 
 */
 
+import { Piece } from "../pieces/Piece";
 import {
   connectAllSquares,
   generateBoardOfSquares,
@@ -46,8 +47,9 @@ import {
   getQueenMoves,
   getRookMoves,
   getVerticalRow,
+  currentSelectedChessSquare,
 } from "../utils/Utils";
-import { Square } from "./Square";
+import { MathCoordinate, Square } from "./Square";
 
 export class Board {
   // baord needs to be changed for root,
@@ -59,6 +61,8 @@ export class Board {
   public rootNode: Square | undefined = getNode([1, 1], this.board);
 
   public triggerUpdate: any = Date.now();
+
+ //  public currentSelectedSquare: currentSelectedChessSquare = null;
 
   constructor() {
     this.boardSetup();
@@ -212,4 +216,8 @@ export class Board {
     const node = getNode(coordinate, this.board) as Square;
     node.piece = piece;
   }
+
+  // public setCurrentSelectedSquare = (selectedChessSquare: currentSelectedChessSquare) => {
+  //   this.currentSelectedSquare = selectedChessSquare;
+  // }
 }

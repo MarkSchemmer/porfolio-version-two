@@ -15,6 +15,8 @@ export class Square {
 
     public id = uuidv4();
 
+    public isActive = false;
+
     public left?: Square;
     public right?: Square;
     public forward?: Square;

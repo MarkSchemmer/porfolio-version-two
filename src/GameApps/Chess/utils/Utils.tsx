@@ -9,6 +9,7 @@ import { MathCoordinate, Square } from "../board/Square";
 import { BlackBishop, WhiteBishop } from "../pieces/Bishop";
 import { BlackKing, WhiteKing } from "../pieces/King";
 import { BlackKnight, WhiteKnight } from "../pieces/Knight";
+import { Piece } from "../pieces/Piece";
 import { BlackPond, WhitePond } from "../pieces/Pond";
 import { BlackQueen, WhiteQueen } from "../pieces/Queen";
 import { BlackRook, WhiteRook } from "../pieces/Rook";
@@ -64,6 +65,8 @@ export const coordinateToLetterValueMap = {
   8: "h",
 };
 
+export  type currentSelectedChessSquare = { coordinate: MathCoordinate, piece: Piece } | null
+
 export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
   const isWhite = color === PieceColor.WHITE;
   switch (piece) {
@@ -96,8 +99,16 @@ export const HandleSquareClickWithPiece = (
   chessBoard: Board
 ) => {
   const node = getNode(coordinate, chessBoard.board);
-  if (node?.SquareHasPiece()) {
+  //console.log(chessBoard.currentSelectedSquare)
+  if (node && node?.SquareHasPiece() && node?.isActive === false) {
+
+    // if piece square 
+
+    // making square active
+    node.isActive = true;
+
     const pieceName = node?.piece?.pieceName;
+
     switch(pieceName) {
       case PieceNames.POND: {
         // need to implement pond moves later TODO: All scenarios - 
@@ -131,12 +142,31 @@ export const HandleSquareClickWithPiece = (
         // log and forget
       }
     }
+
+    // chessBoard.setCurrentSelectedSquare({
+    //   coordinate: coordinate,
+    //   piece: node?.piece as Piece
+    // });
+
   } else {
+    // chessBoard.setCurrentSelectedSquare(null);
+    // making square unactive
+    if (node)
+      node.isActive = false;
+
+    // clearing the board of painting 
     chessBoard.clearBoardBgColor();
+    console.log(node?.isActive);
   }
 
   return chessBoard;
 };
+
+export const isSelectingAlreadySelectedSquare = (c1: [number, number], c2: [number, number] | null | undefined) => {
+  if (c2 === null || c2 === undefined) { return false }
+  const [c1x, c1y] = c1, [c2x, c2y] = c2;
+  return c1x === c2x && c1y === c2y; 
+}
 
 export const generateBoardOfSquares = (): Square[][] => {
   let res = Object.entries(letterCoordinateValueMap)

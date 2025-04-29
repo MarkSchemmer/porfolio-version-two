@@ -28,10 +28,10 @@ const gameApps = {
         Src: PongComponent,
         useIframe: false
     },
-    "Mouse Game": {
-        Src: MouseCurserComponent,
-        useIframe: true
-    }
+    // "Mouse Game": {
+    //     Src: MouseCurserComponent,
+    //     useIframe: true
+    // }
 }
 
 const renderGameApp = (key: any, value: any) => {

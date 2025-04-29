@@ -1,4 +1,4 @@
-import { Box, Text, Flex, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Text, Flex, Grid, GridItem, Stack } from "@chakra-ui/react";
 
 import blackPond from "../../utils/GameImages/bp.png";
 import whitePond from "../../utils/GameImages/wp.png";
@@ -108,14 +108,15 @@ export const BoxPiece = (props: any) => {
 
 export const BoxPieces = (props: any) => {
   return (
-    <Flex
+    <Stack>
+    {/* <Flex
       className="box-container"
       direction={"row"}
       alignItems={"center"}
       width={"100%"}
       placeItems={"center"}
       marginBottom={"50px"}
-    >
+    > */}
       <Box
         style={{
           display: "block",
@@ -130,6 +131,7 @@ export const BoxPieces = (props: any) => {
           <BoxPiece key={p.name + p.pieceColor} pieceObj={p} />
         ))}
       </Box>
-    </Flex>
+    {/* </Flex> */}
+    </Stack>
   );
 };
