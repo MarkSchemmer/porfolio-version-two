@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Todo } from '../../GameApps/TodoMvc/entities/Todo';
 import { Board } from '../../GameApps/Chess/board/Board';
 import { PieceColor, PieceNames } from '../../GameApps/Chess/utils/Utils';
+import { Square } from '../../GameApps/Chess/board/Square';
 
 const localTesting = {
     horozontal: false,
@@ -10,6 +11,14 @@ const localTesting = {
     knight: false,
     queen: false,
     rook: false,
+}
+
+type MoveHistory = {
+    cur: Square | null 
+}
+
+const initMoveHistory: MoveHistory = {
+    cur: null
 }
 
 type pieceManSelected = {
@@ -30,7 +39,8 @@ const pieceManipulationTesting = {
 const initialState = {
     testing: localTesting,
     pieceManipulation: pieceManipulationTesting,
-    board: new Board()
+    board: new Board(),
+    selectedPiece: initMoveHistory
 }
 
 export const chessSlice = createSlice({
@@ -55,12 +65,18 @@ export const chessSlice = createSlice({
                     active: true
                 }
             }
+        },
+        updateSelectedPiece: (state, action: {type: string, payload: any}) => {
+            state.selectedPiece = {
+                cur: action.payload
+            }
         }
     },
   });
 
-  export const { UpdateChessTestingState, UpdateChessBoard, updatePieceManipulationTesting } = chessSlice.actions;
+  export const { UpdateChessTestingState, UpdateChessBoard, updatePieceManipulationTesting, updateSelectedPiece } = chessSlice.actions;
   export const getTestingState = (state:any) => state.chessState.testing;
   export const getBoard = (state: any) => state.chessState.board;
   export const getCurrentPieceBeingManipulated = (state:any) => state.chessState.pieceManipulation
+  export const getMoveHistory = (state: any) => state.chessState.selectedPiece
   export default chessSlice.reducer

@@ -65,7 +65,7 @@ export const coordinateToLetterValueMap = {
   8: "h",
 };
 
-export  type currentSelectedChessSquare = { coordinate: MathCoordinate, piece: Piece } | null
+export  type currentSelectedChessSquare = { coordinate: MathCoordinate, piece: Piece }
 
 export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
   const isWhite = color === PieceColor.WHITE;
@@ -95,75 +95,57 @@ export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
 };
 
 export const HandleSquareClickWithPiece = (
-  coordinate: [number, number],
+  coordinate: MathCoordinate,
   chessBoard: Board
 ) => {
-  const node = getNode(coordinate, chessBoard.board);
-  //console.log(chessBoard.currentSelectedSquare)
-  if (node && node?.SquareHasPiece() && node?.isActive === false) {
+    
+        const node = getNode(coordinate, chessBoard.board);
+        const pieceName = node?.piece?.pieceName;
 
-    // if piece square 
+        switch(pieceName) {
+          case PieceNames.POND: {
+            // need to implement pond moves later TODO: All scenarios - 
+            break;
+          }
+          case PieceNames.KNIGHT: {
+            chessBoard.clearBoardBgColor();
+            chessBoard.updateKnightMoves(coordinate);
+            return chessBoard;
+          }
+          case PieceNames.BISHOP: {
+           chessBoard.clearBoardBgColor();
+           chessBoard.updateBishopMoves(coordinate);
+           return chessBoard;
+          }
+          case PieceNames.ROOK: {
+            chessBoard.clearBoardBgColor();
+            chessBoard.updateRookMoves(coordinate);
+            return chessBoard;
+          }
+          case PieceNames.QUEEN: {
+            chessBoard.clearBoardBgColor();
+            chessBoard.updateQueenMoves(coordinate);
+            return chessBoard;
+          }
+          case PieceNames.KING: {
+            // need to implement king moves later on in the game. 
+            break;
+          }
+          default: {
+            // log and forget
+          }
+        }
 
-    // making square active
-    node.isActive = true;
-
-    const pieceName = node?.piece?.pieceName;
-
-    switch(pieceName) {
-      case PieceNames.POND: {
-        // need to implement pond moves later TODO: All scenarios - 
-        break;
-      }
-      case PieceNames.KNIGHT: {
-        chessBoard.clearBoardBgColor();
-        chessBoard.updateKnightMoves(coordinate);
-        return chessBoard;
-      }
-      case PieceNames.BISHOP: {
-       chessBoard.clearBoardBgColor();
-       chessBoard.updateBishopMoves(coordinate);
-       return chessBoard;
-      }
-      case PieceNames.ROOK: {
-        chessBoard.clearBoardBgColor();
-        chessBoard.updateRookMoves(coordinate);
-        return chessBoard;
-      }
-      case PieceNames.QUEEN: {
-        chessBoard.clearBoardBgColor();
-        chessBoard.updateQueenMoves(coordinate);
-        return chessBoard;
-      }
-      case PieceNames.KING: {
-        // need to implement king moves later on in the game. 
-        break;
-      }
-      default: {
-        // log and forget
-      }
-    }
-
-    // chessBoard.setCurrentSelectedSquare({
-    //   coordinate: coordinate,
-    //   piece: node?.piece as Piece
-    // });
-
-  } else {
-    // chessBoard.setCurrentSelectedSquare(null);
-    // making square unactive
-    if (node)
-      node.isActive = false;
-
-    // clearing the board of painting 
-    chessBoard.clearBoardBgColor();
-    console.log(node?.isActive);
-  }
 
   return chessBoard;
 };
 
-export const isSelectingAlreadySelectedSquare = (c1: [number, number], c2: [number, number] | null | undefined) => {
-  if (c2 === null || c2 === undefined) { return false }
+export const clearBoard = (chessBoard:any) => {
+      chessBoard.clearBoardBgColor();
+      return chessBoard;
+}
+
+export const isSameSquare = (c1: [number, number], c2: [number, number]) => {
   const [c1x, c1y] = c1, [c2x, c2y] = c2;
   return c1x === c2x && c1y === c2y; 
 }

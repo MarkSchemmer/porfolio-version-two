@@ -62,7 +62,9 @@ export class Board {
 
   public triggerUpdate: any = Date.now();
 
- //  public currentSelectedSquare: currentSelectedChessSquare = null;
+
+
+ // public currentSelectedSquare: currentSelectedChessSquare = null;
 
   constructor() {
     this.boardSetup();
@@ -215,6 +217,12 @@ export class Board {
   public populateSquareWithPiece = (coordinate: any, piece: any) => {
     const node = getNode(coordinate, this.board) as Square;
     node.piece = piece;
+  }
+
+  // get square helper
+  public getSquare = (coordinate: MathCoordinate): Square => {
+    const node = getNode(coordinate, this.board) as Square;
+    return node;
   }
 
   // public setCurrentSelectedSquare = (selectedChessSquare: currentSelectedChessSquare) => {
