@@ -149,6 +149,7 @@ export class Board {
       for (let j = 0; j < this.board[i].length; j++) {
         let rootNode = this.board[i][j];
         rootNode.SquareBgColor = "";
+        rootNode.possiblePieceMove = false;
       }
     }
   };

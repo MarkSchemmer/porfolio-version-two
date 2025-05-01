@@ -149,6 +149,7 @@ const BoardPiece = (props: any) => {
               const chessboard = clearBoard(boardobj);
               updateBoardAndSelectedPiece(chessboard, null);
           } 
+          
         }
 
         // dispatch for next calculation... 
