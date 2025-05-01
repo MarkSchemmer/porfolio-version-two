@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/layout";
 import { useEffect, useState } from "react";
 import { Board } from "./Board";
-import { Square } from "./Square";
+import { MathCoordinate, Square } from "./Square";
 import { useDispatch, useSelector } from "react-redux";
 import {
   UpdateChessBoard,
@@ -113,7 +113,6 @@ const BoardPiece = (props: any) => {
             boardobj.populateSquareWithPiece([x, y], piece);
             dispatch(UpdateChessBoard(boardobj));
         } else {
-          // console.log('Handle click else block')
           // if the board is click check if piece is there then if the piece is there 
           // we need a signal that activates and store active piece, [x, y] coordinate as well
           // I'm guessing what I can do is I can pass the piecename, coordinate, and finally piece color
@@ -138,14 +137,18 @@ const BoardPiece = (props: any) => {
           else if (currentSquareClick.SquareHasPiece()) {
             const chessBoard = HandleSquareClickWithPiece([x, y], boardobj);
             updateBoardAndSelectedPiece(chessBoard, currentSquareClick);
-          } else {
+          }
+          else if (currentSquareClick.canMoveHere()) {
+            boardobj.movePieceFromTo(selectedPiece?.mathematicalCoordinate as MathCoordinate, currentSquareClick.mathematicalCoordinate)
+            const chessBoard = clearBoard(boardobj);
+            updateBoardAndSelectedPiece(chessBoard, null);
+          }
+          else {
               // right now this is going to be clicking a blue square and or an empty square will add more logic later
               // should unselect piece and clearboard.
-
               const chessboard = clearBoard(boardobj);
               updateBoardAndSelectedPiece(chessboard, null);
-          }
-          
+          } 
         }
 
         // dispatch for next calculation... 

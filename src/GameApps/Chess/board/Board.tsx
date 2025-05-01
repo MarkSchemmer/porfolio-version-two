@@ -178,18 +178,19 @@ export class Board {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getBishopMoves(node, []);
     sqs.forEach((sq: Square) => {
-      sq.SquareBgColor = "blue";
+      sq.makeSquareMoviable("blue");
     });
+
     node.SquareBgColor = "gold";
-    // console.log(sqs);
   };
 
   public updateRookMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getRookMoves(node, []);
     sqs.forEach((sq: Square) => {
-      sq.SquareBgColor = "blue";
+      sq.makeSquareMoviable("blue");
     });
+
     node.SquareBgColor = "gold";
     // console.log(sqs);
   };
@@ -198,8 +199,9 @@ export class Board {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getQueenMoves(node, []);
     sqs.forEach((sq: Square) => {
-      sq.SquareBgColor = "blue";
+      sq.makeSquareMoviable("blue");
     });
+
     node.SquareBgColor = "gold";
     // console.log(sqs);
   };
@@ -208,8 +210,9 @@ export class Board {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getKnightMoves(node, []);
     sqs.forEach((sq: Square) => {
-      sq.SquareBgColor = "blue";
+      sq.makeSquareMoviable("blue");
     });
+
     node.SquareBgColor = "gold";
     // console.log(sqs);
   };
@@ -223,6 +226,17 @@ export class Board {
   public getSquare = (coordinate: MathCoordinate): Square => {
     const node = getNode(coordinate, this.board) as Square;
     return node;
+  }
+
+  public movePieceFromTo = (from: MathCoordinate, to: MathCoordinate) => {
+    const fromNode = getNode(from, this.board);
+    const toNode = getNode(to, this.board);
+
+    if (toNode)
+      toNode.piece = fromNode?.piece;
+
+    if(fromNode)
+        fromNode.piece = null;
   }
 
   // public setCurrentSelectedSquare = (selectedChessSquare: currentSelectedChessSquare) => {

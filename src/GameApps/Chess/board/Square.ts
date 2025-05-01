@@ -15,7 +15,7 @@ export class Square {
 
     public id = uuidv4();
 
-    public isActive = false;
+    public possiblePieceMove: boolean = false;
 
     public left?: Square;
     public right?: Square;
@@ -41,4 +41,11 @@ export class Square {
     public SquareHasPiece = (): boolean => {
         return this.piece !== null && this.piece !== undefined;
     }
+
+    public makeSquareMoviable = (bgColor: string) => {
+        this.SquareBgColor = bgColor;
+        this.possiblePieceMove = true;
+    }
+
+    public canMoveHere = (): boolean => this.possiblePieceMove === true;
 }
