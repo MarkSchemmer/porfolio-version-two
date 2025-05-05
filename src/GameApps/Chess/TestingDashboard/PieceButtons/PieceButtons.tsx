@@ -1,4 +1,4 @@
-import { Box, Text, Flex, Grid, GridItem, Stack } from "@chakra-ui/react";
+import { Box, Text, Flex, Grid, GridItem, Stack, Button, ButtonGroup } from "@chakra-ui/react";
 
 import blackPond from "../../utils/GameImages/bp.png";
 import whitePond from "../../utils/GameImages/wp.png";
@@ -20,11 +20,50 @@ import whiteKing from "../../utils/GameImages/wk.png";
 
 import "./BoxPiece.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { PieceColor, PieceNames } from "../../utils/Utils";
+import { cleanBoard, generateStandardBoard, PieceColor, PieceNames } from "../../utils/Utils";
 import {
+  getBoard,
   getCurrentPieceBeingManipulated,
+  UpdateChessBoard,
   updatePieceManipulationTesting,
 } from "../../../../store/slices/chessSlice";
+
+
+/*
+    Button controls component here. -> might need to go to it's own file eventualluy.
+    Such as generate standard board,
+    Clean board
+    Reset board
+*/
+
+export const ButtonControls = (props: any) => {
+  const dispatch = useDispatch();
+  const boardobj = useSelector(getBoard);
+
+  return (
+    <>
+    <ButtonGroup colorScheme="teal" marginTop={"10%"} marginBottom={"10%"}>
+      <Button 
+      onClick={() => {
+        dispatch(UpdateChessBoard(generateStandardBoard()))
+      }}
+      variant="solid" 
+      width={"100%"} 
+      size={"md"}>Generate Standard Board</Button>
+      <Button 
+      onClick={() => {
+        dispatch(UpdateChessBoard(cleanBoard()))
+      }}
+      variant="solid" 
+      width={"100%"} 
+      size={"md"}>Clean Board</Button>
+    </ButtonGroup>
+    </>
+  )
+}
+
+
+
 /*
 
     - After testing is complete adding chess coordinates and history of move detection

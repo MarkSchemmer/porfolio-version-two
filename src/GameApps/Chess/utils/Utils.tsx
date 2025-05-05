@@ -65,7 +65,94 @@ export const coordinateToLetterValueMap = {
   8: "h",
 };
 
-export  type currentSelectedChessSquare = { coordinate: MathCoordinate, piece: Piece }
+export type currentSelectedChessSquare = {
+  coordinate: MathCoordinate;
+  piece: Piece;
+};
+
+// Begin chess control buttons
+
+export const cleanBoard = () => {
+  return new Board();
+};
+
+export const generateStandardBoard = () => {
+  const chessBaord = new Board();
+  // set ponds a2 -> h2
+  Array(8)
+    .fill(0)
+    .map((_, idx) => {
+      return idx + 1;
+    })
+    .forEach((y) => {
+      chessBaord.populateSquareWithPiece([2, y], new WhitePond());
+      chessBaord.populateSquareWithPiece([7, y], new BlackPond());
+    });
+
+  // set White Rooks
+  [
+    [1, 1],
+    [1, 8],
+  ].forEach(([x, y]) => {
+    chessBaord.populateSquareWithPiece([x, y], new WhiteRook());
+  });
+
+  // set White Knights
+  [
+    [1, 2],
+    [1, 7],
+  ].forEach(([x, y]) => {
+    chessBaord.populateSquareWithPiece([x, y], new WhiteKnight());
+  });
+
+  // set White Bishops
+  [
+    [1, 3],
+    [1, 6],
+  ].forEach(([x, y]) => {
+    chessBaord.populateSquareWithPiece([x, y], new WhiteBishop());
+  });
+
+  // set White Queen
+  chessBaord.populateSquareWithPiece([1, 4], new WhiteQueen());
+
+  // set White King
+  chessBaord.populateSquareWithPiece([1, 5], new WhiteKing());
+
+  // set Black Rooks
+  [
+    [8, 1],
+    [8, 8],
+  ].forEach(([x, y]) => {
+    chessBaord.populateSquareWithPiece([x, y], new BlackRook());
+  });
+
+  // set Black Knights
+  [
+    [8, 2],
+    [8, 7],
+  ].forEach(([x, y]) => {
+    chessBaord.populateSquareWithPiece([x, y], new BlackKnight());
+  });
+
+  // set Black Bishops
+  [
+    [8, 3],
+    [8, 6]
+  ].forEach(([x, y]) => {
+    chessBaord.populateSquareWithPiece([x, y], new BlackBishop());
+  });
+
+  // set Black Queen
+  chessBaord.populateSquareWithPiece([8, 4], new BlackQueen());
+
+  // set Black King
+  chessBaord.populateSquareWithPiece([8, 5], new BlackKing());
+
+  return chessBaord;
+};
+
+// End chess control buttons
 
 export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
   const isWhite = color === PieceColor.WHITE;
@@ -98,57 +185,56 @@ export const HandleSquareClickWithPiece = (
   coordinate: MathCoordinate,
   chessBoard: Board
 ) => {
-    
-        const node = getNode(coordinate, chessBoard.board);
-        const pieceName = node?.piece?.pieceName;
+  const node = getNode(coordinate, chessBoard.board);
+  const pieceName = node?.piece?.pieceName;
 
-        switch(pieceName) {
-          case PieceNames.POND: {
-            // need to implement pond moves later TODO: All scenarios - 
-            break;
-          }
-          case PieceNames.KNIGHT: {
-            chessBoard.clearBoardBgColor();
-            chessBoard.updateKnightMoves(coordinate);
-            return chessBoard;
-          }
-          case PieceNames.BISHOP: {
-           chessBoard.clearBoardBgColor();
-           chessBoard.updateBishopMoves(coordinate);
-           return chessBoard;
-          }
-          case PieceNames.ROOK: {
-            chessBoard.clearBoardBgColor();
-            chessBoard.updateRookMoves(coordinate);
-            return chessBoard;
-          }
-          case PieceNames.QUEEN: {
-            chessBoard.clearBoardBgColor();
-            chessBoard.updateQueenMoves(coordinate);
-            return chessBoard;
-          }
-          case PieceNames.KING: {
-            // need to implement king moves later on in the game. 
-            break;
-          }
-          default: {
-            // log and forget
-          }
-        }
-
+  switch (pieceName) {
+    case PieceNames.POND: {
+      // need to implement pond moves later TODO: All scenarios -
+      break;
+    }
+    case PieceNames.KNIGHT: {
+      chessBoard.clearBoardBgColor();
+      chessBoard.updateKnightMoves(coordinate);
+      return chessBoard;
+    }
+    case PieceNames.BISHOP: {
+      chessBoard.clearBoardBgColor();
+      chessBoard.updateBishopMoves(coordinate);
+      return chessBoard;
+    }
+    case PieceNames.ROOK: {
+      chessBoard.clearBoardBgColor();
+      chessBoard.updateRookMoves(coordinate);
+      return chessBoard;
+    }
+    case PieceNames.QUEEN: {
+      chessBoard.clearBoardBgColor();
+      chessBoard.updateQueenMoves(coordinate);
+      return chessBoard;
+    }
+    case PieceNames.KING: {
+      // need to implement king moves later on in the game.
+      break;
+    }
+    default: {
+      // log and forget
+    }
+  }
 
   return chessBoard;
 };
 
-export const clearBoard = (chessBoard:any) => {
-      chessBoard.clearBoardBgColor();
-      return chessBoard;
-}
+export const clearBoard = (chessBoard: any) => {
+  chessBoard.clearBoardBgColor();
+  return chessBoard;
+};
 
 export const isSameSquare = (c1: [number, number], c2: [number, number]) => {
-  const [c1x, c1y] = c1, [c2x, c2y] = c2;
-  return c1x === c2x && c1y === c2y; 
-}
+  const [c1x, c1y] = c1,
+    [c2x, c2y] = c2;
+  return c1x === c2x && c1y === c2y;
+};
 
 export const generateBoardOfSquares = (): Square[][] => {
   let res = Object.entries(letterCoordinateValueMap)
