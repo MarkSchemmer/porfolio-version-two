@@ -3,17 +3,11 @@ import { Piece } from "./Piece";
 import blackPond from "../utils/GameImages/bp.png";
 import whitePond from "../utils/GameImages/wp.png";
 
-class Pond extends Piece {
-  constructor() {
-    super(PieceNames.POND.toString());
-  }
-}
-
-export class BlackPond extends Pond {
+export class BlackPond extends Piece {
   public pieceColor = PieceColor.BLACK;
   public pondImg = blackPond;
   constructor() {
-    super();
+    super(PieceNames.POND.toString(), PieceColor.BLACK);
   }
 
   public draw = () => {
@@ -26,11 +20,11 @@ export class BlackPond extends Pond {
   };
 }
 
-export class WhitePond extends Pond {
+export class WhitePond extends Piece {
   public pieceColor = PieceColor.WHITE;
   public pondImg = whitePond;
   constructor() {
-    super();
+    super(PieceNames.POND.toString(), PieceColor.WHITE);
   }
 
   public draw = () => {

@@ -138,7 +138,7 @@ export const generateStandardBoard = () => {
   // set Black Bishops
   [
     [8, 3],
-    [8, 6]
+    [8, 6],
   ].forEach(([x, y]) => {
     chessBaord.populateSquareWithPiece([x, y], new BlackBishop());
   });
@@ -187,11 +187,21 @@ export const HandleSquareClickWithPiece = (
 ) => {
   const node = getNode(coordinate, chessBoard.board);
   const pieceName = node?.piece?.pieceName;
+  const pieceColor = node?.piece?.pieceColor;
 
   switch (pieceName) {
     case PieceNames.POND: {
-      // need to implement pond moves later TODO: All scenarios -
-      break;
+      chessBoard.clearBoardBgColor();
+
+      if (pieceColor === PieceColor.BLACK) {
+        // black moves
+        chessBoard.updatePondMovesBlack(coordinate);
+      } else {
+        // white moves
+        chessBoard.updatePondMovesWhite(coordinate);
+      }
+
+      return chessBoard;
     }
     case PieceNames.KNIGHT: {
       chessBoard.clearBoardBgColor();
@@ -555,6 +565,34 @@ export const getKnightMoves = (
   );
 
   return [...knightMoves, node];
+};
+
+export const getBlackPondMoves = (
+  node: Square | undefined,
+  squares: Square[]
+): any => {
+  let bn = node?.back;
+  let bnn = node?.back?.back;
+  let bl = node?.back?.left;
+  let br = node?.back?.right;
+
+  const pondMoves = [bn, bnn, bl, br].filter(sq => isValue(sq));
+
+  return [...pondMoves, node];
+};
+
+export const getWhitePondMoves = (
+  node: Square | undefined,
+  squares: Square[]
+): any => {
+  let fn = node?.forward;
+  let fnn = node?.forward?.forward;
+  let fl = node?.forward?.left;
+  let fr = node?.forward?.right;
+
+  const pondMoves = [fn, fnn, fl, fr].filter(sq => isValue(sq));
+
+  return [...pondMoves, node];
 };
 
 export function uuidv4() {

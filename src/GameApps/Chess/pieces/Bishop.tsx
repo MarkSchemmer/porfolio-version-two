@@ -3,17 +3,11 @@ import { Piece } from "./Piece";
 import blackBishop from "../utils/GameImages/bb.png";
 import whiteBishop from "../utils/GameImages/wb.png";
 
-class Bishop extends Piece {
-  constructor() {
-    super(PieceNames.BISHOP.toString());
-  }
-}
-
-export class BlackBishop extends Bishop {
+export class BlackBishop extends Piece {
   public pieceColor = PieceColor.BLACK;
   public bishopImg = blackBishop;
   constructor() {
-    super();
+    super(PieceNames.BISHOP.toString(), PieceColor.BLACK);
   }
 
   public draw = () => {
@@ -26,11 +20,11 @@ export class BlackBishop extends Bishop {
   };
 }
 
-export class WhiteBishop extends Bishop {
+export class WhiteBishop extends Piece {
   public pieceColor = PieceColor.WHITE;
   public bishopImg = whiteBishop;
   constructor() {
-    super();
+    super(PieceNames.BISHOP.toString(), PieceColor.WHITE);
   }
 
   public draw = () => {

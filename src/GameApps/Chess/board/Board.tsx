@@ -48,6 +48,9 @@ import {
   getRookMoves,
   getVerticalRow,
   currentSelectedChessSquare,
+  PieceColor,
+  getWhitePondMoves,
+  getBlackPondMoves,
 } from "../utils/Utils";
 import { MathCoordinate, Square } from "./Square";
 
@@ -217,6 +220,28 @@ export class Board {
     node.SquareBgColor = "gold";
     // console.log(sqs);
   };
+
+  public updatePondMovesWhite = (coordinate:any) => {
+    const node = getNode(coordinate, this.board) as Square;
+    const sqs = getWhitePondMoves(node, []);
+
+    sqs.forEach((sq: Square) => {
+      sq.makeSquareMoviable("blue");
+    });
+
+    node.SquareBgColor = "gold";
+  }
+
+  public updatePondMovesBlack = (coordinate:any) => {
+    const node = getNode(coordinate, this.board) as Square;
+    const sqs = getBlackPondMoves(node, []);
+
+    sqs.forEach((sq: Square) => {
+      sq.makeSquareMoviable("blue");
+    });
+
+    node.SquareBgColor = "gold";
+  }
 
   public populateSquareWithPiece = (coordinate: any, piece: any) => {
     const node = getNode(coordinate, this.board) as Square;

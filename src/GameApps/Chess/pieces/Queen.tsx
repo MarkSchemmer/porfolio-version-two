@@ -3,17 +3,11 @@ import { Piece } from "./Piece";
 import blackQueen from "../utils/GameImages/bq.png";
 import whiteQueen from "../utils/GameImages/wq.png";
 
-class Queen extends Piece {
-  constructor() {
-    super(PieceNames.QUEEN.toString());
-  }
-}
-
-export class BlackQueen extends Queen {
+export class BlackQueen extends Piece {
   public pieceColor = PieceColor.BLACK;
   public queenImg = blackQueen;
   constructor() {
-    super();
+    super(PieceNames.QUEEN.toString(), PieceColor.BLACK);
   }
 
   public draw = () => {
@@ -26,11 +20,11 @@ export class BlackQueen extends Queen {
   };
 }
 
-export class WhiteQueen extends Queen {
+export class WhiteQueen extends Piece {
   public pieceColor = PieceColor.WHITE;
   public queenImg = whiteQueen;
   constructor() {
-    super();
+    super(PieceNames.QUEEN.toString(), PieceColor.WHITE);
   }
 
   public draw = () => {

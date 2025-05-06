@@ -3,17 +3,11 @@ import { Piece } from "./Piece";
 import blackRook from "../utils/GameImages/br.png";
 import whiteRook from "../utils/GameImages/wr.png";
 
-class Rook extends Piece {
-  constructor() {
-    super(PieceNames.ROOK.toString());
-  }
-}
-
-export class BlackRook extends Rook {
+export class BlackRook extends Piece {
   public pieceColor = PieceColor.BLACK;
   public rookImg = blackRook;
   constructor() {
-    super();
+    super(PieceNames.ROOK.toString(), PieceColor.BLACK);
   }
 
   public draw = () => {
@@ -26,11 +20,11 @@ export class BlackRook extends Rook {
   };
 }
 
-export class WhiteRook extends Rook {
+export class WhiteRook extends Piece {
   public pieceColor = PieceColor.WHITE;
   public rookImg = whiteRook;
   constructor() {
-    super();
+    super(PieceNames.ROOK.toString(), PieceColor.WHITE);
   }
 
   public draw = () => {
