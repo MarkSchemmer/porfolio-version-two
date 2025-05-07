@@ -51,8 +51,11 @@ import {
   PieceColor,
   getWhitePondMoves,
   getBlackPondMoves,
+  getKingMoves,
 } from "../utils/Utils";
 import { MathCoordinate, Square } from "./Square";
+
+// piece logic layer will be a dependency that is injected into the board... via the constructor... Maybe a singleton
 
 export class Board {
   // baord needs to be changed for root,
@@ -65,9 +68,7 @@ export class Board {
 
   public triggerUpdate: any = Date.now();
 
-
-
- // public currentSelectedSquare: currentSelectedChessSquare = null;
+  // public currentSelectedSquare: currentSelectedChessSquare = null;
 
   constructor() {
     this.boardSetup();
@@ -165,7 +166,6 @@ export class Board {
       sq.SquareBgColor = "blue";
     });
     node.SquareBgColor = "gold";
-    // console.log(sqs);
   };
 
   public updateBoardVertical = (coordinate: any) => {
@@ -175,7 +175,6 @@ export class Board {
       sq.SquareBgColor = "blue";
     });
     node.SquareBgColor = "gold";
-    // console.log(sqs);
   };
 
   public updateBishopMoves = (coordinate: any) => {
@@ -196,7 +195,6 @@ export class Board {
     });
 
     node.SquareBgColor = "gold";
-    // console.log(sqs);
   };
 
   public updateQueenMoves = (coordinate: any) => {
@@ -207,7 +205,6 @@ export class Board {
     });
 
     node.SquareBgColor = "gold";
-    // console.log(sqs);
   };
 
   public updateKnightMoves = (coordinate: any) => {
@@ -218,10 +215,9 @@ export class Board {
     });
 
     node.SquareBgColor = "gold";
-    // console.log(sqs);
   };
 
-  public updatePondMovesWhite = (coordinate:any) => {
+  public updatePondMovesWhite = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getWhitePondMoves(node, []);
 
@@ -230,9 +226,9 @@ export class Board {
     });
 
     node.SquareBgColor = "gold";
-  }
+  };
 
-  public updatePondMovesBlack = (coordinate:any) => {
+  public updatePondMovesBlack = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getBlackPondMoves(node, []);
 
@@ -241,29 +237,38 @@ export class Board {
     });
 
     node.SquareBgColor = "gold";
-  }
+  };
+
+  public updateKingMoves = (coordiante: any) => {
+    const node = getNode(coordiante, this.board) as Square;
+    const sqs = getKingMoves(node, []);
+
+    sqs.forEach((sq: Square) => {
+      sq.makeSquareMoviable("blue");
+    });
+
+    node.SquareBgColor = "gold";
+  };
 
   public populateSquareWithPiece = (coordinate: any, piece: any) => {
     const node = getNode(coordinate, this.board) as Square;
     node.piece = piece;
-  }
+  };
 
   // get square helper
   public getSquare = (coordinate: MathCoordinate): Square => {
     const node = getNode(coordinate, this.board) as Square;
     return node;
-  }
+  };
 
   public movePieceFromTo = (from: MathCoordinate, to: MathCoordinate) => {
     const fromNode = getNode(from, this.board);
     const toNode = getNode(to, this.board);
 
-    if (toNode)
-      toNode.piece = fromNode?.piece;
+    if (toNode) toNode.piece = fromNode?.piece;
 
-    if(fromNode)
-        fromNode.piece = null;
-  }
+    if (fromNode) fromNode.piece = null;
+  };
 
   // public setCurrentSelectedSquare = (selectedChessSquare: currentSelectedChessSquare) => {
   //   this.currentSelectedSquare = selectedChessSquare;

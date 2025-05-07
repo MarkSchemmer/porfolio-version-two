@@ -225,14 +225,15 @@ export const HandleSquareClickWithPiece = (
     }
     case PieceNames.KING: {
       // need to implement king moves later on in the game.
-      break;
+      chessBoard.clearBoardBgColor();
+      chessBoard.updateKingMoves(coordinate);
+      return chessBoard;
     }
     default: {
       // log and forget
+      return chessBoard;
     }
   }
-
-  return chessBoard;
 };
 
 export const clearBoard = (chessBoard: any) => {
@@ -594,6 +595,26 @@ export const getWhitePondMoves = (
 
   return [...pondMoves, node];
 };
+
+export const getKingMoves = (
+  node: Square | undefined,
+  squares: Square[]
+): any => {
+  let f = node?.forward;
+  let l = node?.left;
+  let r = node?.right;
+  let b = node?.back;
+
+  let fl = node?.forward?.left;
+  let fr = node?.forward?.right;
+
+  let bl = node?.back?.left;
+  let br = node?.back?.right;
+
+  const kingMoves = [f, l, r, b, fl, fr, bl, br].filter(sq => isValue(sq));
+
+  return [...kingMoves, node];
+}
 
 export function uuidv4() {
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
