@@ -35,6 +35,7 @@
 */
 
 import { Piece } from "../pieces/Piece";
+import { SettingsService } from "../SettingsService/SettingsService";
 import {
   connectAllSquares,
   generateBoardOfSquares,
@@ -55,7 +56,15 @@ import {
 } from "../utils/Utils";
 import { MathCoordinate, Square } from "./Square";
 
-// piece logic layer will be a dependency that is injected into the board... via the constructor... Maybe a singleton
+// piece logic layer will be a dependency that is injected into the board...
+// via the constructor... Maybe a singleton but basically upon usage 
+// it will determine what squares can be visible to move to
+// and what not... it can also determine things like a possible castle, 
+// check, piece taking piece maybe even that... 
+
+// also a settings service... basically a service that will control 
+// and dictate the settings the user wants 
+// even in the future it can handle user and auth issues. 
 
 export class Board {
   // baord needs to be changed for root,
@@ -67,6 +76,8 @@ export class Board {
   public rootNode: Square | undefined = getNode([1, 1], this.board);
 
   public triggerUpdate: any = Date.now();
+
+  public settingsService: SettingsService = new SettingsService();
 
   // public currentSelectedSquare: currentSelectedChessSquare = null;
 
@@ -162,92 +173,64 @@ export class Board {
   public updateBoardHorizontal = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getHorizontalRow(node, []);
-    sqs.forEach((sq: Square) => {
-      sq.SquareBgColor = "blue";
-    });
-    node.SquareBgColor = "gold";
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateBoardVertical = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getVerticalRow(node, []);
-    sqs.forEach((sq: Square) => {
-      sq.SquareBgColor = "blue";
-    });
-    node.SquareBgColor = "gold";
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
+
+
+
+  // Methods below are for the game of chess 
+  // these will be enterpise 
+  // everything above is testing and for analization... 
+
+  // we can have a factory for pieces and moves and we abstract the logic for all pieces so 
+  // the piece is just that a piece but we can 
 
   public updateBishopMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getBishopMoves(node, []);
-    sqs.forEach((sq: Square) => {
-      sq.makeSquareMoviable("blue");
-    });
-
-    node.SquareBgColor = "gold";
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateRookMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getRookMoves(node, []);
-    sqs.forEach((sq: Square) => {
-      sq.makeSquareMoviable("blue");
-    });
-
-    node.SquareBgColor = "gold";
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateQueenMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getQueenMoves(node, []);
-    sqs.forEach((sq: Square) => {
-      sq.makeSquareMoviable("blue");
-    });
-
-    node.SquareBgColor = "gold";
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateKnightMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getKnightMoves(node, []);
-    sqs.forEach((sq: Square) => {
-      sq.makeSquareMoviable("blue");
-    });
-
-    node.SquareBgColor = "gold";
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updatePondMovesWhite = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getWhitePondMoves(node, []);
-
-    sqs.forEach((sq: Square) => {
-      sq.makeSquareMoviable("blue");
-    });
-
-    node.SquareBgColor = "gold";
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updatePondMovesBlack = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
     const sqs = getBlackPondMoves(node, []);
-
-    sqs.forEach((sq: Square) => {
-      sq.makeSquareMoviable("blue");
-    });
-
-    node.SquareBgColor = "gold";
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateKingMoves = (coordiante: any) => {
     const node = getNode(coordiante, this.board) as Square;
     const sqs = getKingMoves(node, []);
-
-    sqs.forEach((sq: Square) => {
-      sq.makeSquareMoviable("blue");
-    });
-
-    node.SquareBgColor = "gold";
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public populateSquareWithPiece = (coordinate: any, piece: any) => {
@@ -269,6 +252,15 @@ export class Board {
 
     if (fromNode) fromNode.piece = null;
   };
+
+
+  public notifyUserOfMoveableSquaresAndSelectedPiece = (sqs: any, node: any) => {
+        sqs.forEach((sq: Square) => {
+          sq.makeSquareMoviable(this.settingsService.moveableSquareColor);
+        });
+
+        node.SquareBgColor = this.settingsService.selectedSquareColor;
+  }
 
   // public setCurrentSelectedSquare = (selectedChessSquare: currentSelectedChessSquare) => {
   //   this.currentSelectedSquare = selectedChessSquare;

@@ -106,7 +106,8 @@ const BoardPiece = (props: any) => {
             boardobj.updateQueenMoves([x, y]);
             dispatch(UpdateChessBoard(boardobj));
           }
-        } else if (chessPieceManipulation.active === true) {
+        } 
+        else if (chessPieceManipulation.active === true) {
             // console.log('piece manipulation block');
             const {name, pieceColor} = chessPieceManipulation.pieceSelected;
             const piece = PieceFactory(name, pieceColor);
@@ -133,8 +134,8 @@ const BoardPiece = (props: any) => {
             // update board and make unselect piece by making it null.
             updateBoardAndSelectedPiece(chessboard, null);
           }
-          // need to check if we are clicking a square that has a piece if it does then we select that piece and show moves and make 
-          else if (currentSquareClick.SquareHasPiece()) {
+          // need to check if we are clicking a square that has a piece if it does then we select that piece and show moves to make
+          else if (currentSquareClick.SquareHasPiece() && selectedPiece === null) {
             const chessBoard = HandleSquareClickWithPiece([x, y], boardobj);
             updateBoardAndSelectedPiece(chessBoard, currentSquareClick);
           }
@@ -144,7 +145,7 @@ const BoardPiece = (props: any) => {
             updateBoardAndSelectedPiece(chessBoard, null);
           }
           else {
-              // right now this is going to be clicking a blue square and or an empty square will add more logic later
+              // Right now this is clicking a none blue square and just unselects the piece
               // should unselect piece and clearboard.
               const chessboard = clearBoard(boardobj);
               updateBoardAndSelectedPiece(chessboard, null);
