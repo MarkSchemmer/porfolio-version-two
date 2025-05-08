@@ -6,6 +6,7 @@
 
 import { Board } from "../board/Board";
 import { MathCoordinate, Square } from "../board/Square";
+import { PieceLogicService } from "../PieceLogicService/PieceLogicService";
 import { BlackBishop, WhiteBishop } from "../pieces/Bishop";
 import { BlackKing, WhiteKing } from "../pieces/King";
 import { BlackKnight, WhiteKnight } from "../pieces/Knight";
@@ -434,13 +435,46 @@ export const getHorizontalRow = (
 
 // I can add a layer of chess rules to determine if we can get that square.
 // and the pieces themselves can use these methods for finding next moves ect.
+// currently this is working need to get the other methods working as such... 
 export const getVerticalForwardColumn = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  return node === undefined
-    ? squares
-    : getVerticalForwardColumn(node.forward, [...squares, node]);
+   
+  while (node?.forward) {
+    
+    if (node === undefined || node === null) 
+    {
+        return squares;
+    }
+      // test if forward square has a piece 
+      // if it does and it's the same color 
+      // break the function and return what we have
+      const hasPiece = node?.forward?.SquareHasPiece();
+      // console.log('has piece', hasPiece);
+
+      const isSameColor = logic.pieceIsSameColor(node, node?.forward as Square);
+      // console.log('is same color', isSameColor);
+
+      const isOtherColor = logic.pieceIsOtherColor(node, node?.forward as Square);
+      // console.log(isOtherColor);
+
+      if (hasPiece && isSameColor) 
+      {
+        console.log('smae color here...');
+        return squares;
+      }
+    
+      // account for if piece is black we just take that one and then end the logic loop. 
+      if (hasPiece && isOtherColor) 
+      {
+          return [...squares, node, node.forward];
+      }
+
+      node = node.forward;
+      squares = [...squares, node];
+  }
 };
 
 export const getVerticalBackColumn = (
@@ -454,9 +488,10 @@ export const getVerticalBackColumn = (
 
 export const getVerticalRow = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  const forwardRow = getVerticalForwardColumn(node?.forward, []);
+  const forwardRow = getVerticalForwardColumn(node?.forward, [], logic);
   const backwardRow = getVerticalBackColumn(node?.back, []);
   return [...forwardRow, node, ...backwardRow];
 };
@@ -514,9 +549,11 @@ export const getBishopMoves = (
 // Rook moves.
 export const getRookMoves = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  const forwardRow = getVerticalForwardColumn(node?.forward, []);
+  const forwardRow = getVerticalForwardColumn(node, [], logic);
+  console.log(forwardRow)
   const backwardRow = getVerticalBackColumn(node?.back, []);
   const rightRow = getHorizontalRightRow(node?.right, []);
   const leftRow = getHorizontalLeftRow(node?.left, []);
@@ -526,9 +563,11 @@ export const getRookMoves = (
 // Queen moves
 export const getQueenMoves = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  let horzAndVertMoves = getRookMoves(node, []);
+  const pieceLogic = new PieceLogicService();
+  let horzAndVertMoves = getRookMoves(node, [], logic);
   let diagMoves = getBishopMoves(node, []);
 
   let allMovesWithoutNode = [...diagMoves, ...horzAndVertMoves].filter(
@@ -539,7 +578,13 @@ export const getQueenMoves = (
           y === node?.mathematicalCoordinate[1]) === false
       );
     }
-  );
+  )
+  .filter(
+    (sq: Square | undefined) => isValue(sq)
+  )
+  .filter(
+    (sq: Square | undefined) => pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
+  )
 
   return [...allMovesWithoutNode, node];
 };
@@ -549,6 +594,9 @@ export const getKnightMoves = (
   node: Square | undefined,
   squares: Square[]
 ): any => {
+
+  const pieceLogic = new PieceLogicService();
+
   let tpL = node?.forward?.forward?.left;
   let tpR = node?.forward?.forward?.right;
 
@@ -563,6 +611,8 @@ export const getKnightMoves = (
 
   const knightMoves = [tpL, tpR, ltp, lbtm, bl, br, rtp, rbtm].filter(
     (sq: Square | undefined) => isValue(sq)
+  ).filter(
+    (sq: Square | undefined) => pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
   );
 
   return [...knightMoves, node];

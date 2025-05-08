@@ -34,6 +34,7 @@
         I'm thinking we will just 
 */
 
+import { PieceLogicService } from "../PieceLogicService/PieceLogicService";
 import { Piece } from "../pieces/Piece";
 import { SettingsService } from "../SettingsService/SettingsService";
 import {
@@ -78,6 +79,7 @@ export class Board {
   public triggerUpdate: any = Date.now();
 
   public settingsService: SettingsService = new SettingsService();
+  public logic: PieceLogicService = new PieceLogicService();
 
   // public currentSelectedSquare: currentSelectedChessSquare = null;
 
@@ -134,7 +136,7 @@ export class Board {
   // for testing only
   public make2_1ColBlue = () => {
     const node2_1 = getNode([2, 1], this.board);
-    const sqs = getVerticalRow(node2_1, []);
+    const sqs = getVerticalRow(node2_1, [], this.logic);
     sqs.forEach((sq: Square) => {
       sq.SquareBgColor = "blue";
     });
@@ -178,7 +180,7 @@ export class Board {
 
   public updateBoardVertical = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getVerticalRow(node, []);
+    const sqs = getVerticalRow(node, [], this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
@@ -199,13 +201,13 @@ export class Board {
 
   public updateRookMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getRookMoves(node, []);
+    const sqs = getRookMoves(node, [], this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateQueenMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getQueenMoves(node, []);
+    const sqs = getQueenMoves(node, [], this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
