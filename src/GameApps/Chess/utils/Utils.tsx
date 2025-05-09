@@ -405,6 +405,9 @@ export const connectAllSquares = (board: Square[][], rootNode: Square) => {
   connectDiagLToDiagRBack(board, rootNode);
 };
 
+
+// NOT being used in actual chess game now 
+// Refer to NodeCrawler
 // I can add a layer of chess rules to determine if we can get that square.
 // and the pieces themselves can use these methods for finding next moves ect.
 export const getHorizontalRightRow = (
@@ -449,6 +452,8 @@ export const getHorizontalRightRow = (
   return squares;
 };
 
+// NOT being used in actual chess game now 
+// Refer to NodeCrawler
 export const getHorizontalLeftRow = (
   node: Square | undefined,
   squares: Square[],
@@ -502,6 +507,9 @@ export const getHorizontalRow = (
   return [...leftRow, node, ...rightRow];
 };
 
+
+// NOT being used in actual chess game now 
+// Refer to NodeCrawler
 // I can add a layer of chess rules to determine if we can get that square.
 // and the pieces themselves can use these methods for finding next moves ect.
 // currently this is working need to get the other methods working as such... 
@@ -549,6 +557,8 @@ export const getVerticalForwardColumn = (
   return squares;
 };
 
+// NOT being used in actual chess game now 
+// Refer to NodeCrawler
 export const getVerticalBackColumn = (
   node: Square | undefined,
   squares: Square[],
