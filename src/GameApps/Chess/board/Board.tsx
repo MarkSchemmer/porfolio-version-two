@@ -126,7 +126,7 @@ export class Board {
   // Testing method only. - will comment out later
   // testing left to right
   public make1_1RowRed = () => {
-    const sqs = getHorizontalRow(this.rootNode, []);
+    const sqs = getHorizontalRow(this.rootNode, [], this.logic);
     sqs.forEach((sq: Square) => {
       sq.SquareBgColor = "red";
     });
@@ -174,7 +174,7 @@ export class Board {
   // testing only
   public updateBoardHorizontal = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getHorizontalRow(node, []);
+    const sqs = getHorizontalRow(node, [], this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 

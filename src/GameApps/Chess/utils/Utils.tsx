@@ -408,28 +408,97 @@ export const connectAllSquares = (board: Square[][], rootNode: Square) => {
 // and the pieces themselves can use these methods for finding next moves ect.
 export const getHorizontalRightRow = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  return node === undefined
-    ? squares
-    : getHorizontalRightRow(node.right, [...squares, node]);
+
+  const originalNode = node;
+
+  while (node?.right) {
+    
+    if (node === undefined || node === null) 
+    {
+        return squares;
+    }
+      // test if forward square has a piece 
+      // if it does and it's the same color 
+      // break the function and return what we have
+      const hasPiece = node?.right.SquareHasPiece();
+      // console.log('has piece', hasPiece);
+      const isSameColor = logic.pieceIsSameColor(originalNode as Square, node?.right as Square);
+      // console.log('is same color', isSameColor);
+      const isOtherColor = logic.pieceIsOtherColor(originalNode as Square, node?.right as Square);
+      // console.log(isOtherColor);
+
+      if (hasPiece && isSameColor) 
+      {
+        return squares;
+      }
+    
+      // account for if piece is black we just take that one and then end the logic loop. 
+      if (hasPiece && isOtherColor) 
+      {
+          return [...squares, node, node?.right];
+      }
+      
+      node = node?.right;
+      squares = [...squares, node];
+  }
+
+  return squares;
 };
 
 export const getHorizontalLeftRow = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  return node === undefined
-    ? squares
-    : getHorizontalLeftRow(node.left, [...squares, node]);
+
+
+  const originalNode = node;
+
+  while (node?.left) {
+    
+    if (node === undefined || node === null) 
+    {
+        return squares;
+    }
+      // test if forward square has a piece 
+      // if it does and it's the same color 
+      // break the function and return what we have
+      const hasPiece = node?.left?.SquareHasPiece();
+      // console.log('has piece', hasPiece);
+      const isSameColor = logic.pieceIsSameColor(originalNode as Square, node?.left as Square);
+      // console.log('is same color', isSameColor);
+      const isOtherColor = logic.pieceIsOtherColor(originalNode as Square, node?.left as Square);
+      // console.log(isOtherColor);
+
+      if (hasPiece && isSameColor) 
+      {
+        console.log('smae color here...');
+        return squares;
+      }
+    
+      // account for if piece is black we just take that one and then end the logic loop. 
+      if (hasPiece && isOtherColor) 
+      {
+          return [...squares, node, node?.left];
+      }
+
+      node = node?.left;
+      squares = [...squares, node];
+  }
+
+  return squares;
 };
 
 export const getHorizontalRow = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  const rightRow = getHorizontalRightRow(node?.right, []);
-  const leftRow = getHorizontalLeftRow(node?.left, []);
+  const rightRow = getHorizontalRightRow(node, [], logic);
+  const leftRow = getHorizontalLeftRow(node, [], logic);
   return [...leftRow, node, ...rightRow];
 };
 
@@ -441,7 +510,9 @@ export const getVerticalForwardColumn = (
   squares: Square[],
   logic: PieceLogicService
 ): any => {
-   
+  
+  const originalNode = node;
+
   while (node?.forward) {
     
     if (node === undefined || node === null) 
@@ -454,36 +525,73 @@ export const getVerticalForwardColumn = (
       const hasPiece = node?.forward?.SquareHasPiece();
       // console.log('has piece', hasPiece);
 
-      const isSameColor = logic.pieceIsSameColor(node, node?.forward as Square);
+      const isSameColor = logic.pieceIsSameColor(originalNode as Square, node?.forward as Square);
       // console.log('is same color', isSameColor);
 
-      const isOtherColor = logic.pieceIsOtherColor(node, node?.forward as Square);
+      const isOtherColor = logic.pieceIsOtherColor(originalNode as Square, node?.forward as Square);
       // console.log(isOtherColor);
 
       if (hasPiece && isSameColor) 
       {
-        console.log('smae color here...');
         return squares;
       }
     
       // account for if piece is black we just take that one and then end the logic loop. 
       if (hasPiece && isOtherColor) 
       {
-          return [...squares, node, node.forward];
+          return [...squares, node, node?.forward];
       }
 
-      node = node.forward;
+      node = node?.forward;
       squares = [...squares, node];
   }
+
+  return squares;
 };
 
 export const getVerticalBackColumn = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  return node === undefined
-    ? squares
-    : getVerticalBackColumn(node.back, [...squares, node]);
+
+  const originalNode = node;
+
+  while (node?.back) {
+
+    
+    if (node === undefined || node === null) 
+    {
+        return squares;
+    }
+      // test if forward square has a piece 
+      // if it does and it's the same color 
+      // break the function and return what we have
+      const hasPiece = node?.back?.SquareHasPiece();
+      // console.log('has piece', hasPiece);
+
+      const isSameColor = logic.pieceIsSameColor(originalNode as Square, node?.back as Square);
+      // console.log('is same color', isSameColor);
+
+      const isOtherColor = logic.pieceIsOtherColor(originalNode as Square, node?.back as Square);
+      // console.log(isOtherColor);
+
+      if (hasPiece && isSameColor) 
+      {
+        return squares;
+      }
+    
+      // account for if piece is black we just take that one and then end the logic loop. 
+      if (hasPiece && isOtherColor) 
+      {
+          return [...squares, node, node?.back];
+      }
+
+      node = node?.back;
+      squares = [...squares, node];
+  }
+
+  return squares;
 };
 
 export const getVerticalRow = (
@@ -491,8 +599,8 @@ export const getVerticalRow = (
   squares: Square[],
   logic: PieceLogicService
 ): any => {
-  const forwardRow = getVerticalForwardColumn(node?.forward, [], logic);
-  const backwardRow = getVerticalBackColumn(node?.back, []);
+  const forwardRow = getVerticalForwardColumn(node, [], logic);
+  const backwardRow = getVerticalBackColumn(node, [], logic);
   return [...forwardRow, node, ...backwardRow];
 };
 
@@ -553,10 +661,9 @@ export const getRookMoves = (
   logic: PieceLogicService
 ): any => {
   const forwardRow = getVerticalForwardColumn(node, [], logic);
-  console.log(forwardRow)
-  const backwardRow = getVerticalBackColumn(node?.back, []);
-  const rightRow = getHorizontalRightRow(node?.right, []);
-  const leftRow = getHorizontalLeftRow(node?.left, []);
+  const backwardRow = getVerticalBackColumn(node, [], logic);
+  const rightRow = getHorizontalRightRow(node, [], logic);
+  const leftRow = getHorizontalLeftRow(node, [], logic);
   return [...forwardRow, node, ...backwardRow, ...rightRow, ...leftRow];
 };
 

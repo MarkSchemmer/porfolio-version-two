@@ -8,8 +8,8 @@ import { Square } from "../board/Square";
 
 export class PieceLogicService {
     public pieceIsOtherColor = (fromSquare: Square, toSquare: Square) => {
-        const fromPiece = fromSquare.piece;
-        const toPiece = toSquare.piece;
+        const fromPiece = fromSquare?.piece;
+        const toPiece = toSquare?.piece;
 
         // empty square can move there... 
         if (toPiece === null)
@@ -20,8 +20,8 @@ export class PieceLogicService {
     }
 
     public pieceIsSameColor = (fromSquare: Square, toSquare: Square) => {
-        const fromPiece = fromSquare.piece;
-        const toPiece = toSquare.piece;
+        const fromPiece = fromSquare?.piece;
+        const toPiece = toSquare?.piece;
 
         // empty square can move there... 
         if (toPiece === null)
