@@ -195,7 +195,7 @@ export class Board {
 
   public updateBishopMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getBishopMoves(node, []);
+    const sqs = getBishopMoves(node, [], this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 

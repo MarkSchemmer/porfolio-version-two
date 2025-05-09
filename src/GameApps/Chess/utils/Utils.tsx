@@ -14,6 +14,7 @@ import { Piece } from "../pieces/Piece";
 import { BlackPond, WhitePond } from "../pieces/Pond";
 import { BlackQueen, WhiteQueen } from "../pieces/Queen";
 import { BlackRook, WhiteRook } from "../pieces/Rook";
+import { DirectionCrawl, NodeCrawler } from "./NodeMutatorCrawler";
 
 export const isNullOrUndefined = (obj: any) =>
   obj === null || obj === undefined;
@@ -475,7 +476,6 @@ export const getHorizontalLeftRow = (
 
       if (hasPiece && isSameColor) 
       {
-        console.log('smae color here...');
         return squares;
       }
     
@@ -643,15 +643,16 @@ export const getDiagonalRightToLeftBack = (
 // Bishop moves
 export const getBishopMoves = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  const rightRow = getDiagonalLeftToRight(node?.diagonalRight, []);
-  const rightRowBack = getDiagonalLeftToRightBack(node?.diagonalBackRight, []);
+  const rightDiag = NodeCrawler(node, [], logic, DirectionCrawl.diagonalRight);
+  const rightDiagBack = NodeCrawler(node, [], logic, DirectionCrawl.diagonalBackRight);
 
-  const leftRow = getDiagonalRightToLeft(node?.diagonalLeft, []);
-  const leftRowBack = getDiagonalRightToLeftBack(node?.diagonalBackLeft, []);
+  const leftDiag = NodeCrawler(node, [], logic, DirectionCrawl.diagonalLeft);
+  const leftDiagBack = NodeCrawler(node, [], logic, DirectionCrawl.diagonalBackLeft);
 
-  return [...leftRowBack, ...leftRow, node, ...rightRow, ...rightRowBack];
+  return [...leftDiagBack, ...leftDiag, node, ...rightDiag, ...rightDiagBack];
 };
 
 // Rook moves.
@@ -660,10 +661,10 @@ export const getRookMoves = (
   squares: Square[],
   logic: PieceLogicService
 ): any => {
-  const forwardRow = getVerticalForwardColumn(node, [], logic);
-  const backwardRow = getVerticalBackColumn(node, [], logic);
-  const rightRow = getHorizontalRightRow(node, [], logic);
-  const leftRow = getHorizontalLeftRow(node, [], logic);
+  const forwardRow = NodeCrawler(node, [], logic, DirectionCrawl.forward);
+  const backwardRow = NodeCrawler(node, [], logic, DirectionCrawl.back);
+  const rightRow = NodeCrawler(node, [], logic, DirectionCrawl.right);
+  const leftRow = NodeCrawler(node, [], logic, DirectionCrawl.left);
   return [...forwardRow, node, ...backwardRow, ...rightRow, ...leftRow];
 };
 
@@ -675,7 +676,7 @@ export const getQueenMoves = (
 ): any => {
   const pieceLogic = new PieceLogicService();
   let horzAndVertMoves = getRookMoves(node, [], logic);
-  let diagMoves = getBishopMoves(node, []);
+  let diagMoves = getBishopMoves(node, [], logic);
 
   let allMovesWithoutNode = [...diagMoves, ...horzAndVertMoves].filter(
     (sq: Square) => {
