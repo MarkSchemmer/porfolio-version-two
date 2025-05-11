@@ -405,8 +405,7 @@ export const connectAllSquares = (board: Square[][], rootNode: Square) => {
   connectDiagLToDiagRBack(board, rootNode);
 };
 
-
-// NOT being used in actual chess game now 
+// NOT being used in actual chess game now
 // Refer to NodeCrawler
 // I can add a layer of chess rules to determine if we can get that square.
 // and the pieces themselves can use these methods for finding next moves ect.
@@ -415,83 +414,84 @@ export const getHorizontalRightRow = (
   squares: Square[],
   logic: PieceLogicService
 ): any => {
-
   const originalNode = node;
 
   while (node?.right) {
-    
-    if (node === undefined || node === null) 
-    {
-        return squares;
+    if (node === undefined || node === null) {
+      return squares;
     }
-      // test if forward square has a piece 
-      // if it does and it's the same color 
-      // break the function and return what we have
-      const hasPiece = node?.right.SquareHasPiece();
-      // console.log('has piece', hasPiece);
-      const isSameColor = logic.pieceIsSameColor(originalNode as Square, node?.right as Square);
-      // console.log('is same color', isSameColor);
-      const isOtherColor = logic.pieceIsOtherColor(originalNode as Square, node?.right as Square);
-      // console.log(isOtherColor);
+    // test if forward square has a piece
+    // if it does and it's the same color
+    // break the function and return what we have
+    const hasPiece = node?.right.SquareHasPiece();
+    // console.log('has piece', hasPiece);
+    const isSameColor = logic.pieceIsSameColor(
+      originalNode as Square,
+      node?.right as Square
+    );
+    // console.log('is same color', isSameColor);
+    const isOtherColor = logic.pieceIsOtherColor(
+      originalNode as Square,
+      node?.right as Square
+    );
+    // console.log(isOtherColor);
 
-      if (hasPiece && isSameColor) 
-      {
-        return squares;
-      }
-    
-      // account for if piece is black we just take that one and then end the logic loop. 
-      if (hasPiece && isOtherColor) 
-      {
-          return [...squares, node, node?.right];
-      }
-      
-      node = node?.right;
-      squares = [...squares, node];
+    if (hasPiece && isSameColor) {
+      return squares;
+    }
+
+    // account for if piece is black we just take that one and then end the logic loop.
+    if (hasPiece && isOtherColor) {
+      return [...squares, node, node?.right];
+    }
+
+    node = node?.right;
+    squares = [...squares, node];
   }
 
   return squares;
 };
 
-// NOT being used in actual chess game now 
+// NOT being used in actual chess game now
 // Refer to NodeCrawler
 export const getHorizontalLeftRow = (
   node: Square | undefined,
   squares: Square[],
   logic: PieceLogicService
 ): any => {
-
-
   const originalNode = node;
 
   while (node?.left) {
-    
-    if (node === undefined || node === null) 
-    {
-        return squares;
+    if (node === undefined || node === null) {
+      return squares;
     }
-      // test if forward square has a piece 
-      // if it does and it's the same color 
-      // break the function and return what we have
-      const hasPiece = node?.left?.SquareHasPiece();
-      // console.log('has piece', hasPiece);
-      const isSameColor = logic.pieceIsSameColor(originalNode as Square, node?.left as Square);
-      // console.log('is same color', isSameColor);
-      const isOtherColor = logic.pieceIsOtherColor(originalNode as Square, node?.left as Square);
-      // console.log(isOtherColor);
+    // test if forward square has a piece
+    // if it does and it's the same color
+    // break the function and return what we have
+    const hasPiece = node?.left?.SquareHasPiece();
+    // console.log('has piece', hasPiece);
+    const isSameColor = logic.pieceIsSameColor(
+      originalNode as Square,
+      node?.left as Square
+    );
+    // console.log('is same color', isSameColor);
+    const isOtherColor = logic.pieceIsOtherColor(
+      originalNode as Square,
+      node?.left as Square
+    );
+    // console.log(isOtherColor);
 
-      if (hasPiece && isSameColor) 
-      {
-        return squares;
-      }
-    
-      // account for if piece is black we just take that one and then end the logic loop. 
-      if (hasPiece && isOtherColor) 
-      {
-          return [...squares, node, node?.left];
-      }
+    if (hasPiece && isSameColor) {
+      return squares;
+    }
 
-      node = node?.left;
-      squares = [...squares, node];
+    // account for if piece is black we just take that one and then end the logic loop.
+    if (hasPiece && isOtherColor) {
+      return [...squares, node, node?.left];
+    }
+
+    node = node?.left;
+    squares = [...squares, node];
   }
 
   return squares;
@@ -507,98 +507,98 @@ export const getHorizontalRow = (
   return [...leftRow, node, ...rightRow];
 };
 
-
-// NOT being used in actual chess game now 
+// NOT being used in actual chess game now
 // Refer to NodeCrawler
 // I can add a layer of chess rules to determine if we can get that square.
 // and the pieces themselves can use these methods for finding next moves ect.
-// currently this is working need to get the other methods working as such... 
+// currently this is working need to get the other methods working as such...
 export const getVerticalForwardColumn = (
   node: Square | undefined,
   squares: Square[],
   logic: PieceLogicService
 ): any => {
-  
   const originalNode = node;
 
   while (node?.forward) {
-    
-    if (node === undefined || node === null) 
-    {
-        return squares;
+    if (node === undefined || node === null) {
+      return squares;
     }
-      // test if forward square has a piece 
-      // if it does and it's the same color 
-      // break the function and return what we have
-      const hasPiece = node?.forward?.SquareHasPiece();
-      // console.log('has piece', hasPiece);
+    // test if forward square has a piece
+    // if it does and it's the same color
+    // break the function and return what we have
+    const hasPiece = node?.forward?.SquareHasPiece();
+    // console.log('has piece', hasPiece);
 
-      const isSameColor = logic.pieceIsSameColor(originalNode as Square, node?.forward as Square);
-      // console.log('is same color', isSameColor);
+    const isSameColor = logic.pieceIsSameColor(
+      originalNode as Square,
+      node?.forward as Square
+    );
+    // console.log('is same color', isSameColor);
 
-      const isOtherColor = logic.pieceIsOtherColor(originalNode as Square, node?.forward as Square);
-      // console.log(isOtherColor);
+    const isOtherColor = logic.pieceIsOtherColor(
+      originalNode as Square,
+      node?.forward as Square
+    );
+    // console.log(isOtherColor);
 
-      if (hasPiece && isSameColor) 
-      {
-        return squares;
-      }
-    
-      // account for if piece is black we just take that one and then end the logic loop. 
-      if (hasPiece && isOtherColor) 
-      {
-          return [...squares, node, node?.forward];
-      }
+    if (hasPiece && isSameColor) {
+      return squares;
+    }
 
-      node = node?.forward;
-      squares = [...squares, node];
+    // account for if piece is black we just take that one and then end the logic loop.
+    if (hasPiece && isOtherColor) {
+      return [...squares, node, node?.forward];
+    }
+
+    node = node?.forward;
+    squares = [...squares, node];
   }
 
   return squares;
 };
 
-// NOT being used in actual chess game now 
+// NOT being used in actual chess game now
 // Refer to NodeCrawler
 export const getVerticalBackColumn = (
   node: Square | undefined,
   squares: Square[],
   logic: PieceLogicService
 ): any => {
-
   const originalNode = node;
 
   while (node?.back) {
-
-    
-    if (node === undefined || node === null) 
-    {
-        return squares;
+    if (node === undefined || node === null) {
+      return squares;
     }
-      // test if forward square has a piece 
-      // if it does and it's the same color 
-      // break the function and return what we have
-      const hasPiece = node?.back?.SquareHasPiece();
-      // console.log('has piece', hasPiece);
+    // test if forward square has a piece
+    // if it does and it's the same color
+    // break the function and return what we have
+    const hasPiece = node?.back?.SquareHasPiece();
+    // console.log('has piece', hasPiece);
 
-      const isSameColor = logic.pieceIsSameColor(originalNode as Square, node?.back as Square);
-      // console.log('is same color', isSameColor);
+    const isSameColor = logic.pieceIsSameColor(
+      originalNode as Square,
+      node?.back as Square
+    );
+    // console.log('is same color', isSameColor);
 
-      const isOtherColor = logic.pieceIsOtherColor(originalNode as Square, node?.back as Square);
-      // console.log(isOtherColor);
+    const isOtherColor = logic.pieceIsOtherColor(
+      originalNode as Square,
+      node?.back as Square
+    );
+    // console.log(isOtherColor);
 
-      if (hasPiece && isSameColor) 
-      {
-        return squares;
-      }
-    
-      // account for if piece is black we just take that one and then end the logic loop. 
-      if (hasPiece && isOtherColor) 
-      {
-          return [...squares, node, node?.back];
-      }
+    if (hasPiece && isSameColor) {
+      return squares;
+    }
 
-      node = node?.back;
-      squares = [...squares, node];
+    // account for if piece is black we just take that one and then end the logic loop.
+    if (hasPiece && isOtherColor) {
+      return [...squares, node, node?.back];
+    }
+
+    node = node?.back;
+    squares = [...squares, node];
   }
 
   return squares;
@@ -657,10 +657,20 @@ export const getBishopMoves = (
   logic: PieceLogicService
 ): any => {
   const rightDiag = NodeCrawler(node, [], logic, DirectionCrawl.diagonalRight);
-  const rightDiagBack = NodeCrawler(node, [], logic, DirectionCrawl.diagonalBackRight);
+  const rightDiagBack = NodeCrawler(
+    node,
+    [],
+    logic,
+    DirectionCrawl.diagonalBackRight
+  );
 
   const leftDiag = NodeCrawler(node, [], logic, DirectionCrawl.diagonalLeft);
-  const leftDiagBack = NodeCrawler(node, [], logic, DirectionCrawl.diagonalBackLeft);
+  const leftDiagBack = NodeCrawler(
+    node,
+    [],
+    logic,
+    DirectionCrawl.diagonalBackLeft
+  );
 
   return [...leftDiagBack, ...leftDiag, node, ...rightDiag, ...rightDiagBack];
 };
@@ -688,21 +698,18 @@ export const getQueenMoves = (
   let horzAndVertMoves = getRookMoves(node, [], logic);
   let diagMoves = getBishopMoves(node, [], logic);
 
-  let allMovesWithoutNode = [...diagMoves, ...horzAndVertMoves].filter(
-    (sq: Square) => {
+  let allMovesWithoutNode = [...diagMoves, ...horzAndVertMoves]
+    .filter((sq: Square) => {
       const [x, y] = sq.mathematicalCoordinate;
       return (
         (x === node?.mathematicalCoordinate[0] &&
           y === node?.mathematicalCoordinate[1]) === false
       );
-    }
-  )
-  .filter(
-    (sq: Square | undefined) => isValue(sq)
-  )
-  .filter(
-    (sq: Square | undefined) => pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
-  )
+    })
+    .filter((sq: Square | undefined) => isValue(sq))
+    .filter((sq: Square | undefined) =>
+      pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
+    );
 
   return [...allMovesWithoutNode, node];
 };
@@ -712,7 +719,6 @@ export const getKnightMoves = (
   node: Square | undefined,
   squares: Square[]
 ): any => {
-
   const pieceLogic = new PieceLogicService();
 
   let tpL = node?.forward?.forward?.left;
@@ -727,41 +733,73 @@ export const getKnightMoves = (
   let rtp = node?.right?.right?.forward;
   let rbtm = node?.right?.right?.back;
 
-  const knightMoves = [tpL, tpR, ltp, lbtm, bl, br, rtp, rbtm].filter(
-    (sq: Square | undefined) => isValue(sq)
-  ).filter(
-    (sq: Square | undefined) => pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
-  );
+  const knightMoves = [tpL, tpR, ltp, lbtm, bl, br, rtp, rbtm]
+    .filter((sq: Square | undefined) => isValue(sq))
+    .filter((sq: Square | undefined) =>
+      pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
+    );
 
   return [...knightMoves, node];
 };
 
 export const getBlackPondMoves = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  let bn = node?.back;
-  let bnn = node?.back?.back;
+  let bn = logic.canPondMoveForwardOneSpace(node?.back as Square) ? node?.back : null;
+
+  let bnn = logic.canPondDoubleMove(
+    node as Square,
+    node?.back as Square,
+    node?.back?.back as Square
+  )
+    ? node?.back?.back
+    : null;
+
   let bl = node?.back?.left;
   let br = node?.back?.right;
 
-  const pondMoves = [bn, bnn, bl, br].filter(sq => isValue(sq));
+  const pondMoves = [bn, bnn].filter((sq) => isValue(sq));
 
-  return [...pondMoves, node];
+  const canMoveLeftOrRight = [bl, br]
+    .filter((sq) => isValue(sq))
+    .filter(
+      (sq) => logic.canPondTake(node as Square, sq as Square)
+    );
+
+  return [...pondMoves, ...canMoveLeftOrRight, node];
 };
 
 export const getWhitePondMoves = (
   node: Square | undefined,
-  squares: Square[]
+  squares: Square[],
+  logic: PieceLogicService
 ): any => {
-  let fn = node?.forward;
-  let fnn = node?.forward?.forward;
+
+  let fn = logic.canPondMoveForwardOneSpace(node?.forward as Square) ? node?.forward : null;
+
+  // we can only move two up on it's first move...
+  let fnn = logic.canPondDoubleMove(
+    node as Square,
+    node?.forward as Square,
+    node?.forward?.forward as Square
+  )
+    ? node?.forward?.forward
+    : null;
+
   let fl = node?.forward?.left;
   let fr = node?.forward?.right;
 
-  const pondMoves = [fn, fnn, fl, fr].filter(sq => isValue(sq));
+  const pondMoves = [fn, fnn].filter((sq) => isValue(sq));
 
-  return [...pondMoves, node];
+  const canMoveLeftOrRight = [fl, fr]
+    .filter((sq) => isValue(sq))
+    .filter(
+      (sq) => logic.canPondTake(node as Square, sq as Square)
+    );
+
+  return [...pondMoves, ...canMoveLeftOrRight, node];
 };
 
 export const getKingMoves = (
@@ -779,10 +817,10 @@ export const getKingMoves = (
   let bl = node?.back?.left;
   let br = node?.back?.right;
 
-  const kingMoves = [f, l, r, b, fl, fr, bl, br].filter(sq => isValue(sq));
+  const kingMoves = [f, l, r, b, fl, fr, bl, br].filter((sq) => isValue(sq));
 
   return [...kingMoves, node];
-}
+};
 
 export function uuidv4() {
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>

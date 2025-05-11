@@ -81,6 +81,8 @@ export class Board {
   public settingsService: SettingsService = new SettingsService();
   public logic: PieceLogicService = new PieceLogicService();
 
+  public turn: number = 0;
+
   // public currentSelectedSquare: currentSelectedChessSquare = null;
 
   constructor() {
@@ -219,13 +221,13 @@ export class Board {
 
   public updatePondMovesWhite = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getWhitePondMoves(node, []);
+    const sqs = getWhitePondMoves(node, [], this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updatePondMovesBlack = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getBlackPondMoves(node, []);
+    const sqs = getBlackPondMoves(node, [], this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
@@ -246,13 +248,30 @@ export class Board {
     return node;
   };
 
+
   public movePieceFromTo = (from: MathCoordinate, to: MathCoordinate) => {
     const fromNode = getNode(from, this.board);
     const toNode = getNode(to, this.board);
 
-    if (toNode) toNode.piece = fromNode?.piece;
+    // write logic here for determing if it's a doulbe move pond
+    // if it is it's going to tag left square and right square if it's 
+    // a pond and then it's going to flag pond piece type that they can en-passant
+    // and on what turn of the game it can so if we are on step 25, then the opposing 
+    // player can en-passant step 26 and only on step 26, if a piece is there then it 
+    // can take it if it's the other color
 
-    if (fromNode) fromNode.piece = null;
+    // when a piece moves we need to flip that boolean
+    if (fromNode) 
+      fromNode.piece?.notifyPieceHasMoved();
+
+    if (toNode) 
+      toNode.piece = fromNode?.piece;
+
+    if (fromNode) 
+      fromNode.piece = null;
+    
+    // incerement the turn so we know we made a move on our on the next...
+    this.incrementTurn();
   };
 
 
@@ -262,6 +281,10 @@ export class Board {
         });
 
         node.SquareBgColor = this.settingsService.selectedSquareColor;
+  }
+
+  public incrementTurn = () => {
+    this.turn += 1;
   }
 
   // public setCurrentSelectedSquare = (selectedChessSquare: currentSelectedChessSquare) => {
