@@ -36,6 +36,7 @@
 
 import { PieceLogicService } from "../PieceLogicService/PieceLogicService";
 import { Piece } from "../pieces/Piece";
+import { BlackPond, WhitePond } from "../pieces/Pond";
 import { SettingsService } from "../SettingsService/SettingsService";
 import {
   connectAllSquares,
@@ -221,13 +222,13 @@ export class Board {
 
   public updatePondMovesWhite = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getWhitePondMoves(node, [], this.logic);
+    const sqs = getWhitePondMoves(node, [], this.logic, this.turn);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updatePondMovesBlack = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getBlackPondMoves(node, [], this.logic);
+    const sqs = getBlackPondMoves(node, [], this.logic, this.turn);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
@@ -250,9 +251,11 @@ export class Board {
 
 
   public movePieceFromTo = (from: MathCoordinate, to: MathCoordinate) => {
+
     const fromNode = getNode(from, this.board);
     const toNode = getNode(to, this.board);
-
+    // check the enPassant 
+    const [canEnPassantLeft, canEnPassantRight] = this.logic.shouldNotifySquaresLeftAndRightOfEnPassant(fromNode, toNode);
     // write logic here for determing if it's a doulbe move pond
     // if it is it's going to tag left square and right square if it's 
     // a pond and then it's going to flag pond piece type that they can en-passant
@@ -260,16 +263,53 @@ export class Board {
     // player can en-passant step 26 and only on step 26, if a piece is there then it 
     // can take it if it's the other color
 
+    const leftNode = toNode?.left;
+    const rightNode = toNode?.right;
+
+    if (canEnPassantLeft && this.logic.isValue(leftNode) && leftNode?.SquareHasPiece()) {
+      let pond = leftNode?.piece as Piece;
+      pond.enPassantDetails.CanEnPassant = true;
+      pond.enPassantDetails.turn = this.turn + 1;
+      // console.log(pond);
+    }
+
+    if (canEnPassantRight && this.logic.isValue(rightNode) && rightNode?.SquareHasPiece()) {
+      let pond = rightNode?.piece as Piece;
+      pond.enPassantDetails.CanEnPassant = true;
+      pond.enPassantDetails.turn = this.turn + 1;
+      // console.log(pond);
+    }
+
     // when a piece moves we need to flip that boolean
     if (fromNode) 
       fromNode.piece?.notifyPieceHasMoved();
 
-    if (toNode) 
-      toNode.piece = fromNode?.piece;
+
+
+    if (toNode) {
+
+      const enPassantCheckRight = toNode.IsEnPassantMove && this.logic.IsPondMoveForwardRight(fromNode as Square, toNode as Square);
+      const enPassantCheckLeft = toNode.IsEnPassantMove && this.logic.IsPondMoveForwardLeft(fromNode as Square, toNode as Square);
+
+        if (enPassantCheckRight) {
+          // need to null out right piece // right node is now empty. 
+          fromNode?.right?.makeSquareEmpty();
+          toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
+        } else if (enPassantCheckLeft) {
+            // need to null out right piece // right node is now empty. 
+            fromNode?.left?.makeSquareEmpty();
+            toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
+        }
+
+        // need to check the left side...
+
+        toNode.SetNodeWithNewPiece(fromNode?.piece)
+    }
+      
 
     if (fromNode) 
-      fromNode.piece = null;
-    
+      fromNode.makeSquareEmpty();
+
     // incerement the turn so we know we made a move on our on the next...
     this.incrementTurn();
   };

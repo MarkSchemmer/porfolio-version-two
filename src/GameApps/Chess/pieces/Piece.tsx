@@ -1,9 +1,18 @@
 import { PieceColor } from "../utils/Utils";
 
+export type EnPassantDetails = {
+    turn: number, CanEnPassant: boolean
+  }
+
 export class Piece {
     public pieceName: string;
     public pieceColor: PieceColor;
     public hasMoved: boolean = false;
+
+    public enPassantDetails: EnPassantDetails = {
+        turn: 0, CanEnPassant: false
+    }
+      
     
     constructor(pieceName: string, pieceColor: PieceColor) {
         this.pieceName = pieceName;
@@ -16,4 +25,13 @@ export class Piece {
     }
 
     public hasPieceMoved = () => this.hasMoved === true;
+    public hasPieceNotMoved = () => this.hasMoved === false;
+    public IsWhite = () => this.pieceColor === PieceColor.WHITE;
+    public IsBlack = () => this.pieceColor === PieceColor.BLACK;
+
+    public ResetEnPassantDetails = () => {
+        this.enPassantDetails = {
+            turn: 0, CanEnPassant: false
+        }
+    }
 }

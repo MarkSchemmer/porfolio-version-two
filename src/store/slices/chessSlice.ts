@@ -53,6 +53,7 @@ export const chessSlice = createSlice({
         UpdateChessBoard: (state, action: {type: string, payload: any}) => {
             const newBoard = new Board();
             newBoard.board = action.payload.board;
+            newBoard.turn = action.payload.turn;
             newBoard.rootNode = action.payload.rootNode;
             state.board = newBoard;
         },

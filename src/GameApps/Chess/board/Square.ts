@@ -28,6 +28,8 @@ export class Square {
 
     public mathematicalCoordinate: MathCoordinate;
 
+    public IsEnPassantMove: boolean = false;
+
     public piece: Piece | null | undefined = null;
 
     // Testing props will be commented out later.
@@ -38,8 +40,16 @@ export class Square {
         this.mathematicalCoordinate = mathematicalCoordinate;
     }
 
+    public makeSquareEmpty = () => {
+        this.piece = null;
+    }
+
     public SquareHasPiece = (): boolean => {
         return this.piece !== null && this.piece !== undefined;
+    }
+
+    public SetNodeWithNewPiece = (piece: Piece | undefined | null) => {
+        this.piece = piece;
     }
 
     public makeSquareMoviable = (bgColor: string) => {
