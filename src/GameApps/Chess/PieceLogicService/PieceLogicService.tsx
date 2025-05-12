@@ -163,48 +163,75 @@ export class PieceLogicService {
       doubleSpaceMove &&
       this.SquaresHavePondsAreDifferentColors(rightNode as Square, fNode);
 
-    return [ checkLeftForEnPassant, checkRightForEnPassant ];
+    return [checkLeftForEnPassant, checkRightForEnPassant];
   };
 
   public IsPondMoveForwardRight = (fromNode: Square, toNode: Square) => {
-        return fromNode.piece?.IsWhite() 
-        ? this.IsWhitePondMoveForwardRight(fromNode, toNode, fromNode.forward?.right as Square) 
-        : this.IsBlackPondMoveForwardRight(fromNode, toNode, fromNode.back?.right as Square);
-  }
+    return fromNode.piece?.IsWhite()
+      ? this.IsWhitePondMoveForwardRight(
+          fromNode,
+          toNode,
+          fromNode.forward?.right as Square
+        )
+      : this.IsBlackPondMoveForwardRight(
+          fromNode,
+          toNode,
+          fromNode.back?.right as Square
+        );
+  };
 
   public IsPondMoveForwardLeft = (fromNode: Square, toNode: Square) => {
-    return fromNode.piece?.IsWhite() 
-    ? this.IsWhitePondMoveForwardRight(fromNode, toNode, fromNode.forward?.left as Square) 
-    : this.IsBlackPondMoveForwardRight(fromNode, toNode, fromNode.back?.left as Square);
-}
+    return fromNode.piece?.IsWhite()
+      ? this.IsWhitePondMoveForwardRight(
+          fromNode,
+          toNode,
+          fromNode.forward?.left as Square
+        )
+      : this.IsBlackPondMoveForwardRight(
+          fromNode,
+          toNode,
+          fromNode.back?.left as Square
+        );
+  };
 
   // new name for this
-  public IsWhitePondMoveForwardRight = (fromNode: Square, toNode: Square, newNode: Square) => {
+  public IsWhitePondMoveForwardRight = (
+    fromNode: Square,
+    toNode: Square,
+    newNode: Square
+  ) => {
     // const newNode = fromNode?.forward?.right;
-    if (this.IsNullOrUndefined(newNode))
-        return false;
+    if (this.IsNullOrUndefined(newNode)) return false;
 
     const newNodeCoordinate = newNode?.mathematicalCoordinate as MathCoordinate;
     const toNodeCoordinate = toNode?.mathematicalCoordinate as MathCoordinate;
 
-    if (this.IsNullOrUndefined(newNodeCoordinate) || this.IsNullOrUndefined(toNodeCoordinate))
-        return false;
+    if (
+      this.IsNullOrUndefined(newNodeCoordinate) ||
+      this.IsNullOrUndefined(toNodeCoordinate)
+    )
+      return false;
 
     return isSameSquare(newNodeCoordinate, toNodeCoordinate);
-  }
+  };
 
-  public IsBlackPondMoveForwardRight = (fromNode: Square, toNode: Square, newNode: Square) => {
+  public IsBlackPondMoveForwardRight = (
+    fromNode: Square,
+    toNode: Square,
+    newNode: Square
+  ) => {
     // const newNode = fromNode?.forward?.right;
-    if (this.IsNullOrUndefined(newNode))
-        return false;
+    if (this.IsNullOrUndefined(newNode)) return false;
 
     const newNodeCoordinate = newNode?.mathematicalCoordinate as MathCoordinate;
     const toNodeCoordinate = toNode?.mathematicalCoordinate as MathCoordinate;
 
-    if (this.IsNullOrUndefined(newNodeCoordinate) || this.IsNullOrUndefined(toNodeCoordinate))
-        return false;
+    if (
+      this.IsNullOrUndefined(newNodeCoordinate) ||
+      this.IsNullOrUndefined(toNodeCoordinate)
+    )
+      return false;
 
     return isSameSquare(newNodeCoordinate, toNodeCoordinate);
-  }
-
+  };
 }

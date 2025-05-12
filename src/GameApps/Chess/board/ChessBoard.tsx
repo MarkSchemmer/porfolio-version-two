@@ -40,22 +40,22 @@ const BoardPiece = (props: any) => {
   const testing = useSelector(getTestingState);
   const boardobj = useSelector(getBoard) as Board;
   const chessPieceManipulation = useSelector(getCurrentPieceBeingManipulated);
- 
+
   const bottomRight = (coordinateToLetterValueMap as any)[y.toString()];
   const currentSquareClick = boardobj.getSquare([x, y]);
-  // if we select square and it has a piece we populate with this square. 
-  const selectedPiece =  useSelector(getMoveHistory).cur as Square | null;
+  // if we select square and it has a piece we populate with this square.
+  const selectedPiece = useSelector(getMoveHistory).cur as Square | null;
 
   const updateBoardAndSelectedPiece = (board: Board, piece: Square | null) => {
     dispatch(UpdateChessBoard(board));
     dispatch(updateSelectedPiece(piece));
-  }
+  };
 
   return (
     <Flex
       alignItems={"center"}
       onClick={() => {
-        if (Object.values(testing).some(v => v)) {
+        if (Object.values(testing).some((v) => v)) {
           // console.log('testing block')
           // console.log(testing)
           if (testing.horozontal) {
@@ -97,55 +97,62 @@ const BoardPiece = (props: any) => {
             boardobj.updateQueenMoves([x, y]);
             dispatch(UpdateChessBoard(boardobj));
           }
-        } 
-        else if (chessPieceManipulation.active === true) {
-            // console.log('piece manipulation block');
-            const {name, pieceColor} = chessPieceManipulation.pieceSelected;
-            const piece = PieceFactory(name, pieceColor);
-            boardobj.populateSquareWithPiece([x, y], piece);
-            dispatch(UpdateChessBoard(boardobj));
+        } else if (chessPieceManipulation.active === true) {
+          // console.log('piece manipulation block');
+          const { name, pieceColor } = chessPieceManipulation.pieceSelected;
+          const piece = PieceFactory(name, pieceColor);
+          boardobj.populateSquareWithPiece([x, y], piece);
+          dispatch(UpdateChessBoard(boardobj));
         } else {
-          // if the board is click check if piece is there then if the piece is there 
+          // if the board is click check if piece is there then if the piece is there
           // we need a signal that activates and store active piece, [x, y] coordinate as well
           // I'm guessing what I can do is I can pass the piecename, coordinate, and finally piece color
           // use this information to check if a piece exists in this coordinate if so then we calculate the moves it can move
-          
+
           // ------------------------------------------------------------------------------------------------------------------
           // ------------------------------------------------------------------------------------------------------------------
 
           // the code below this, will click a piece and render the moves on the board
-          // But now we need a mechanism for an active piece so... we can click a square and move that if it's 
-          // one of the valid squares it can actually move to. 
-
-
+          // But now we need a mechanism for an active piece so... we can click a square and move that if it's
+          // one of the valid squares it can actually move to.
 
           // I clicked a square but it's already  been selected we unselect this square so we clear the board.
-          if (currentSquareClick.SquareHasPiece() && selectedPiece && isSameSquare(currentSquareClick.mathematicalCoordinate, selectedPiece.mathematicalCoordinate)) {
-            const chessboard = clearBoard(boardobj)
+          if (
+            currentSquareClick.SquareHasPiece() &&
+            selectedPiece &&
+            isSameSquare(
+              currentSquareClick.mathematicalCoordinate,
+              selectedPiece.mathematicalCoordinate
+            )
+          ) {
+            const chessboard = clearBoard(boardobj);
             // update board and make unselect piece by making it null.
             updateBoardAndSelectedPiece(chessboard, null);
           }
           // need to check if we are clicking a square that has a piece if it does then we select that piece and show moves to make
-          else if (currentSquareClick.SquareHasPiece() && selectedPiece === null) {
+          else if (
+            currentSquareClick.SquareHasPiece() &&
+            selectedPiece === null
+          ) {
             const chessBoard = HandleSquareClickWithPiece([x, y], boardobj);
             updateBoardAndSelectedPiece(chessBoard, currentSquareClick);
-          }
-          else if (currentSquareClick.canMoveHere()) {
-            boardobj.movePieceFromTo(selectedPiece?.mathematicalCoordinate as MathCoordinate, currentSquareClick.mathematicalCoordinate)
+          } else if (currentSquareClick.canMoveHere()) {
+            boardobj.movePieceFromTo(
+              selectedPiece?.mathematicalCoordinate as MathCoordinate,
+              currentSquareClick.mathematicalCoordinate
+            );
             const chessBoard = clearBoard(boardobj);
             updateBoardAndSelectedPiece(chessBoard, null);
+          } else {
+            // Right now this is clicking a none blue square and just unselects the piece
+            // should unselect piece and clearboard.
+            const chessboard = clearBoard(boardobj);
+            updateBoardAndSelectedPiece(chessboard, null);
           }
-          else {
-              // Right now this is clicking a none blue square and just unselects the piece
-              // should unselect piece and clearboard.
-              const chessboard = clearBoard(boardobj);
-              updateBoardAndSelectedPiece(chessboard, null);
-          } 
-          
         }
 
-        // dispatch for next calculation... 
-        
+        // dispatch for next calculation...
+
         //console.log("prev square: ", currentHistory.prev?.mathematicalCoordinate);
         //console.log("current square: ", currentHistory.current?.mathematicalCoordinate);
       }}

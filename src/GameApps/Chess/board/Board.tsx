@@ -59,14 +59,14 @@ import {
 import { MathCoordinate, Square } from "./Square";
 
 // piece logic layer will be a dependency that is injected into the board...
-// via the constructor... Maybe a singleton but basically upon usage 
+// via the constructor... Maybe a singleton but basically upon usage
 // it will determine what squares can be visible to move to
-// and what not... it can also determine things like a possible castle, 
-// check, piece taking piece maybe even that... 
+// and what not... it can also determine things like a possible castle,
+// check, piece taking piece maybe even that...
 
-// also a settings service... basically a service that will control 
-// and dictate the settings the user wants 
-// even in the future it can handle user and auth issues. 
+// also a settings service... basically a service that will control
+// and dictate the settings the user wants
+// even in the future it can handle user and auth issues.
 
 export class Board {
   // baord needs to be changed for root,
@@ -187,14 +187,12 @@ export class Board {
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
+  // Methods below are for the game of chess
+  // these will be enterpise
+  // everything above is testing and for analization...
 
-
-  // Methods below are for the game of chess 
-  // these will be enterpise 
-  // everything above is testing and for analization... 
-
-  // we can have a factory for pieces and moves and we abstract the logic for all pieces so 
-  // the piece is just that a piece but we can 
+  // we can have a factory for pieces and moves and we abstract the logic for all pieces so
+  // the piece is just that a piece but we can
 
   public updateBishopMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
@@ -249,31 +247,38 @@ export class Board {
     return node;
   };
 
-
   public movePieceFromTo = (from: MathCoordinate, to: MathCoordinate) => {
-
     const fromNode = getNode(from, this.board);
     const toNode = getNode(to, this.board);
-    // check the enPassant 
-    const [canEnPassantLeft, canEnPassantRight] = this.logic.shouldNotifySquaresLeftAndRightOfEnPassant(fromNode, toNode);
+    // check the enPassant
+    const [canEnPassantLeft, canEnPassantRight] =
+      this.logic.shouldNotifySquaresLeftAndRightOfEnPassant(fromNode, toNode);
     // write logic here for determing if it's a doulbe move pond
-    // if it is it's going to tag left square and right square if it's 
+    // if it is it's going to tag left square and right square if it's
     // a pond and then it's going to flag pond piece type that they can en-passant
-    // and on what turn of the game it can so if we are on step 25, then the opposing 
-    // player can en-passant step 26 and only on step 26, if a piece is there then it 
+    // and on what turn of the game it can so if we are on step 25, then the opposing
+    // player can en-passant step 26 and only on step 26, if a piece is there then it
     // can take it if it's the other color
 
     const leftNode = toNode?.left;
     const rightNode = toNode?.right;
 
-    if (canEnPassantLeft && this.logic.isValue(leftNode) && leftNode?.SquareHasPiece()) {
+    if (
+      canEnPassantLeft &&
+      this.logic.isValue(leftNode) &&
+      leftNode?.SquareHasPiece()
+    ) {
       let pond = leftNode?.piece as Piece;
       pond.enPassantDetails.CanEnPassant = true;
       pond.enPassantDetails.turn = this.turn + 1;
       // console.log(pond);
     }
 
-    if (canEnPassantRight && this.logic.isValue(rightNode) && rightNode?.SquareHasPiece()) {
+    if (
+      canEnPassantRight &&
+      this.logic.isValue(rightNode) &&
+      rightNode?.SquareHasPiece()
+    ) {
       let pond = rightNode?.piece as Piece;
       pond.enPassantDetails.CanEnPassant = true;
       pond.enPassantDetails.turn = this.turn + 1;
@@ -281,51 +286,51 @@ export class Board {
     }
 
     // when a piece moves we need to flip that boolean
-    if (fromNode) 
-      fromNode.piece?.notifyPieceHasMoved();
-
-
+    if (fromNode) fromNode.piece?.notifyPieceHasMoved();
 
     if (toNode) {
+      const enPassantCheckRight =
+        toNode.IsEnPassantMove &&
+        this.logic.IsPondMoveForwardRight(fromNode as Square, toNode as Square);
+      const enPassantCheckLeft =
+        toNode.IsEnPassantMove &&
+        this.logic.IsPondMoveForwardLeft(fromNode as Square, toNode as Square);
 
-      const enPassantCheckRight = toNode.IsEnPassantMove && this.logic.IsPondMoveForwardRight(fromNode as Square, toNode as Square);
-      const enPassantCheckLeft = toNode.IsEnPassantMove && this.logic.IsPondMoveForwardLeft(fromNode as Square, toNode as Square);
+      if (enPassantCheckRight) {
+        // need to null out right piece // right node is now empty.
+        fromNode?.right?.makeSquareEmpty();
+        toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
+      } else if (enPassantCheckLeft) {
+        // need to null out right piece // right node is now empty.
+        fromNode?.left?.makeSquareEmpty();
+        toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
+      }
 
-        if (enPassantCheckRight) {
-          // need to null out right piece // right node is now empty. 
-          fromNode?.right?.makeSquareEmpty();
-          toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
-        } else if (enPassantCheckLeft) {
-            // need to null out right piece // right node is now empty. 
-            fromNode?.left?.makeSquareEmpty();
-            toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
-        }
+      // need to check the left side...
 
-        // need to check the left side...
-
-        toNode.SetNodeWithNewPiece(fromNode?.piece)
+      toNode.SetNodeWithNewPiece(fromNode?.piece);
     }
-      
 
-    if (fromNode) 
-      fromNode.makeSquareEmpty();
+    if (fromNode) fromNode.makeSquareEmpty();
 
     // incerement the turn so we know we made a move on our on the next...
     this.incrementTurn();
   };
 
+  public notifyUserOfMoveableSquaresAndSelectedPiece = (
+    sqs: any,
+    node: any
+  ) => {
+    sqs.forEach((sq: Square) => {
+      sq.makeSquareMoviable(this.settingsService.moveableSquareColor);
+    });
 
-  public notifyUserOfMoveableSquaresAndSelectedPiece = (sqs: any, node: any) => {
-        sqs.forEach((sq: Square) => {
-          sq.makeSquareMoviable(this.settingsService.moveableSquareColor);
-        });
-
-        node.SquareBgColor = this.settingsService.selectedSquareColor;
-  }
+    node.SquareBgColor = this.settingsService.selectedSquareColor;
+  };
 
   public incrementTurn = () => {
     this.turn += 1;
-  }
+  };
 
   // public setCurrentSelectedSquare = (selectedChessSquare: currentSelectedChessSquare) => {
   //   this.currentSelectedSquare = selectedChessSquare;
