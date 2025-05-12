@@ -59,29 +59,22 @@ export const NodeCrawler = (
 
   while (step) {
     
-    if (node === undefined || node === null) 
+    if (logic.IsNullOrUndefined(node)) 
     {
         return squares;
     }
       // test if forward square has a piece 
       // if it does and it's the same color 
       // break the function and return what we have
-      const hasPiece = step.SquareHasPiece();
-      // console.log('has piece', hasPiece);
-
-      const isSameColor = logic.pieceIsSameColor(originalNode as Square, step as Square);
-      // console.log('is same color', isSameColor);
-
-      const isOtherColor = logic.pieceIsOtherColor(originalNode as Square, step as Square);
       // console.log(isOtherColor);
 
-      if (hasPiece && isSameColor) 
+      if (logic.SquareHasPieceAndIsSameColor(originalNode as Square, step as Square)) 
       {
         return squares;
       }
     
       // account for if piece is black we just take that one and then end the logic loop. 
-      if (hasPiece && isOtherColor) 
+      if (logic.SquareHasPieceAndIsOtherColor(originalNode as Square, step as Square)) 
       {
           return [...squares, node, step];
       }

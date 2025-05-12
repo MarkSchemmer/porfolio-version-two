@@ -41,24 +41,15 @@ const BoardPiece = (props: any) => {
   const boardobj = useSelector(getBoard) as Board;
   const chessPieceManipulation = useSelector(getCurrentPieceBeingManipulated);
  
-
   const bottomRight = (coordinateToLetterValueMap as any)[y.toString()];
-
-
-
   const currentSquareClick = boardobj.getSquare([x, y]);
-
   // if we select square and it has a piece we populate with this square. 
   const selectedPiece =  useSelector(getMoveHistory).cur as Square | null;
-
-
 
   const updateBoardAndSelectedPiece = (board: Board, piece: Square | null) => {
     dispatch(UpdateChessBoard(board));
     dispatch(updateSelectedPiece(piece));
   }
-
-
 
   return (
     <Flex

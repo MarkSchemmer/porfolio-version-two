@@ -12,6 +12,13 @@
 import { Square } from "../board/Square";
 
 export class PieceLogicService {
+
+    public isValue = (obj: any) => !this.IsNullOrUndefined(obj);
+
+    public IsNullOrUndefined = (obj: any) => {
+        return obj === null || obj === undefined;
+    }
+
     public pieceIsOtherColor = (fromSquare: Square, toSquare: Square) => {
         const fromPiece = fromSquare?.piece;
         const toPiece = toSquare?.piece;
@@ -59,5 +66,18 @@ export class PieceLogicService {
             return false;
 
         return toNode?.SquareHasPiece() && this.pieceIsOtherColor(fromNode, toNode);
+    }
+
+
+    public SquareHasPieceAndIsSameColor = (fromNode: Square, toNode: Square) => {
+        const hasPiece = toNode.SquareHasPiece();
+        const isSameColor = this.pieceIsSameColor(fromNode, toNode);
+        return hasPiece && isSameColor;
+    }
+
+    public SquareHasPieceAndIsOtherColor = (fromNode: Square, toNode: Square) => {
+        const hasPiece = toNode.SquareHasPiece();
+        const isOtherColor = this.pieceIsOtherColor(fromNode, toNode);
+        return hasPiece && isOtherColor;
     }
 }
