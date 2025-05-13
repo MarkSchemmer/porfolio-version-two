@@ -234,4 +234,8 @@ export class PieceLogicService {
 
     return isSameSquare(newNodeCoordinate, toNodeCoordinate);
   };
+
+  public IsPondDoubleMove = (fromNode: Square, toNode: Square) => {
+      return this.SquareHasPond(fromNode) && this.doubleSpaceMoveForward(fromNode, toNode, fromNode.piece?.pieceColor as PieceColor);
+  }
 }

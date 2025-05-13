@@ -9,6 +9,8 @@ export class Piece {
     public pieceColor: PieceColor;
     public hasMoved: boolean = false;
 
+    public pondDoubleMoveTurn: number = 0;
+
     public enPassantDetails: EnPassantDetails = {
         turn: 0, CanEnPassant: false
     }
@@ -33,5 +35,9 @@ export class Piece {
         this.enPassantDetails = {
             turn: 0, CanEnPassant: false
         }
+    }
+
+    public setPondDoubleMoveTurn = (turn: number) => {
+        this.pondDoubleMoveTurn = turn;
     }
 }

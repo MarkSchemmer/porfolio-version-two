@@ -288,6 +288,13 @@ export class Board {
     // when a piece moves we need to flip that boolean
     if (fromNode) fromNode.piece?.notifyPieceHasMoved();
 
+
+    // if pond is doing a doulbe move we need to set that turn # 
+    // so later when doing en-passant logic we can have better tests...
+    if (this.logic.IsPondDoubleMove(fromNode as Square, toNode as Square)) {
+      fromNode?.piece?.setPondDoubleMoveTurn(this.turn);
+    }
+
     if (toNode) {
       const enPassantCheckRight =
         toNode.IsEnPassantMove &&
@@ -299,10 +306,12 @@ export class Board {
       if (enPassantCheckRight) {
         // need to null out right piece // right node is now empty.
         fromNode?.right?.makeSquareEmpty();
+        fromNode?.piece?.ResetEnPassantDetails();
         toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
       } else if (enPassantCheckLeft) {
         // need to null out right piece // right node is now empty.
         fromNode?.left?.makeSquareEmpty();
+        fromNode?.piece?.ResetEnPassantDetails();
         toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
       }
 
