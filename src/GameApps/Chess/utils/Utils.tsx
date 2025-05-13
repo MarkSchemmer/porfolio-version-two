@@ -778,6 +778,7 @@ export const getBlackPondMoves = (
     
     if (node?.piece?.enPassantDetails.CanEnPassant 
       && node?.piece.enPassantDetails.turn === turn
+      && (rightNode?.piece?.pondDoubleMoveTurn || -1) + 1 === node?.piece.enPassantDetails.turn
       && logic.SquaresHavePondsAreDifferentColors(node as Square, rightNode as Square) && logic.isValue(br)) {
         let squareToTake = br as Square;
         squareToTake.IsEnPassantMove = true;
@@ -786,6 +787,7 @@ export const getBlackPondMoves = (
 
     if (node?.piece?.enPassantDetails.CanEnPassant 
       && node?.piece.enPassantDetails.turn === turn
+      && (leftNode?.piece?.pondDoubleMoveTurn || -1) + 1 === node?.piece.enPassantDetails.turn
       && logic.SquaresHavePondsAreDifferentColors(node as Square, leftNode as Square) && logic.isValue(bl)) {
         let squareToTake = bl as Square;
         squareToTake.IsEnPassantMove = true;
