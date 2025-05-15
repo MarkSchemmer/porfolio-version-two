@@ -36,11 +36,20 @@ const pieceManipulationTesting = {
   pieceSelected: initialPiecceSelected, // will be object {color, pieceName} or null. if active {black, rook} or {white, queen} etc. etc. etc.
 };
 
+// pondPromotionControl
+const PondPromotionControl = {
+  IsOpen: false,
+  pieceName: null,
+  pieceColor: null,
+  coordinateToPromote: null
+}
+
 const initialState = {
   testing: localTesting,
   pieceManipulation: pieceManipulationTesting,
   board: new Board(),
   selectedPiece: initMoveHistory,
+  PondPromotionControl
 };
 
 export const chessSlice = createSlice({
@@ -80,6 +89,9 @@ export const chessSlice = createSlice({
         cur: action.payload,
       };
     },
+    updatePondPromotion: (state, action: {type: string; payload: any}) => {
+        state.PondPromotionControl = {...state.PondPromotionControl, ...action.payload } // overwrites generically
+    },
   },
 });
 
@@ -88,10 +100,12 @@ export const {
   UpdateChessBoard,
   updatePieceManipulationTesting,
   updateSelectedPiece,
+  updatePondPromotion
 } = chessSlice.actions;
 export const getTestingState = (state: any) => state.chessState.testing;
 export const getBoard = (state: any) => state.chessState.board;
 export const getCurrentPieceBeingManipulated = (state: any) =>
   state.chessState.pieceManipulation;
 export const getMoveHistory = (state: any) => state.chessState.selectedPiece;
+export const getPondPromotion = (state: any) => state.chessState.PondPromotionControl;
 export default chessSlice.reducer;

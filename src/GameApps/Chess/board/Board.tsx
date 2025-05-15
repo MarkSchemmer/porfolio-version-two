@@ -31,12 +31,13 @@
         That has a root 1-1 Node, which is a Square, then we can use iteration or 
         Recursion ot some point that design decision can be made later. 
 
-        I'm thinking we will just 
+        We have the ability currently to iterate the board using for loops
+        And Crawl the board using the connectivity of the Squares such as going 
+        .left .right .back .forward ect. ect. ect. 
 */
 
 import { PieceLogicService } from "../PieceLogicService/PieceLogicService";
 import { Piece } from "../pieces/Piece";
-import { BlackPond, WhitePond } from "../pieces/Pond";
 import { SettingsService } from "../SettingsService/SettingsService";
 import {
   connectAllSquares,
@@ -50,11 +51,12 @@ import {
   getQueenMoves,
   getRookMoves,
   getVerticalRow,
-  currentSelectedChessSquare,
-  PieceColor,
   getWhitePondMoves,
   getBlackPondMoves,
   getKingMoves,
+  PieceNames,
+  PieceColor,
+  PieceFactory,
 } from "../utils/Utils";
 import { MathCoordinate, Square } from "./Square";
 
@@ -102,8 +104,9 @@ export class Board {
   };
 
   // ******************************************************************
-  // Testing only -
+  // Testing only 
   // ******************************************************************
+
   // for testing and visiual testing
   // if I want to test additional things I
   // add all the logic if.
@@ -321,6 +324,11 @@ export class Board {
     }
 
     if (fromNode) fromNode.makeSquareEmpty();
+    
+    // check if a pond hit 8 line or a 1 line depending on the 
+    // piece color -> trigger the alert window selection so user has to select a new piece
+    // have the clicks options and just click which one 
+    // Queen, Rook, Knight, Bishop
 
     // incerement the turn so we know we made a move on our on the next...
     this.incrementTurn();
@@ -341,7 +349,8 @@ export class Board {
     this.turn += 1;
   };
 
-  // public setCurrentSelectedSquare = (selectedChessSquare: currentSelectedChessSquare) => {
-  //   this.currentSelectedSquare = selectedChessSquare;
-  // }
+  public promotePond = (to: MathCoordinate, pieceName: PieceNames, pieceColor: PieceColor) => {
+      const squareToPromote = getNode(to, this.board);
+      squareToPromote?.SetNodeWithNewPiece(PieceFactory(pieceName, pieceColor));
+  }
 }

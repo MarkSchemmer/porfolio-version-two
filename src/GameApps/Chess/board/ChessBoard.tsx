@@ -6,10 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   UpdateChessBoard,
   getBoard,
+  getPondPromotion,
   getCurrentPieceBeingManipulated,
   getMoveHistory,
   getTestingState,
   updateSelectedPiece,
+  updatePondPromotion,
 } from "../../../store/slices/chessSlice";
 import {
   clearBoard,
@@ -21,6 +23,7 @@ import {
   PieceFactory,
 } from "../utils/Utils";
 import { current } from "@reduxjs/toolkit";
+import { PondPromotion } from "./ChessBoardDialogs/PondPromotion/PondPromotion";
 
 // Will draw the board.
 const RowHolder = (props: any) => {
@@ -143,6 +146,36 @@ const BoardPiece = (props: any) => {
             );
             const chessBoard = clearBoard(boardobj);
             updateBoardAndSelectedPiece(chessBoard, null);
+
+            // theoretically we could test if pond moved and hit the end row
+            // then trigger a popup.
+            if (
+              boardobj.logic.ShouldPondPromote(
+                getNode(
+                  currentSquareClick.mathematicalCoordinate,
+                  boardobj.board
+                ) as Square
+              )
+            ) {
+              // trigger screen that cannot be dismissed until
+              // show which piece to promote to
+              // save that value and then activate a board update where
+              // promote that piece to the one selected then of course the turn is ended.
+              // make a PondPromotion slice
+              // IsOpen, Close ect...
+              // beautify the promotion screen
+              // add highlighting when hovered over
+              // add functionality for black.
+              const node = getNode(currentSquareClick.mathematicalCoordinate, boardobj.board);
+              dispatch(
+                updatePondPromotion({
+                  IsOpen: true,
+                  coordinateToPromote:
+                    currentSquareClick.mathematicalCoordinate,
+                  pieceColor: node?.piece?.pieceColor
+                })
+              );
+            }
           } else {
             // Right now this is clicking a none blue square and just unselects the piece
             // should unselect piece and clearboard.
@@ -198,19 +231,23 @@ const BoardPiece = (props: any) => {
 export const ChessBoard = () => {
   // will update the input into Board later to be proper.
   const boardobj = useSelector(getBoard);
+  const isOpen = useSelector(getPondPromotion);
   const chB = boardobj.board;
 
   return (
-    <Box
-      w={"802px"}
-      h={"802px"}
-      border={"1px solid black"}
-      m={"auto"}
-      mt={"50px"}
-    >
-      {chB.map((row: Square[], idx: number) => (
-        <RowHolder key={idx} squares={row} />
-      ))}
-    </Box>
+    <>
+      <PondPromotion IsOpen={isOpen.IsOpen} />
+      <Box
+        w={"802px"}
+        h={"802px"}
+        border={"1px solid black"}
+        m={"auto"}
+        mt={"50px"}
+      >
+        {chB.map((row: Square[], idx: number) => (
+          <RowHolder key={idx} squares={row} />
+        ))}
+      </Box>
+    </>
   );
 };

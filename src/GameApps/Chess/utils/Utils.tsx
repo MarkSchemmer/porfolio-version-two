@@ -745,10 +745,12 @@ export const getKnightMoves = (
 export const getBlackPondMoves = (
   node: Square | undefined,
   squares: Square[],
-  logic: PieceLogicService, 
+  logic: PieceLogicService,
   turn: number
 ): any => {
-  let bn = logic.canPondMoveForwardOneSpace(node?.back as Square) ? node?.back : null;
+  let bn = logic.canPondMoveForwardOneSpace(node?.back as Square)
+    ? node?.back
+    : null;
 
   let bnn = logic.canPondDoubleMove(
     node as Square,
@@ -765,34 +767,46 @@ export const getBlackPondMoves = (
 
   const canMoveLeftOrRight = [bl, br]
     .filter((sq) => isValue(sq))
-    .filter(
-      (sq) => logic.canPondTake(node as Square, sq as Square)
-    );
+    .filter((sq) => logic.canPondTake(node as Square, sq as Square));
 
-    let enPassantMoves = [];
-    let rightNode = node?.right;
-    let leftNode = node?.left;
+  let enPassantMoves = [];
+  let rightNode = node?.right;
+  let leftNode = node?.left;
 
-    console.log(node?.piece?.enPassantDetails);
-    console.log(turn);
-    
-    if (node?.piece?.enPassantDetails.CanEnPassant 
-      && node?.piece.enPassantDetails.turn === turn
-      && (rightNode?.piece?.pondDoubleMoveTurn || -1) + 1 === node?.piece.enPassantDetails.turn
-      && logic.SquaresHavePondsAreDifferentColors(node as Square, rightNode as Square) && logic.isValue(br)) {
-        let squareToTake = br as Square;
-        squareToTake.IsEnPassantMove = true;
-        enPassantMoves.push(squareToTake);
-    }
+  console.log(node?.piece?.enPassantDetails);
+  console.log(turn);
 
-    if (node?.piece?.enPassantDetails.CanEnPassant 
-      && node?.piece.enPassantDetails.turn === turn
-      && (leftNode?.piece?.pondDoubleMoveTurn || -1) + 1 === node?.piece.enPassantDetails.turn
-      && logic.SquaresHavePondsAreDifferentColors(node as Square, leftNode as Square) && logic.isValue(bl)) {
-        let squareToTake = bl as Square;
-        squareToTake.IsEnPassantMove = true;
-        enPassantMoves.push(squareToTake);
-    }
+  if (
+    node?.piece?.enPassantDetails.CanEnPassant &&
+    node?.piece.enPassantDetails.turn === turn &&
+    (rightNode?.piece?.pondDoubleMoveTurn || -1) + 1 ===
+      node?.piece.enPassantDetails.turn &&
+    logic.SquaresHavePondsAreDifferentColors(
+      node as Square,
+      rightNode as Square
+    ) &&
+    logic.isValue(br)
+  ) {
+    let squareToTake = br as Square;
+    squareToTake.IsEnPassantMove = true;
+    enPassantMoves.push(squareToTake);
+  }
+
+  if (
+    node?.piece?.enPassantDetails.CanEnPassant &&
+    node?.piece.enPassantDetails.turn === turn &&
+    (leftNode?.piece?.pondDoubleMoveTurn || -1) + 1 ===
+      node?.piece.enPassantDetails.turn &&
+    logic.SquaresHavePondsAreDifferentColors(
+      node as Square,
+      leftNode as Square
+    ) &&
+    logic.isValue(bl)
+  ) {
+    let squareToTake = bl as Square;
+    squareToTake.IsEnPassantMove = true;
+    enPassantMoves.push(squareToTake);
+  }
 
   return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves, node];
 };
@@ -803,8 +817,9 @@ export const getWhitePondMoves = (
   logic: PieceLogicService,
   turn: number
 ): any => {
-
-  let fn = logic.canPondMoveForwardOneSpace(node?.forward as Square) ? node?.forward : null;
+  let fn = logic.canPondMoveForwardOneSpace(node?.forward as Square)
+    ? node?.forward
+    : null;
 
   // we can only move two up on it's first move...
   let fnn = logic.canPondDoubleMove(
@@ -822,34 +837,46 @@ export const getWhitePondMoves = (
 
   const canMoveLeftOrRight = [fl, fr]
     .filter((sq) => isValue(sq))
-    .filter(
-      (sq) => logic.canPondTake(node as Square, sq as Square)
-    );
+    .filter((sq) => logic.canPondTake(node as Square, sq as Square));
 
-    let enPassantMoves = [];
-    let rightNode = node?.right;
-    let leftNode = node?.left;
+  let enPassantMoves = [];
+  let rightNode = node?.right;
+  let leftNode = node?.left;
 
-    console.log(node?.piece?.enPassantDetails);
-    console.log(turn);
-    
-    if (node?.piece?.enPassantDetails.CanEnPassant 
-      && node?.piece.enPassantDetails.turn === turn
-      && (rightNode?.piece?.pondDoubleMoveTurn || -1) + 1 === node?.piece.enPassantDetails.turn
-      && logic.SquaresHavePondsAreDifferentColors(node as Square, rightNode as Square) && logic.isValue(fr)) {
-        let squareToTake = fr as Square;
-        squareToTake.IsEnPassantMove = true;
-        enPassantMoves.push(squareToTake);
-    }
+  console.log(node?.piece?.enPassantDetails);
+  console.log(turn);
 
-    if (node?.piece?.enPassantDetails.CanEnPassant 
-      && node?.piece.enPassantDetails.turn === turn
-      && (leftNode?.piece?.pondDoubleMoveTurn || -1) + 1 === node?.piece.enPassantDetails.turn
-      && logic.SquaresHavePondsAreDifferentColors(node as Square, leftNode as Square) && logic.isValue(fl)) {
-        let squareToTake = fl as Square;
-        squareToTake.IsEnPassantMove = true;
-        enPassantMoves.push(squareToTake);
-    }
+  if (
+    node?.piece?.enPassantDetails.CanEnPassant &&
+    node?.piece.enPassantDetails.turn === turn &&
+    (rightNode?.piece?.pondDoubleMoveTurn || -1) + 1 ===
+      node?.piece.enPassantDetails.turn &&
+    logic.SquaresHavePondsAreDifferentColors(
+      node as Square,
+      rightNode as Square
+    ) &&
+    logic.isValue(fr)
+  ) {
+    let squareToTake = fr as Square;
+    squareToTake.IsEnPassantMove = true;
+    enPassantMoves.push(squareToTake);
+  }
+
+  if (
+    node?.piece?.enPassantDetails.CanEnPassant &&
+    node?.piece.enPassantDetails.turn === turn &&
+    (leftNode?.piece?.pondDoubleMoveTurn || -1) + 1 ===
+      node?.piece.enPassantDetails.turn &&
+    logic.SquaresHavePondsAreDifferentColors(
+      node as Square,
+      leftNode as Square
+    ) &&
+    logic.isValue(fl)
+  ) {
+    let squareToTake = fl as Square;
+    squareToTake.IsEnPassantMove = true;
+    enPassantMoves.push(squareToTake);
+  }
 
   return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves, node];
 };

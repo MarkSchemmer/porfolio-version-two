@@ -236,6 +236,21 @@ export class PieceLogicService {
   };
 
   public IsPondDoubleMove = (fromNode: Square, toNode: Square) => {
-      return this.SquareHasPond(fromNode) && this.doubleSpaceMoveForward(fromNode, toNode, fromNode.piece?.pieceColor as PieceColor);
-  }
+    return (
+      this.SquareHasPond(fromNode) &&
+      this.doubleSpaceMoveForward(
+        fromNode,
+        toNode,
+        fromNode.piece?.pieceColor as PieceColor
+      )
+    );
+  };
+
+  public ShouldPondPromote = (node: Square) => {
+    return this.SquareHasPond(node)
+      ? node.piece?.IsWhite()
+        ? node.mathematicalCoordinate[0] === 8
+        : node.mathematicalCoordinate[0] === 1
+      : false;
+  };
 }
