@@ -192,8 +192,46 @@ export const generateStandardBoard = () => {
   return chessBaord;
 };
 
-// End chess control buttons
+/*
 
+  node: Square | undefined,
+  squares: Square[],
+  logic: PieceLogicService,
+  turn: number
+
+
+*/
+
+export const getLegalAttackMovesForPieceFactory = (node: Square, logic: PieceLogicService, turn: number) => {
+  const piece = node?.piece as Piece;
+  const color = node?.piece?.pieceColor as PieceColor;
+  const isWhite = color === PieceColor.WHITE;
+  switch(piece.pieceName) {
+    case PieceNames.POND: {
+      return isWhite ? getWhitePondMoves(node, [], logic, turn) : getBlackPondMoves(node, [], logic, turn);
+    }
+    case PieceNames.KNIGHT: {
+      return getKnightMoves(node, []);
+    }
+    case PieceNames.BISHOP: {
+      return getBishopMoves(node, [], logic);
+    }
+    case PieceNames.ROOK: {
+      return getRookMoves(node, [], logic);
+    }
+    case PieceNames.QUEEN: {
+      return getQueenMoves(node, [], logic);
+    }
+    case PieceNames.KING: {
+      return [];
+    }
+    default: {
+      return [];
+    }
+  }
+}
+
+// End chess control buttons
 export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
   const isWhite = color === PieceColor.WHITE;
   switch (piece) {
@@ -811,8 +849,8 @@ export const getBlackPondMoves = (
   let rightNode = node?.right;
   let leftNode = node?.left;
 
-  console.log(node?.piece?.enPassantDetails);
-  console.log(turn);
+  //console.log(node?.piece?.enPassantDetails);
+  //console.log(turn);
 
   if (
     node?.piece?.enPassantDetails.CanEnPassant &&
@@ -881,8 +919,8 @@ export const getWhitePondMoves = (
   let rightNode = node?.right;
   let leftNode = node?.left;
 
-  console.log(node?.piece?.enPassantDetails);
-  console.log(turn);
+  //console.log(node?.piece?.enPassantDetails);
+  //console.log(turn);
 
   if (
     node?.piece?.enPassantDetails.CanEnPassant &&

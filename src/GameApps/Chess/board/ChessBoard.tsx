@@ -20,6 +20,7 @@ import {
   getNode,
   HandleSquareClickWithPiece,
   isSameSquare,
+  PieceColor,
   PieceFactory,
 } from "../utils/Utils";
 import { current } from "@reduxjs/toolkit";
@@ -176,6 +177,22 @@ const BoardPiece = (props: any) => {
                 })
               );
             }
+
+
+            // going to check if move is causing check
+            // so I need all the current players turns moves
+            // and color...
+            const node = getNode(currentSquareClick.mathematicalCoordinate, boardobj.board);
+            const currentPlayerColor = node?.piece?.pieceColor as PieceColor;
+            const allAttackingSquaresWithPieceAndSameColor = boardobj.getAllAttackingMoves(currentPlayerColor);
+            console.log(allAttackingSquaresWithPieceAndSameColor);
+            if (boardobj.logic.Check(allAttackingSquaresWithPieceAndSameColor, currentPlayerColor)) {
+              alert(currentPlayerColor + "Is in Check");
+            }
+
+
+
+
           } else {
             // Right now this is clicking a none blue square and just unselects the piece
             // should unselect piece and clearboard.

@@ -57,6 +57,7 @@ import {
   PieceNames,
   PieceColor,
   PieceFactory,
+  getLegalAttackMovesForPieceFactory,
 } from "../utils/Utils";
 import { MathCoordinate, Square } from "./Square";
 
@@ -104,7 +105,7 @@ export class Board {
   };
 
   // ******************************************************************
-  // Testing only 
+  // Testing only
   // ******************************************************************
 
   // for testing and visiual testing
@@ -291,8 +292,7 @@ export class Board {
     // when a piece moves we need to flip that boolean
     if (fromNode) fromNode.piece?.notifyPieceHasMoved();
 
-
-    // if pond is doing a doulbe move we need to set that turn # 
+    // if pond is doing a doulbe move we need to set that turn #
     // so later when doing en-passant logic we can have better tests...
     if (this.logic.IsPondDoubleMove(fromNode as Square, toNode as Square)) {
       fromNode?.piece?.setPondDoubleMoveTurn(this.turn);
@@ -324,10 +324,10 @@ export class Board {
     }
 
     if (fromNode) fromNode.makeSquareEmpty();
-    
-    // check if a pond hit 8 line or a 1 line depending on the 
+
+    // check if a pond hit 8 line or a 1 line depending on the
     // piece color -> trigger the alert window selection so user has to select a new piece
-    // have the clicks options and just click which one 
+    // have the clicks options and just click which one
     // Queen, Rook, Knight, Bishop
 
     // incerement the turn so we know we made a move on our on the next...
@@ -349,8 +349,35 @@ export class Board {
     this.turn += 1;
   };
 
-  public promotePond = (to: MathCoordinate, pieceName: PieceNames, pieceColor: PieceColor) => {
-      const squareToPromote = getNode(to, this.board);
-      squareToPromote?.SetNodeWithNewPiece(PieceFactory(pieceName, pieceColor));
-  }
+  public promotePond = (
+    to: MathCoordinate,
+    pieceName: PieceNames,
+    pieceColor: PieceColor
+  ) => {
+    const squareToPromote = getNode(to, this.board);
+    squareToPromote?.SetNodeWithNewPiece(PieceFactory(pieceName, pieceColor));
+  };
+
+  public getAllSquaresWhoHavePieceAndColor = (pieceColor: PieceColor) => {
+    return this.board.flatMap((sq) =>
+      sq.filter(
+        (s) =>
+          s?.SquareHasPiece() &&
+          s.piece?.pieceColor === pieceColor &&
+          s.piece?.pieceName !== PieceNames.KING
+      )
+    );
+  };
+
+  public getAllAttackingMoves = (pieceColor: PieceColor) => {
+    let moves: Square[] = [];
+    const allAttackingSquaresWithPieceAndSameColor = this.getAllSquaresWhoHavePieceAndColor(pieceColor);
+
+    allAttackingSquaresWithPieceAndSameColor.forEach((sq: Square) => {
+       moves = [...moves, ...getLegalAttackMovesForPieceFactory(sq, this.logic, this.turn)];
+    });
+
+
+    return moves;
+  };
 }

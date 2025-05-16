@@ -1,4 +1,4 @@
-import { PieceColor } from "../utils/Utils";
+import { PieceColor, PieceNames } from "../utils/Utils";
 
 export type EnPassantDetails = {
     turn: number, CanEnPassant: boolean
@@ -30,6 +30,11 @@ export class Piece {
     public hasPieceNotMoved = () => this.hasMoved === false;
     public IsWhite = () => this.pieceColor === PieceColor.WHITE;
     public IsBlack = () => this.pieceColor === PieceColor.BLACK;
+
+    public ComparePieceType = (pieceName: PieceNames) => {
+        return pieceName === this.pieceName;
+    }
+
 
     public ResetEnPassantDetails = () => {
         this.enPassantDetails = {

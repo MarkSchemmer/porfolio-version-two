@@ -253,4 +253,36 @@ export class PieceLogicService {
         : node.mathematicalCoordinate[0] === 1
       : false;
   };
+
+  public IsWhiteKing = (node: Square) => {
+
+    if(this.IsNullOrUndefined(node))
+      return false;
+
+
+    return node?.SquareHasPiece() &&
+      node?.piece?.ComparePieceType(PieceNames.KING) &&
+      node?.piece?.IsWhite();
+  };
+
+  public IsBlackKing = (node: Square) => {
+
+    if (this.IsNullOrUndefined(node))
+      return false;
+
+    return node?.SquareHasPiece() &&
+      node?.piece?.ComparePieceType(PieceNames.KING) &&
+      node?.piece?.IsBlack();
+  };
+
+  public Check = (
+    opposingPlayersAttackingSquares: Square[],
+    checkingFor: PieceColor
+  ) => {
+    return checkingFor === PieceColor.WHITE
+      ? opposingPlayersAttackingSquares.some((sq) => this.IsBlackKing(sq))
+      : opposingPlayersAttackingSquares.some((sq) => this.IsWhiteKing(sq));
+  };
+
+  public CheckMate = () => {};
 }
