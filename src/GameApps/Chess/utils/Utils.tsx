@@ -78,6 +78,44 @@ export const cleanBoard = () => {
   return new Board();
 };
 
+export const generateCastleScenario = () => {
+  const chessBaord = new Board();
+  // set ponds a2 -> h2
+  Array(8)
+    .fill(0)
+    .map((_, idx) => {
+      return idx + 1;
+    })
+    .forEach((y) => {
+      chessBaord.populateSquareWithPiece([2, y], new WhitePond());
+      chessBaord.populateSquareWithPiece([7, y], new BlackPond());
+    });
+
+  // set White Rooks
+  [
+    [1, 1],
+    [1, 8],
+  ].forEach(([x, y]) => {
+    chessBaord.populateSquareWithPiece([x, y], new WhiteRook());
+  });
+
+  // set White King
+  chessBaord.populateSquareWithPiece([1, 5], new WhiteKing());
+
+  // set Black Rooks
+  [
+    [8, 1],
+    [8, 8],
+  ].forEach(([x, y]) => {
+    chessBaord.populateSquareWithPiece([x, y], new BlackRook());
+  });
+
+  // set Black King
+  chessBaord.populateSquareWithPiece([8, 5], new BlackKing());
+
+  return chessBaord;
+}
+
 export const generateStandardBoard = () => {
   const chessBaord = new Board();
   // set ponds a2 -> h2

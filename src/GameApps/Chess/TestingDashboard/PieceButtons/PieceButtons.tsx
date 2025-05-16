@@ -1,4 +1,13 @@
-import { Box, Text, Flex, Grid, GridItem, Stack, Button, ButtonGroup } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Flex,
+  Grid,
+  GridItem,
+  Stack,
+  Button,
+  ButtonGroup,
+} from "@chakra-ui/react";
 
 import blackPond from "../../utils/GameImages/bp.png";
 import whitePond from "../../utils/GameImages/wp.png";
@@ -20,14 +29,19 @@ import whiteKing from "../../utils/GameImages/wk.png";
 
 import "./BoxPiece.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { cleanBoard, generateStandardBoard, PieceColor, PieceNames } from "../../utils/Utils";
+import {
+  cleanBoard,
+  generateCastleScenario,
+  generateStandardBoard,
+  PieceColor,
+  PieceNames,
+} from "../../utils/Utils";
 import {
   getBoard,
   getCurrentPieceBeingManipulated,
   UpdateChessBoard,
   updatePieceManipulationTesting,
 } from "../../../../store/slices/chessSlice";
-
 
 /*
     Button controls component here. -> might need to go to it's own file eventualluy.
@@ -42,27 +56,43 @@ export const ButtonControls = (props: any) => {
 
   return (
     <>
-    <ButtonGroup colorScheme="teal" marginTop={"10%"} marginBottom={"10%"}>
-      <Button 
-      onClick={() => {
-        dispatch(UpdateChessBoard(generateStandardBoard()))
-      }}
-      variant="solid" 
-      width={"100%"} 
-      size={"md"}>Generate Standard Board</Button>
-      <Button 
-      onClick={() => {
-        dispatch(UpdateChessBoard(cleanBoard()))
-      }}
-      variant="solid" 
-      width={"100%"} 
-      size={"md"}>Clean Board</Button>
-    </ButtonGroup>
+      <ButtonGroup colorScheme="teal" marginTop={"10%"} marginBottom={"10%"}>
+        <Button
+          onClick={() => {
+            dispatch(UpdateChessBoard(generateStandardBoard()));
+          }}
+          variant="solid"
+          width={"100%"}
+          size={"md"}
+        >
+          Generate Standard Board
+        </Button>
+        <Button
+          onClick={() => {
+            dispatch(UpdateChessBoard(cleanBoard()));
+          }}
+          variant="solid"
+          width={"100%"}
+          size={"md"}
+        >
+          Clean Board
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup colorScheme="teal" marginBottom={"5%"}>
+        <Button
+          onClick={() => {
+            dispatch(UpdateChessBoard(generateCastleScenario()));
+          }}
+          variant="solid"
+          width={"100%"}
+          size={"md"}
+        >
+          Castle Scenario
+        </Button>
+      </ButtonGroup>
     </>
-  )
-}
-
-
+  );
+};
 
 /*
 
@@ -120,7 +150,7 @@ export const BoxPiece = (props: any) => {
   const isPieceSelected =
     currentPiecebeingManipulated?.pieceSelected?.name === name &&
     currentPiecebeingManipulated?.pieceSelected?.pieceColor === pieceColor;
-    
+
   return (
     <Box
       onClick={() => {
@@ -148,7 +178,7 @@ export const BoxPiece = (props: any) => {
 export const BoxPieces = (props: any) => {
   return (
     <Stack>
-    {/* <Flex
+      {/* <Flex
       className="box-container"
       direction={"row"}
       alignItems={"center"}
@@ -170,7 +200,7 @@ export const BoxPieces = (props: any) => {
           <BoxPiece key={p.name + p.pieceColor} pieceObj={p} />
         ))}
       </Box>
-    {/* </Flex> */}
+      {/* </Flex> */}
     </Stack>
   );
 };
