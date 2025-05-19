@@ -64,6 +64,7 @@ export const ButtonControls = (props: any) => {
           variant="solid"
           width={"100%"}
           size={"md"}
+          key={"standard-Board"}
         >
           Generate Standard Board
         </Button>
@@ -74,6 +75,7 @@ export const ButtonControls = (props: any) => {
           variant="solid"
           width={"100%"}
           size={"md"}
+          key={"clean-board"}
         >
           Clean Board
         </Button>
@@ -86,6 +88,7 @@ export const ButtonControls = (props: any) => {
           variant="solid"
           width={"100%"}
           size={"md"}
+          key={"castle-board"}
         >
           Castle Scenario
         </Button>

@@ -141,6 +141,11 @@ const BoardPiece = (props: any) => {
             const chessBoard = HandleSquareClickWithPiece([x, y], boardobj);
             updateBoardAndSelectedPiece(chessBoard, currentSquareClick);
           } else if (currentSquareClick.canMoveHere()) {
+            // in future we need to know also that
+            // if we move fromTo and it causes check then the method is cancelled
+            // And we won't update the board but reset it to current place
+            // so we have a moveFromTo and then a check making sure to we can actually do this
+            // other wise we just reset...
             boardobj.movePieceFromTo(
               selectedPiece?.mathematicalCoordinate as MathCoordinate,
               currentSquareClick.mathematicalCoordinate
@@ -167,32 +172,40 @@ const BoardPiece = (props: any) => {
               // beautify the promotion screen
               // add highlighting when hovered over
               // add functionality for black.
-              const node = getNode(currentSquareClick.mathematicalCoordinate, boardobj.board);
+              const node = getNode(
+                currentSquareClick.mathematicalCoordinate,
+                boardobj.board
+              );
               dispatch(
                 updatePondPromotion({
                   IsOpen: true,
                   coordinateToPromote:
                     currentSquareClick.mathematicalCoordinate,
-                  pieceColor: node?.piece?.pieceColor
+                  pieceColor: node?.piece?.pieceColor,
                 })
               );
             }
 
-
             // going to check if move is causing check
             // so I need all the current players turns moves
             // and color...
-            const node = getNode(currentSquareClick.mathematicalCoordinate, boardobj.board);
+            const node = getNode(
+              currentSquareClick.mathematicalCoordinate,
+              boardobj.board
+            );
             const currentPlayerColor = node?.piece?.pieceColor as PieceColor;
-            const allAttackingSquaresWithPieceAndSameColor = boardobj.getAllAttackingMoves(currentPlayerColor);
-            console.log(allAttackingSquaresWithPieceAndSameColor);
-            if (boardobj.logic.Check(allAttackingSquaresWithPieceAndSameColor, currentPlayerColor)) {
+            const allAttackingSquaresWithPieceAndSameColor =
+              boardobj.getAllAttackingMoves(currentPlayerColor);
+            // console.log(allAttackingSquaresWithPieceAndSameColor);
+            if (
+              boardobj.logic.Check(
+                allAttackingSquaresWithPieceAndSameColor,
+                currentPlayerColor
+              )
+            ) {
               alert(currentPlayerColor + "Is in Check");
+              // later on in the future we will place checkmate here if it is so... a check for that.
             }
-
-
-
-
           } else {
             // Right now this is clicking a none blue square and just unselects the piece
             // should unselect piece and clearboard.

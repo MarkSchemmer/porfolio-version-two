@@ -58,9 +58,20 @@ const BoxPiece = (props: any) => {
   return (
     <Box
       onClick={() => {
-        boardobj.promotePond(pondPromotionData.coordinateToPromote as MathCoordinate, name, pieceColor);
+        boardobj.promotePond(
+          pondPromotionData.coordinateToPromote as MathCoordinate,
+          name,
+          pieceColor
+        );
         dispatch(UpdateChessBoard(boardobj));
-        dispatch(updatePondPromotion({ IsOpen: false, pieceName: null, pieceColor: null, coordinateToPromote: null }));
+        dispatch(
+          updatePondPromotion({
+            IsOpen: false,
+            pieceName: null,
+            pieceColor: null,
+            coordinateToPromote: null,
+          })
+        );
       }}
       className="piece"
       style={{
@@ -105,8 +116,11 @@ export const PondPromotion = (props: any) => {
             </AlertDialogHeader>
 
             <AlertDialogBody marginLeft={"12%"}>
-              {(pondPromotionData.pieceColor === PieceColor.WHITE ? whitePieces : blackPieces).map((p) => (
-                <BoxPiece {...p} />
+              {(pondPromotionData.pieceColor === PieceColor.WHITE
+                ? whitePieces
+                : blackPieces
+              ).map((p) => (
+                <BoxPiece key={p.name} {...p} />
               ))}
             </AlertDialogBody>
 
