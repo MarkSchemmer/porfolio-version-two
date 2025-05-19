@@ -8,8 +8,30 @@
 // happen this is piece of work in time...
 // isolation piece logic as it happens.
 
+import { Board } from "../board/Board";
 import { MathCoordinate, Square } from "../board/Square";
-import { isSameSquare, PieceColor, PieceNames } from "../utils/Utils";
+import {
+  isSameSquare,
+  PieceColor,
+  PieceNames,
+} from "../utils/Utils";
+
+/*
+    Checkmate we need to get all the pieces of the color that is in check
+
+    I get all possible moves of that color then for each move I simulate in a copy
+    of the board not affecting the board 
+
+    Then I check if current player in check is still in check 
+
+    if all possible moves do not remove check then it's checkmate otherwise it's
+    just temporary check
+*/
+
+export type CheckMate = {
+  SquareFrom: Square; // square holding current position of piece in check
+  SquareToPossibilities: Square[]; // list of squares piece can move to...
+};
 
 export class PieceLogicService {
   public isValue = (obj: any) => !this.IsNullOrUndefined(obj);
@@ -255,34 +277,85 @@ export class PieceLogicService {
   };
 
   public IsWhiteKing = (node: Square) => {
+    if (this.IsNullOrUndefined(node)) return false;
 
-    if(this.IsNullOrUndefined(node))
-      return false;
-
-
-    return node?.SquareHasPiece() &&
+    return (
+      node?.SquareHasPiece() &&
       node?.piece?.ComparePieceType(PieceNames.KING) &&
-      node?.piece?.IsWhite();
+      node?.piece?.IsWhite()
+    );
   };
 
   public IsBlackKing = (node: Square) => {
+    if (this.IsNullOrUndefined(node)) return false;
 
-    if (this.IsNullOrUndefined(node))
-      return false;
-
-    return node?.SquareHasPiece() &&
+    return (
+      node?.SquareHasPiece() &&
       node?.piece?.ComparePieceType(PieceNames.KING) &&
-      node?.piece?.IsBlack();
+      node?.piece?.IsBlack()
+    );
   };
 
   public Check = (
     opposingPlayersAttackingSquares: Square[],
-    checkingFor: PieceColor
+    checkingFor: PieceColor // player who moved we need to check opposite basically
   ) => {
     return checkingFor === PieceColor.WHITE
       ? opposingPlayersAttackingSquares.some((sq) => this.IsBlackKing(sq))
       : opposingPlayersAttackingSquares.some((sq) => this.IsWhiteKing(sq));
   };
 
-  public CheckMate = () => {};
+  public CheckTwo = (
+    opposingPlayersAttackingSquares: Square[],
+    checkingFor: PieceColor // player who moved we need to check opposite basically
+  ) => {
+    return checkingFor === PieceColor.WHITE
+      ? opposingPlayersAttackingSquares.some((sq) => this.IsWhiteKing(sq))
+      : opposingPlayersAttackingSquares.some((sq) => this.IsBlackKing(sq));
+  };
+
+
+
+  public CheckMate = (
+    playerWhoIsChecking: PieceColor,
+    playerWhoIsInCheck: PieceColor,
+    board: Board
+  ): boolean => {
+
+    const getAllAttackingSquares = board.getAllPossibleMovesOfPlayerInCheck(board, playerWhoIsInCheck);
+      
+      for (let { SquareToPossibilities, SquareFrom } of getAllAttackingSquares) {
+        const newBoard = board.deepClone();
+        // mutate the board
+        
+        
+        for (let sq of SquareToPossibilities) {
+          newBoard.movePieceFromTo(SquareFrom.mathematicalCoordinate, sq.mathematicalCoordinate);
+          const getAllSquares = newBoard.getAllAttackingMoves(newBoard, playerWhoIsChecking);
+
+          if (this.CheckTwo(getAllSquares, playerWhoIsInCheck) === false) {
+              return false;
+          }
+        }
+        
+        
+        
+        // newBoard.movePieceFromTo(fromSquare.mathematicalCoordinate, sq.mathematicalCoordinate);
+        // // console.log(fromSquare.mathematicalCoordinate)
+        // // get all moves after mutation of attacking player
+        // const getAllAttackingSquares = newBoard.getAllAttackingMoves(newBoard, playerWhoIsChecking);
+
+        // // check if check still exists
+        // if(this.CheckTwo(getAllAttackingSquares, playerWhoIsInCheck) === false) {
+        //     // check is false
+        //     return false;
+        // }
+        // check if it's in check
+        // if not in check then we return false and end the loop
+        // CheckMate is false
+      }
+
+    // if we go through all changes and check is true for all.
+    return true;
+  };
 }

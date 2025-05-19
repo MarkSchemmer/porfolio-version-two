@@ -14,7 +14,7 @@ export class BlackPond extends Piece {
   }
 
   constructor() {
-    super(PieceNames.POND.toString(), PieceColor.BLACK);
+    super(PieceNames.POND, PieceColor.BLACK);
   }
 
   public draw = () => {
@@ -36,7 +36,7 @@ export class WhitePond extends Piece {
   }
 
   constructor() {
-    super(PieceNames.POND.toString(), PieceColor.WHITE);
+    super(PieceNames.POND, PieceColor.WHITE);
   }
 
   public draw = () => {

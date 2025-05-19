@@ -195,16 +195,52 @@ const BoardPiece = (props: any) => {
             );
             const currentPlayerColor = node?.piece?.pieceColor as PieceColor;
             const allAttackingSquaresWithPieceAndSameColor =
-              boardobj.getAllAttackingMoves(currentPlayerColor);
+              boardobj.getAllAttackingMoves(boardobj, currentPlayerColor);
             // console.log(allAttackingSquaresWithPieceAndSameColor);
+
             if (
               boardobj.logic.Check(
                 allAttackingSquaresWithPieceAndSameColor,
                 currentPlayerColor
               )
             ) {
-              alert(currentPlayerColor + "Is in Check");
+              /*
+                  The process is the currPlayerColor is the first move 
+                  upon move we calculate the check 
+              */
+              console.log(
+                currentPlayerColor +
+                  " Is checking " +
+                  (currentPlayerColor === PieceColor.WHITE
+                    ? PieceColor.BLACK
+                    : PieceColor.WHITE)
+              );
               // later on in the future we will place checkmate here if it is so... a check for that.
+
+
+              // wait to implement king moves first
+              // currentPlayerColor is checking
+              // player who is in check is opposite color of currentPlayerColor
+              const playerChecking = currentPlayerColor;
+              const playerWhoIsInCheck =
+                currentPlayerColor === PieceColor.WHITE
+                  ? PieceColor.BLACK
+                  : PieceColor.WHITE;
+              if (
+                boardobj.logic.CheckMate(
+                  playerChecking,
+                  playerWhoIsInCheck,
+                  chessBoard
+                )
+              ) {
+                console.log(
+                  currentPlayerColor +
+                    " CheckMated " +
+                    (currentPlayerColor === PieceColor.WHITE
+                      ? PieceColor.BLACK
+                      : PieceColor.WHITE)
+                );
+              }
             }
           } else {
             // Right now this is clicking a none blue square and just unselects the piece

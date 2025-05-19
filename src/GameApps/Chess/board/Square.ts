@@ -57,4 +57,34 @@ export class Square {
   };
 
   public canMoveHere = (): boolean => this.possiblePieceMove === true;
+
+  public generateDeepClone = (clonedMap = new Map<Square, Square>()): Square => {
+    // If we've already cloned this square, return the clone
+    if (clonedMap.has(this)) return clonedMap.get(this)!;
+  
+    // Create a new Square with the same coordinate
+    const clone = new Square([...this.mathematicalCoordinate] as [number, number]);
+    clonedMap.set(this, clone);
+  
+    // Clone primitive and simple fields
+    clone.id = this.id; // or generate new ID if needed
+    clone.possiblePieceMove = this.possiblePieceMove;
+    clone.IsEnPassantMove = this.IsEnPassantMove;
+    clone.SquareBgColor = this.SquareBgColor;
+  
+    // Shallow clone or deeply clone the piece as needed
+    clone.piece = this.piece ? this.piece.clone?.() ?? this.piece : null;
+  
+    // Recursively clone neighbor squares
+    clone.left = this.left?.generateDeepClone(clonedMap);
+    clone.right = this.right?.generateDeepClone(clonedMap);
+    clone.forward = this.forward?.generateDeepClone(clonedMap);
+    clone.back = this.back?.generateDeepClone(clonedMap);
+    clone.diagonalLeft = this.diagonalLeft?.generateDeepClone(clonedMap);
+    clone.diagonalRight = this.diagonalRight?.generateDeepClone(clonedMap);
+    clone.diagonalBackLeft = this.diagonalBackLeft?.generateDeepClone(clonedMap);
+    clone.diagonalBackRight = this.diagonalBackRight?.generateDeepClone(clonedMap);
+  
+    return clone;
+  };
 }

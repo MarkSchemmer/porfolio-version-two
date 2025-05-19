@@ -114,7 +114,7 @@ export const generateCastleScenario = () => {
   chessBaord.populateSquareWithPiece([8, 5], new BlackKing());
 
   return chessBaord;
-}
+};
 
 export const generateStandardBoard = () => {
   const chessBaord = new Board();
@@ -202,13 +202,20 @@ export const generateStandardBoard = () => {
 
 */
 
-export const getLegalAttackMovesForPieceFactory = (node: Square, logic: PieceLogicService, turn: number) => {
+export const getLegalAttackMovesForPieceFactory = (
+  node: Square,
+  logic: PieceLogicService,
+  turn: number
+) => {
   const piece = node?.piece as Piece;
   const color = node?.piece?.pieceColor as PieceColor;
   const isWhite = color === PieceColor.WHITE;
-  switch(piece.pieceName) {
+  // console.log(piece.pieceName);
+  switch (piece.pieceName) {
     case PieceNames.POND: {
-      return isWhite ? getWhitePondMoves(node, [], logic, turn) : getBlackPondMoves(node, [], logic, turn);
+      return isWhite
+        ? getWhitePondMoves(node, [], logic, turn)
+        : getBlackPondMoves(node, [], logic, turn);
     }
     case PieceNames.KNIGHT: {
       return getKnightMoves(node, []);
@@ -223,13 +230,14 @@ export const getLegalAttackMovesForPieceFactory = (node: Square, logic: PieceLog
       return getQueenMoves(node, [], logic);
     }
     case PieceNames.KING: {
-      return [];
+      // console.log("legal Kings moves");
+      return getKingMoves(node);
     }
     default: {
       return [];
     }
   }
-}
+};
 
 // End chess control buttons
 export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
@@ -761,7 +769,7 @@ export const getRookMoves = (
   const backwardRow = NodeCrawler(node, [], logic, DirectionCrawl.back);
   const rightRow = NodeCrawler(node, [], logic, DirectionCrawl.right);
   const leftRow = NodeCrawler(node, [], logic, DirectionCrawl.left);
-  return [...forwardRow, node, ...backwardRow, ...rightRow, ...leftRow];
+  return [...forwardRow, ...backwardRow, ...rightRow, ...leftRow];
 };
 
 // Queen moves
@@ -787,7 +795,7 @@ export const getQueenMoves = (
       pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
     );
 
-  return [...allMovesWithoutNode, node];
+  return [...allMovesWithoutNode];
 };
 
 // Knight moves
@@ -815,7 +823,7 @@ export const getKnightMoves = (
       pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
     );
 
-  return [...knightMoves, node];
+  return [...knightMoves];
 };
 
 export const getBlackPondMoves = (
@@ -884,7 +892,7 @@ export const getBlackPondMoves = (
     enPassantMoves.push(squareToTake);
   }
 
-  return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves, node];
+  return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves];
 };
 
 export const getWhitePondMoves = (
@@ -954,13 +962,15 @@ export const getWhitePondMoves = (
     enPassantMoves.push(squareToTake);
   }
 
-  return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves, node];
+  return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves];
 };
 
 export const getKingMoves = (
-  node: Square | undefined,
-  squares: Square[]
+  node: Square | undefined
 ): any => {
+
+  const pieceLogic = new PieceLogicService();
+
   let f = node?.forward;
   let l = node?.left;
   let r = node?.right;
@@ -972,7 +982,13 @@ export const getKingMoves = (
   let bl = node?.back?.left;
   let br = node?.back?.right;
 
-  const kingMoves = [f, l, r, b, fl, fr, bl, br].filter((sq) => isValue(sq));
+  const kingMoves = [f, l, r, b, fl, fr, bl, br]
+  .filter((sq) => isValue(sq))
+  .filter((sq: Square | undefined) =>
+    pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
+  );
+
+  // console.log(kingMoves);
 
   return [...kingMoves, node];
 };

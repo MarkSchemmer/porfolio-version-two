@@ -36,7 +36,7 @@
         .left .right .back .forward ect. ect. ect. 
 */
 
-import { PieceLogicService } from "../PieceLogicService/PieceLogicService";
+import { CheckMate, PieceLogicService } from "../PieceLogicService/PieceLogicService";
 import { Piece } from "../pieces/Piece";
 import { SettingsService } from "../SettingsService/SettingsService";
 import {
@@ -103,6 +103,54 @@ export class Board {
     // if (n)
     //     n.piece = new Pond();
   };
+
+  public deepClone(): Board {
+    const newBoard = new Board();
+    const cloneMap = new Map<string, Square>();
+  
+    // Step 1: Clone Squares (structure only, no links yet)
+    newBoard.board = this.board.map(row =>
+      row.map(sq => {
+        const clone = sq.generateDeepClone();
+        cloneMap.set(`${sq.mathematicalCoordinate[0]},${sq.mathematicalCoordinate[1]}`, clone);
+        return clone;
+      })
+    );
+  
+    // Step 2: Reconnect directional references
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board[i].length; j++) {
+        const original = this.board[i][j];
+        const cloned = newBoard.board[i][j] as any;
+  
+        const connect = (direction: keyof Square) => {
+          const neighbor = original[direction] as any;
+          if (neighbor) {
+            const key = `${neighbor.mathematicalCoordinate[0]},${neighbor.mathematicalCoordinate[1]}`;
+            cloned[direction] = cloneMap.get(key);
+          }
+        };
+  
+        connect('left');
+        connect('right');
+        connect('forward');
+        connect('back');
+        connect('diagonalLeft');
+        connect('diagonalRight');
+        connect('diagonalBackLeft');
+        connect('diagonalBackRight');
+      }
+    }
+  
+    // Step 3: Clone other board properties
+    newBoard.turn = this.turn;
+    newBoard.rootNode = newBoard.getSquare(this.rootNode!.mathematicalCoordinate); // assumes rootNode exists
+    newBoard.settingsService = this.settingsService; // assuming stateless or safe to share
+    newBoard.logic = this.logic; // assuming stateless or safe to share
+    newBoard.triggerUpdate = Date.now(); // or clone if needed
+  
+    return newBoard;
+  }
 
   // ******************************************************************
   // Testing only
@@ -236,7 +284,7 @@ export class Board {
 
   public updateKingMoves = (coordiante: any) => {
     const node = getNode(coordiante, this.board) as Square;
-    const sqs = getKingMoves(node, []);
+    const sqs = getKingMoves(node);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
@@ -358,20 +406,19 @@ export class Board {
     squareToPromote?.SetNodeWithNewPiece(PieceFactory(pieceName, pieceColor));
   };
 
-  public getAllSquaresWhoHavePieceAndColor = (pieceColor: PieceColor) => {
-    return this.board.flatMap((sq) =>
+  public getAllSquaresWhoHavePieceAndColor = (board: Board, pieceColor: PieceColor) => {
+    return board.board.flatMap((sq) =>
       sq.filter(
         (s) =>
           s?.SquareHasPiece() &&
-          s.piece?.pieceColor === pieceColor &&
-          s.piece?.pieceName !== PieceNames.KING
+          s.piece?.pieceColor === pieceColor
       )
     );
   };
 
-  public getAllAttackingMoves = (pieceColor: PieceColor) => {
+  public getAllAttackingMoves = (board: Board, pieceColor: PieceColor) => {
     let moves: Square[] = [];
-    const allAttackingSquaresWithPieceAndSameColor = this.getAllSquaresWhoHavePieceAndColor(pieceColor);
+    const allAttackingSquaresWithPieceAndSameColor = this.getAllSquaresWhoHavePieceAndColor(board, pieceColor);
 
     allAttackingSquaresWithPieceAndSameColor.forEach((sq: Square) => {
        moves = [...moves, ...getLegalAttackMovesForPieceFactory(sq, this.logic, this.turn)];
@@ -380,4 +427,18 @@ export class Board {
 
     return moves;
   };
+
+  public getAllPossibleMovesOfPlayerInCheck = (board: Board, pieceColorOfPlayerInCheck: PieceColor) => {
+    // console.log(pieceColorOfPlayerInCheck);
+    const allSquaresOfPlayerInCheck: CheckMate[] = this.getAllSquaresWhoHavePieceAndColor(board, pieceColorOfPlayerInCheck)
+    .map((sq: Square) => {
+        const checkMateMoves: CheckMate = {
+          SquareFrom: sq,
+          SquareToPossibilities: getLegalAttackMovesForPieceFactory(sq,  this.logic, this.turn+1)
+        };
+        return checkMateMoves;
+    });
+    // console.log(allSquaresOfPlayerInCheck)
+    return allSquaresOfPlayerInCheck;
+  }
 }

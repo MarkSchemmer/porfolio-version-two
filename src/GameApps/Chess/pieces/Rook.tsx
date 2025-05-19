@@ -7,7 +7,7 @@ export class BlackRook extends Piece {
   public pieceColor = PieceColor.BLACK;
   public rookImg = blackRook;
   constructor() {
-    super(PieceNames.ROOK.toString(), PieceColor.BLACK);
+    super(PieceNames.ROOK, PieceColor.BLACK);
   }
 
   public draw = () => {
@@ -24,7 +24,7 @@ export class WhiteRook extends Piece {
   public pieceColor = PieceColor.WHITE;
   public rookImg = whiteRook;
   constructor() {
-    super(PieceNames.ROOK.toString(), PieceColor.WHITE);
+    super(PieceNames.ROOK, PieceColor.WHITE);
   }
 
   public draw = () => {

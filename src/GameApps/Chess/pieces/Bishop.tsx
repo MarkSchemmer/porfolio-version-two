@@ -7,7 +7,7 @@ export class BlackBishop extends Piece {
   public pieceColor = PieceColor.BLACK;
   public bishopImg = blackBishop;
   constructor() {
-    super(PieceNames.BISHOP.toString(), PieceColor.BLACK);
+    super(PieceNames.BISHOP, PieceColor.BLACK);
   }
 
   public draw = () => {
@@ -24,7 +24,7 @@ export class WhiteBishop extends Piece {
   public pieceColor = PieceColor.WHITE;
   public bishopImg = whiteBishop;
   constructor() {
-    super(PieceNames.BISHOP.toString(), PieceColor.WHITE);
+    super(PieceNames.BISHOP, PieceColor.WHITE);
   }
 
   public draw = () => {

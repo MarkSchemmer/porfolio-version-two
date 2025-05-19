@@ -5,7 +5,7 @@ export type EnPassantDetails = {
   }
 
 export class Piece {
-    public pieceName: string;
+    public pieceName: PieceNames;
     public pieceColor: PieceColor;
     public hasMoved: boolean = false;
 
@@ -16,7 +16,7 @@ export class Piece {
     }
       
     
-    constructor(pieceName: string, pieceColor: PieceColor) {
+    constructor(pieceName: PieceNames, pieceColor: PieceColor) {
         this.pieceName = pieceName;
         this.pieceColor = pieceColor;
     }
@@ -45,4 +45,19 @@ export class Piece {
     public setPondDoubleMoveTurn = (turn: number) => {
         this.pondDoubleMoveTurn = turn;
     }
+
+    public clone = (): Piece => {
+        const clonedPiece = new Piece(this.pieceName, this.pieceColor);
+    
+        clonedPiece.hasMoved = this.hasMoved;
+        clonedPiece.pondDoubleMoveTurn = this.pondDoubleMoveTurn;
+    
+        // Deep copy of enPassantDetails
+        clonedPiece.enPassantDetails = {
+            turn: this.enPassantDetails.turn,
+            CanEnPassant: this.enPassantDetails.CanEnPassant,
+        };
+    
+        return clonedPiece;
+    };
 }

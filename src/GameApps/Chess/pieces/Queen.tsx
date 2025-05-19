@@ -7,7 +7,7 @@ export class BlackQueen extends Piece {
   public pieceColor = PieceColor.BLACK;
   public queenImg = blackQueen;
   constructor() {
-    super(PieceNames.QUEEN.toString(), PieceColor.BLACK);
+    super(PieceNames.QUEEN, PieceColor.BLACK);
   }
 
   public draw = () => {
@@ -24,7 +24,7 @@ export class WhiteQueen extends Piece {
   public pieceColor = PieceColor.WHITE;
   public queenImg = whiteQueen;
   constructor() {
-    super(PieceNames.QUEEN.toString(), PieceColor.WHITE);
+    super(PieceNames.QUEEN, PieceColor.WHITE);
   }
 
   public draw = () => {
