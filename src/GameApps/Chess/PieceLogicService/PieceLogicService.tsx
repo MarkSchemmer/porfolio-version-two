@@ -342,7 +342,7 @@ export class PieceLogicService {
           playerWhoIsChecking
         );
         let checkRes = this.CheckTwo(getAllSquares, playerWhoIsInCheck);
-        console.log(checkRes);
+        // console.log(checkRes);
         if (checkRes === false) {
           return false;
         }
