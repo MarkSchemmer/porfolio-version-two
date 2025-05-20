@@ -209,6 +209,7 @@ export const getLegalAttackMovesForPieceFactory = (
 ) => {
   const piece = node?.piece as Piece;
   const color = node?.piece?.pieceColor as PieceColor;
+  // console.log("I'm finding legal moves for ", color);
   const isWhite = color === PieceColor.WHITE;
   // console.log(piece.pieceName);
   switch (piece.pieceName) {
@@ -965,10 +966,7 @@ export const getWhitePondMoves = (
   return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves];
 };
 
-export const getKingMoves = (
-  node: Square | undefined
-): any => {
-
+export const getKingMoves = (node: Square | undefined): any => {
   const pieceLogic = new PieceLogicService();
 
   let f = node?.forward;
@@ -983,14 +981,12 @@ export const getKingMoves = (
   let br = node?.back?.right;
 
   const kingMoves = [f, l, r, b, fl, fr, bl, br]
-  .filter((sq) => isValue(sq))
-  .filter((sq: Square | undefined) =>
-    pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
-  );
+    .filter((sq) => isValue(sq))
+    .filter((sq: Square | undefined) =>
+      pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
+    );
 
-  // console.log(kingMoves);
-
-  return [...kingMoves, node];
+  return [...kingMoves];
 };
 
 export function uuidv4() {

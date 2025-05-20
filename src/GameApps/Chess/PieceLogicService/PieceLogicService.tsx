@@ -10,11 +10,7 @@
 
 import { Board } from "../board/Board";
 import { MathCoordinate, Square } from "../board/Square";
-import {
-  isSameSquare,
-  PieceColor,
-  PieceNames,
-} from "../utils/Utils";
+import { isSameSquare, PieceColor, PieceNames } from "../utils/Utils";
 
 /*
     Checkmate we need to get all the pieces of the color that is in check
@@ -314,46 +310,58 @@ export class PieceLogicService {
       : opposingPlayersAttackingSquares.some((sq) => this.IsBlackKing(sq));
   };
 
-
-
   public CheckMate = (
     playerWhoIsChecking: PieceColor,
     playerWhoIsInCheck: PieceColor,
     board: Board
   ): boolean => {
+    console.log("player who is checking: ", playerWhoIsChecking);
+    console.log("player who is checked: ", playerWhoIsInCheck);
 
-    const getAllAttackingSquares = board.getAllPossibleMovesOfPlayerInCheck(board, playerWhoIsInCheck);
+    const getAllAttackingSquares = board
+      .getAllPossibleMovesOfPlayerInCheck(board, playerWhoIsInCheck)
+      .filter((cm: CheckMate) => cm.SquareToPossibilities.length > 0);
+
+    console.log(
+      "amount of Legal moves for player in Check: ",
+      getAllAttackingSquares
+    );
+
+    for (let { SquareToPossibilities, SquareFrom } of getAllAttackingSquares) {
       
-      for (let { SquareToPossibilities, SquareFrom } of getAllAttackingSquares) {
+      // mutate the board
+
+      for (let sq of SquareToPossibilities) {
         const newBoard = board.deepClone();
-        // mutate the board
-        
-        
-        for (let sq of SquareToPossibilities) {
-          newBoard.movePieceFromTo(SquareFrom.mathematicalCoordinate, sq.mathematicalCoordinate);
-          const getAllSquares = newBoard.getAllAttackingMoves(newBoard, playerWhoIsChecking);
-
-          if (this.CheckTwo(getAllSquares, playerWhoIsInCheck) === false) {
-              return false;
-          }
+        newBoard.movePieceFromTo(
+          SquareFrom.mathematicalCoordinate,
+          sq.mathematicalCoordinate
+        );
+        const getAllSquares = newBoard.getAllAttackingMoves(
+          newBoard,
+          playerWhoIsChecking
+        );
+        let checkRes = this.CheckTwo(getAllSquares, playerWhoIsInCheck);
+        console.log(checkRes);
+        if (checkRes === false) {
+          return false;
         }
-        
-        
-        
-        // newBoard.movePieceFromTo(fromSquare.mathematicalCoordinate, sq.mathematicalCoordinate);
-        // // console.log(fromSquare.mathematicalCoordinate)
-        // // get all moves after mutation of attacking player
-        // const getAllAttackingSquares = newBoard.getAllAttackingMoves(newBoard, playerWhoIsChecking);
-
-        // // check if check still exists
-        // if(this.CheckTwo(getAllAttackingSquares, playerWhoIsInCheck) === false) {
-        //     // check is false
-        //     return false;
-        // }
-        // check if it's in check
-        // if not in check then we return false and end the loop
-        // CheckMate is false
       }
+
+      // newBoard.movePieceFromTo(fromSquare.mathematicalCoordinate, sq.mathematicalCoordinate);
+      // // console.log(fromSquare.mathematicalCoordinate)
+      // // get all moves after mutation of attacking player
+      // const getAllAttackingSquares = newBoard.getAllAttackingMoves(newBoard, playerWhoIsChecking);
+
+      // // check if check still exists
+      // if(this.CheckTwo(getAllAttackingSquares, playerWhoIsInCheck) === false) {
+      //     // check is false
+      //     return false;
+      // }
+      // check if it's in check
+      // if not in check then we return false and end the loop
+      // CheckMate is false
+    }
 
     // if we go through all changes and check is true for all.
     return true;
