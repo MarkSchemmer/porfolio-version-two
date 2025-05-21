@@ -741,18 +741,16 @@ export const getBishopMoves = (
   squares: Square[],
   logic: PieceLogicService
 ): any => {
-  const rightDiag = NodeCrawler(node, [], logic, DirectionCrawl.diagonalRight);
+  const rightDiag = NodeCrawler(node, logic, DirectionCrawl.diagonalRight);
   const rightDiagBack = NodeCrawler(
     node,
-    [],
     logic,
     DirectionCrawl.diagonalBackRight
   );
 
-  const leftDiag = NodeCrawler(node, [], logic, DirectionCrawl.diagonalLeft);
+  const leftDiag = NodeCrawler(node, logic, DirectionCrawl.diagonalLeft);
   const leftDiagBack = NodeCrawler(
     node,
-    [],
     logic,
     DirectionCrawl.diagonalBackLeft
   );
@@ -766,10 +764,10 @@ export const getRookMoves = (
   squares: Square[],
   logic: PieceLogicService
 ): any => {
-  const forwardRow = NodeCrawler(node, [], logic, DirectionCrawl.forward);
-  const backwardRow = NodeCrawler(node, [], logic, DirectionCrawl.back);
-  const rightRow = NodeCrawler(node, [], logic, DirectionCrawl.right);
-  const leftRow = NodeCrawler(node, [], logic, DirectionCrawl.left);
+  const forwardRow = NodeCrawler(node, logic, DirectionCrawl.forward);
+  const backwardRow = NodeCrawler(node, logic, DirectionCrawl.back);
+  const rightRow = NodeCrawler(node, logic, DirectionCrawl.right);
+  const leftRow = NodeCrawler(node, logic, DirectionCrawl.left);
   return [...forwardRow, ...backwardRow, ...rightRow, ...leftRow];
 };
 

@@ -328,7 +328,6 @@ export class PieceLogicService {
     );
 
     for (let { SquareToPossibilities, SquareFrom } of getAllAttackingSquares) {
-      
       // mutate the board
 
       for (let sq of SquareToPossibilities) {
@@ -347,23 +346,8 @@ export class PieceLogicService {
           return false;
         }
       }
-
-      // newBoard.movePieceFromTo(fromSquare.mathematicalCoordinate, sq.mathematicalCoordinate);
-      // // console.log(fromSquare.mathematicalCoordinate)
-      // // get all moves after mutation of attacking player
-      // const getAllAttackingSquares = newBoard.getAllAttackingMoves(newBoard, playerWhoIsChecking);
-
-      // // check if check still exists
-      // if(this.CheckTwo(getAllAttackingSquares, playerWhoIsInCheck) === false) {
-      //     // check is false
-      //     return false;
-      // }
-      // check if it's in check
-      // if not in check then we return false and end the loop
-      // CheckMate is false
     }
 
-    // if we go through all changes and check is true for all.
     return true;
   };
 }

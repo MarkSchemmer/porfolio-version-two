@@ -48,7 +48,6 @@ export const NodeMutatorFactory = (node: Square, direction: DirectionCrawl) => {
 
 export const NodeCrawler = (
   node: Square | undefined,
-  squares: Square[],
   logic: PieceLogicService,
   crawlDirection: DirectionCrawl
 ): any => {
@@ -59,6 +58,7 @@ export const NodeCrawler = (
   // scanning and calculaiton process so much faster
 
   const originalNode = node;
+  let squares: Square[] = [];
 
   let step = NodeMutatorFactory(node as Square, crawlDirection);
 
@@ -76,6 +76,8 @@ export const NodeCrawler = (
     ) {
       return squares;
     }
+
+    // need to account for pin as well, if piece moves does it create a check?
 
     // account for if piece is black we just take that one and then end the logic loop.
     if (
