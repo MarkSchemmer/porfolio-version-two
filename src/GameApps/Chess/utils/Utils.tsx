@@ -202,6 +202,11 @@ export const generateStandardBoard = () => {
 
 */
 
+// this needs to work in a system of a cache
+// and there needs to be a mechanism that needs
+// store and to update the board cache and a board is: Square[][]
+// so we store the board with all possible moves...
+// How should we store all the moves then 
 export const getLegalAttackMovesForPieceFactory = (
   node: Square,
   logic: PieceLogicService,
@@ -791,13 +796,11 @@ export const getQueenMoves = (
       pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
     );
 
-  return [...allMovesWithoutNode];
+  return allMovesWithoutNode;
 };
 
 // Knight moves
-export const getKnightMoves = (
-  node: Square | undefined
-): any => {
+export const getKnightMoves = (node: Square | undefined): any => {
   const pieceLogic = new PieceLogicService();
 
   let tpL = node?.forward?.forward?.left;
@@ -812,13 +815,11 @@ export const getKnightMoves = (
   let rtp = node?.right?.right?.forward;
   let rbtm = node?.right?.right?.back;
 
-  const knightMoves = [tpL, tpR, ltp, lbtm, bl, br, rtp, rbtm]
+  return [tpL, tpR, ltp, lbtm, bl, br, rtp, rbtm]
     .filter((sq: Square | undefined) => isValue(sq))
     .filter((sq: Square | undefined) =>
       pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
     );
-
-  return [...knightMoves];
 };
 
 export const getBlackPondMoves = (
@@ -972,13 +973,11 @@ export const getKingMoves = (node: Square | undefined): any => {
   let bl = node?.back?.left;
   let br = node?.back?.right;
 
-  const kingMoves = [f, l, r, b, fl, fr, bl, br]
+  return [f, l, r, b, fl, fr, bl, br]
     .filter((sq) => isValue(sq))
     .filter((sq: Square | undefined) =>
       pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
     );
-
-  return [...kingMoves];
 };
 
 export function uuidv4() {

@@ -78,7 +78,6 @@ export const NodeCrawler = (
     }
 
     // need to account for pin as well, if piece moves does it create a check?
-
     // account for if piece is black we just take that one and then end the logic loop.
     if (
       logic.SquareHasPieceAndIsOtherColor(
