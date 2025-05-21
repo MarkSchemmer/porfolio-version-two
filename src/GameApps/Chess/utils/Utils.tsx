@@ -755,7 +755,7 @@ export const getBishopMoves = (
     DirectionCrawl.diagonalBackLeft
   );
 
-  return [...leftDiagBack, ...leftDiag, node, ...rightDiag, ...rightDiagBack];
+  return [...leftDiagBack, ...leftDiag, ...rightDiag, ...rightDiagBack];
 };
 
 // Rook moves.
