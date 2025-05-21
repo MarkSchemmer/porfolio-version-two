@@ -248,37 +248,37 @@ export class Board {
 
   public updateBishopMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getBishopMoves(node, [], this.logic);
+    const sqs = getBishopMoves(node, this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateRookMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getRookMoves(node, [], this.logic);
+    const sqs = getRookMoves(node, this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateQueenMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getQueenMoves(node, [], this.logic);
+    const sqs = getQueenMoves(node, this.logic);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateKnightMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getKnightMoves(node, []);
+    const sqs = getKnightMoves(node);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updatePondMovesWhite = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getWhitePondMoves(node, [], this.logic, this.turn);
+    const sqs = getWhitePondMoves(node, this.logic, this.turn);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updatePondMovesBlack = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getBlackPondMoves(node, [], this.logic, this.turn);
+    const sqs = getBlackPondMoves(node, this.logic, this.turn);
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 

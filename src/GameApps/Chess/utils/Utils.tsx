@@ -215,20 +215,20 @@ export const getLegalAttackMovesForPieceFactory = (
   switch (piece.pieceName) {
     case PieceNames.POND: {
       return isWhite
-        ? getWhitePondMoves(node, [], logic, turn)
-        : getBlackPondMoves(node, [], logic, turn);
+        ? getWhitePondMoves(node, logic, turn)
+        : getBlackPondMoves(node, logic, turn);
     }
     case PieceNames.KNIGHT: {
-      return getKnightMoves(node, []);
+      return getKnightMoves(node);
     }
     case PieceNames.BISHOP: {
-      return getBishopMoves(node, [], logic);
+      return getBishopMoves(node, logic);
     }
     case PieceNames.ROOK: {
-      return getRookMoves(node, [], logic);
+      return getRookMoves(node, logic);
     }
     case PieceNames.QUEEN: {
-      return getQueenMoves(node, [], logic);
+      return getQueenMoves(node, logic);
     }
     case PieceNames.KING: {
       // console.log("legal Kings moves");
@@ -738,7 +738,6 @@ export const getDiagonalRightToLeftBack = (
 // Bishop moves
 export const getBishopMoves = (
   node: Square | undefined,
-  squares: Square[],
   logic: PieceLogicService
 ): any => {
   const rightDiag = NodeCrawler(node, logic, DirectionCrawl.diagonalRight);
@@ -761,7 +760,6 @@ export const getBishopMoves = (
 // Rook moves.
 export const getRookMoves = (
   node: Square | undefined,
-  squares: Square[],
   logic: PieceLogicService
 ): any => {
   const forwardRow = NodeCrawler(node, logic, DirectionCrawl.forward);
@@ -774,12 +772,11 @@ export const getRookMoves = (
 // Queen moves
 export const getQueenMoves = (
   node: Square | undefined,
-  squares: Square[],
   logic: PieceLogicService
 ): any => {
   const pieceLogic = new PieceLogicService();
-  let horzAndVertMoves = getRookMoves(node, [], logic);
-  let diagMoves = getBishopMoves(node, [], logic);
+  let horzAndVertMoves = getRookMoves(node, logic);
+  let diagMoves = getBishopMoves(node, logic);
 
   let allMovesWithoutNode = [...diagMoves, ...horzAndVertMoves]
     .filter((sq: Square) => {
@@ -799,8 +796,7 @@ export const getQueenMoves = (
 
 // Knight moves
 export const getKnightMoves = (
-  node: Square | undefined,
-  squares: Square[]
+  node: Square | undefined
 ): any => {
   const pieceLogic = new PieceLogicService();
 
@@ -827,7 +823,6 @@ export const getKnightMoves = (
 
 export const getBlackPondMoves = (
   node: Square | undefined,
-  squares: Square[],
   logic: PieceLogicService,
   turn: number
 ): any => {
@@ -896,7 +891,6 @@ export const getBlackPondMoves = (
 
 export const getWhitePondMoves = (
   node: Square | undefined,
-  squares: Square[],
   logic: PieceLogicService,
   turn: number
 ): any => {
