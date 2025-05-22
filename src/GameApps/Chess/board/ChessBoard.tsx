@@ -146,10 +146,38 @@ const BoardPiece = (props: any) => {
             // And we won't update the board but reset it to current place
             // so we have a moveFromTo and then a check making sure to we can actually do this
             // other wise we just reset...
-            boardobj.movePieceFromTo(
+
+            /*
+                The idea is, if white moves does that cause white to be in check, 
+                if it is in cheeck we can't move it.
+
+                so If I'm trying to move white, then I take blacks pieces and I check if black is checking white
+            
+            */
+            const currentPlayerColorMoving = selectedPiece?.piece?.pieceColor as PieceColor;
+            const otherPlayersColor =
+              currentPlayerColorMoving === PieceColor.WHITE
+                ? PieceColor.BLACK
+                : PieceColor.WHITE;
+
+            const chessBoardCopy = boardobj.deepClone();
+
+            chessBoardCopy.movePieceFromTo(
               selectedPiece?.mathematicalCoordinate as MathCoordinate,
               currentSquareClick.mathematicalCoordinate
             );
+
+            const otherPlayersPieces = chessBoardCopy.getAllAttackingMoves(chessBoardCopy, otherPlayersColor);
+
+            const isCausingCheck = chessBoardCopy.logic.CheckTwo(otherPlayersPieces, currentPlayerColorMoving);
+
+            if (isCausingCheck === false) {
+              boardobj.movePieceFromTo(
+                selectedPiece?.mathematicalCoordinate as MathCoordinate,
+                currentSquareClick.mathematicalCoordinate
+              );
+            }
+
             const chessBoard = clearBoard(boardobj);
             updateBoardAndSelectedPiece(chessBoard, null);
 
@@ -216,7 +244,6 @@ const BoardPiece = (props: any) => {
                     : PieceColor.WHITE)
               );
               // later on in the future we will place checkmate here if it is so... a check for that.
-
 
               // wait to implement king moves first
               // currentPlayerColor is checking
