@@ -154,11 +154,8 @@ const BoardPiece = (props: any) => {
                 so If I'm trying to move white, then I take blacks pieces and I check if black is checking white
             
             */
-            const currentPlayerColorMoving = selectedPiece?.piece?.pieceColor as PieceColor;
-            const otherPlayersColor =
-              currentPlayerColorMoving === PieceColor.WHITE
-                ? PieceColor.BLACK
-                : PieceColor.WHITE;
+            const currentPlayerColorMoving = selectedPiece?.piece
+              ?.pieceColor as PieceColor;
 
             const chessBoardCopy = boardobj.deepClone();
 
@@ -167,9 +164,10 @@ const BoardPiece = (props: any) => {
               currentSquareClick.mathematicalCoordinate
             );
 
-            const otherPlayersPieces = chessBoardCopy.getAllAttackingMoves(chessBoardCopy, otherPlayersColor);
-
-            const isCausingCheck = chessBoardCopy.logic.CheckTwo(otherPlayersPieces, currentPlayerColorMoving);
+            const isCausingCheck =
+              currentPlayerColorMoving === PieceColor.WHITE
+                ? boardobj.IsWhiteInCheck(chessBoardCopy)
+                : boardobj.IsBlackInCheck(chessBoardCopy);
 
             if (isCausingCheck === false) {
               boardobj.movePieceFromTo(
@@ -185,10 +183,7 @@ const BoardPiece = (props: any) => {
             // then trigger a popup.
             if (
               boardobj.logic.ShouldPondPromote(
-                getNode(
-                  currentSquareClick.mathematicalCoordinate,
-                  boardobj.board
-                ) as Square
+                  currentSquareClick
               )
             ) {
               // trigger screen that cannot be dismissed until
@@ -200,16 +195,12 @@ const BoardPiece = (props: any) => {
               // beautify the promotion screen
               // add highlighting when hovered over
               // add functionality for black.
-              const node = getNode(
-                currentSquareClick.mathematicalCoordinate,
-                boardobj.board
-              );
               dispatch(
                 updatePondPromotion({
                   IsOpen: true,
                   coordinateToPromote:
                     currentSquareClick.mathematicalCoordinate,
-                  pieceColor: node?.piece?.pieceColor,
+                  pieceColor: currentSquareClick?.piece?.pieceColor,
                 })
               );
             }
@@ -217,21 +208,18 @@ const BoardPiece = (props: any) => {
             // going to check if move is causing check
             // so I need all the current players turns moves
             // and color...
-            const node = getNode(
-              currentSquareClick.mathematicalCoordinate,
-              boardobj.board
-            );
-            const currentPlayerColor = node?.piece?.pieceColor as PieceColor;
-            const allAttackingSquaresWithPieceAndSameColor =
-              boardobj.getAllAttackingMoves(boardobj, currentPlayerColor);
+
             // console.log(allAttackingSquaresWithPieceAndSameColor);
 
-            if (
-              boardobj.logic.Check(
-                allAttackingSquaresWithPieceAndSameColor,
-                currentPlayerColor
-              )
-            ) {
+            const currentPlayerColor = currentSquareClick.piece
+              ?.pieceColor as PieceColor;
+
+            const isCheck =
+              currentPlayerColor === PieceColor.WHITE
+                ? boardobj.IsBlackInCheck(boardobj)
+                : boardobj.IsWhiteInCheck(boardobj);
+
+            if (isCheck) {
               /*
                   The process is the currPlayerColor is the first move 
                   upon move we calculate the check 
@@ -249,16 +237,14 @@ const BoardPiece = (props: any) => {
               // currentPlayerColor is checking
               // player who is in check is opposite color of currentPlayerColor
               const playerChecking = currentPlayerColor;
-              const playerWhoIsInCheck =
-                currentPlayerColor === PieceColor.WHITE
-                  ? PieceColor.BLACK
-                  : PieceColor.WHITE;
+
+              const checkCheckMate =
+                playerChecking === PieceColor.WHITE
+                  ? boardobj.logic.WhiteCheckMatingBlack(boardobj)
+                  : boardobj.logic.BlackCheckMatingWhite(boardobj);
+
               if (
-                boardobj.logic.CheckMate(
-                  playerChecking,
-                  playerWhoIsInCheck,
-                  chessBoard
-                )
+                checkCheckMate
               ) {
                 console.log(
                   currentPlayerColor +

@@ -350,4 +350,12 @@ export class PieceLogicService {
 
     return true;
   };
+
+  public BlackCheckMatingWhite = (board: Board) => {
+    return this.CheckMate(PieceColor.BLACK, PieceColor.WHITE, board);
+  };
+
+  public WhiteCheckMatingBlack = (board: Board) => {
+    return this.CheckMate(PieceColor.WHITE, PieceColor.BLACK, board);
+  };
 }

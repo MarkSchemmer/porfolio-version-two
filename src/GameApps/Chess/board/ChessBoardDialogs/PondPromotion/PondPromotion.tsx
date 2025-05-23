@@ -64,8 +64,6 @@ const BoxPiece = (props: any) => {
           pieceColor
         );
 
-        // we need to check for Check & CheckMate.
-
         dispatch(UpdateChessBoard(boardobj));
         dispatch(
           updatePondPromotion({
@@ -75,6 +73,47 @@ const BoxPiece = (props: any) => {
             coordinateToPromote: null,
           })
         );
+
+        // we need to check for Check & CheckMate.
+        const playerBeingPromotedColor = pieceColor;
+        const otherPlayerColor =
+          playerBeingPromotedColor === PieceColor.WHITE
+            ? PieceColor.BLACK
+            : PieceColor.WHITE;
+
+
+          // if white is moving then check is black in check
+          // if black is moving then check is white in check
+
+          const isCheck =
+          playerBeingPromotedColor === PieceColor.WHITE
+              ? boardobj.IsBlackInCheck(boardobj)
+              : boardobj.IsWhiteInCheck(boardobj); 
+
+        if (isCheck) {
+          console.log(
+            playerBeingPromotedColor +
+              " Is checking " +
+              (playerBeingPromotedColor === PieceColor.WHITE
+                ? PieceColor.BLACK
+                : PieceColor.WHITE)
+          );
+
+          const checkCheckMate =
+          playerBeingPromotedColor === PieceColor.WHITE
+            ? boardobj.logic.WhiteCheckMatingBlack(boardobj)
+            : boardobj.logic.BlackCheckMatingWhite(boardobj);
+
+          if (checkCheckMate) {
+            console.log(
+              playerBeingPromotedColor +
+                " CheckMated " +
+                (playerBeingPromotedColor === PieceColor.WHITE
+                  ? PieceColor.BLACK
+                  : PieceColor.WHITE)
+            );
+          }
+        }
       }}
       className="piece"
       style={{
