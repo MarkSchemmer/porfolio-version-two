@@ -63,6 +63,9 @@ const BoxPiece = (props: any) => {
           name,
           pieceColor
         );
+
+        // we need to check for Check & CheckMate.
+
         dispatch(UpdateChessBoard(boardobj));
         dispatch(
           updatePondPromotion({
