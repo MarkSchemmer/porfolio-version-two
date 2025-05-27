@@ -76,10 +76,10 @@ const BoxPiece = (props: any) => {
 
         // we need to check for Check & CheckMate.
         const playerBeingPromotedColor = pieceColor;
-        const otherPlayerColor =
-          playerBeingPromotedColor === PieceColor.WHITE
-            ? PieceColor.BLACK
-            : PieceColor.WHITE;
+        // const otherPlayerColor =
+        //   playerBeingPromotedColor === PieceColor.WHITE
+        //     ? PieceColor.BLACK
+        //     : PieceColor.WHITE;
 
 
           // if white is moving then check is black in check
@@ -87,8 +87,8 @@ const BoxPiece = (props: any) => {
 
           const isCheck =
           playerBeingPromotedColor === PieceColor.WHITE
-              ? boardobj.IsBlackInCheck(boardobj)
-              : boardobj.IsWhiteInCheck(boardobj); 
+              ? boardobj.logic.IsBlackInCheck(boardobj)
+              : boardobj.logic.IsWhiteInCheck(boardobj); 
 
         if (isCheck) {
           console.log(

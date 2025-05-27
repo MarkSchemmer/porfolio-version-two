@@ -351,6 +351,22 @@ export class PieceLogicService {
     return true;
   };
 
+  public IsBlackInCheck = (board: Board) => {
+    const whiteAttackingPieces = board.getAllWhiteAttackingMoves(board);
+    const anyAttackingWhitePiecesHaveBlackKing = whiteAttackingPieces.some(
+      (sq) => board.logic.IsBlackKing(sq)
+    );
+    return anyAttackingWhitePiecesHaveBlackKing;
+  };
+
+  public IsWhiteInCheck = (board: Board) => {
+    const blackAttackingPieces = board.getAllBlackAttackingMoves(board);
+    const anyAttackingBlackPiecesHaveWhiteKing = blackAttackingPieces.some(
+      (sq) => board.logic.IsWhiteKing(sq)
+    );
+    return anyAttackingBlackPiecesHaveWhiteKing;
+  };
+
   public BlackCheckMatingWhite = (board: Board) => {
     return this.CheckMate(PieceColor.BLACK, PieceColor.WHITE, board);
   };

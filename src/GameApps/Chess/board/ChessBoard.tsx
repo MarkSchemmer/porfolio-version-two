@@ -166,8 +166,8 @@ const BoardPiece = (props: any) => {
 
             const isCausingCheck =
               currentPlayerColorMoving === PieceColor.WHITE
-                ? boardobj.IsWhiteInCheck(chessBoardCopy)
-                : boardobj.IsBlackInCheck(chessBoardCopy);
+                ? boardobj.logic.IsWhiteInCheck(chessBoardCopy)
+                : boardobj.logic.IsBlackInCheck(chessBoardCopy);
 
             if (isCausingCheck === false) {
               boardobj.movePieceFromTo(
@@ -216,8 +216,8 @@ const BoardPiece = (props: any) => {
 
             const isCheck =
               currentPlayerColor === PieceColor.WHITE
-                ? boardobj.IsBlackInCheck(boardobj)
-                : boardobj.IsWhiteInCheck(boardobj);
+                ? boardobj.logic.IsBlackInCheck(boardobj)
+                : boardobj.logic.IsWhiteInCheck(boardobj);
 
             if (isCheck) {
               /*

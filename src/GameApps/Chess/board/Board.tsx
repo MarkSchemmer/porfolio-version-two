@@ -524,20 +524,4 @@ export class Board {
           sq.SquareHasPiece() && sq?.piece?.pieceColor === PieceColor.BLACK
       );
   };
-
-  public IsBlackInCheck = (board: Board) => {
-    const whiteAttackingPieces = this.getAllWhiteAttackingMoves(board);
-    const anyAttackingWhitePiecesHaveBlackKing = whiteAttackingPieces.some(
-      (sq) => board.logic.IsBlackKing(sq)
-    );
-    return anyAttackingWhitePiecesHaveBlackKing;
-  };
-
-  public IsWhiteInCheck = (board: Board) => {
-    const blackAttackingPieces = this.getAllBlackAttackingMoves(board);
-    const anyAttackingBlackPiecesHaveWhiteKing = blackAttackingPieces.some(
-      (sq) => board.logic.IsWhiteKing(sq)
-    );
-    return anyAttackingBlackPiecesHaveWhiteKing;
-  };
 }
