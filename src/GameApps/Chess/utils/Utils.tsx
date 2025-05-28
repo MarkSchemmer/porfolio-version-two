@@ -1036,7 +1036,29 @@ export const getKingMovesSpecialBlack = (
 
   let moves: Square[] = [];
 
-  return [];
+  const canCastleLeft = pieceLogic.CanBlackCastleLeft(
+    node as Square,
+    pieceLogic.GetBlackLeftRook(clonedBoard) as Square,
+    clonedBoard,
+    turn
+  );
+
+  if (canCastleLeft) {
+    moves.push(node?.left?.left as Square);
+  }
+
+  const canCastleRight = pieceLogic.CanBlackCastleRight(
+    node as Square,
+    pieceLogic.GetWhiteRightRook(clonedBoard) as Square,
+    clonedBoard,
+    turn
+  );
+
+  if (canCastleRight) {
+    moves.push(node?.right?.right as Square);
+  }
+
+  return moves;
 };
 
 export function uuidv4() {
