@@ -206,7 +206,7 @@ export const generateStandardBoard = () => {
 // and there needs to be a mechanism that needs
 // store and to update the board cache and a board is: Square[][]
 // so we store the board with all possible moves...
-// How should we store all the moves then 
+// How should we store all the moves then
 export const getLegalAttackMovesForPieceFactory = (
   node: Square,
   logic: PieceLogicService,
@@ -960,7 +960,11 @@ export const getWhitePondMoves = (
   return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves];
 };
 
-export const getKingMoves = (node: Square | undefined, clonedBoard: Square[][], turn: number): any => {
+export const getKingMoves = (
+  node: Square | undefined,
+  clonedBoard: Square[][],
+  turn: number
+): any => {
   const pieceLogic = new PieceLogicService();
 
   let f = node?.forward;
@@ -980,38 +984,60 @@ export const getKingMoves = (node: Square | undefined, clonedBoard: Square[][], 
       pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
     );
 
-    // const canCastleLeft = pieceLogic.CanWhiteCastleLeft(node as Square, pieceLogic.GetWhiteLeftRook(clonedBoard) as Square, clonedBoard, turn);
+  // const canCastleLeft = pieceLogic.CanWhiteCastleLeft(node as Square, pieceLogic.GetWhiteLeftRook(clonedBoard) as Square, clonedBoard, turn);
 
-    // if (canCastleLeft) {
-    //   moves.push(node?.left?.left);
-    // }
+  // if (canCastleLeft) {
+  //   moves.push(node?.left?.left);
+  // }
 
-    return moves;
+  return moves;
 };
 
-export const getKingMovesSpecialWhite = (node: Square | undefined, clonedBoard: Square[][], turn: number): any => {
-  const pieceLogic = new PieceLogicService();
-
-  let moves: Square[] = []
-
-    const canCastleLeft = pieceLogic.CanWhiteCastleLeft(node as Square, pieceLogic.GetWhiteLeftRook(clonedBoard) as Square, clonedBoard, turn);
-
-    if (canCastleLeft) {
-      moves.push(node?.left?.left as Square);
-    }
-
-    return moves;
-};
-
-export const getKingMovesSpecialBlack = (node: Square | undefined, clonedBoard: Square[][], turn: number): any => {
+export const getKingMovesSpecialWhite = (
+  node: Square | undefined,
+  clonedBoard: Square[][],
+  turn: number
+): any => {
   const pieceLogic = new PieceLogicService();
 
   let moves: Square[] = [];
 
-    return [];
+  const canCastleLeft = pieceLogic.CanWhiteCastleLeft(
+    node as Square,
+    pieceLogic.GetWhiteLeftRook(clonedBoard) as Square,
+    clonedBoard,
+    turn
+  );
+
+  if (canCastleLeft) {
+    moves.push(node?.left?.left as Square);
+  }
+
+  const canCastleRight = pieceLogic.CanWhiteCastleRight(
+    node as Square,
+    pieceLogic.GetWhiteRightRook(clonedBoard) as Square,
+    clonedBoard,
+    turn
+  );
+
+  if (canCastleRight) {
+    moves.push(node?.right?.right as Square);
+  }
+
+  return moves;
 };
 
+export const getKingMovesSpecialBlack = (
+  node: Square | undefined,
+  clonedBoard: Square[][],
+  turn: number
+): any => {
+  const pieceLogic = new PieceLogicService();
 
+  let moves: Square[] = [];
+
+  return [];
+};
 
 export function uuidv4() {
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>

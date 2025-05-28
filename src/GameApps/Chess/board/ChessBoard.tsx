@@ -171,8 +171,25 @@ const BoardPiece = (props: any) => {
               updateBoardAndSelectedPiece(chessBoard, null);
 
 
-            } 
-            else {
+            }
+            else if (boardobj.logic.IsWhiteKingAndDoubleMovingRight(selectedPiece as Square, currentSquareClick as Square)) {
+              console.log("Moving double right");
+            
+  
+              boardobj.movePieceFromTo(
+                selectedPiece?.mathematicalCoordinate as MathCoordinate,
+                currentSquareClick.mathematicalCoordinate
+              );
+
+             
+              boardobj.movePieceFromTo(
+                [1, 8],
+                [1, 6]
+              );
+
+              const chessBoard = clearBoard(boardobj);
+              updateBoardAndSelectedPiece(chessBoard, null);
+            } else {
             /*
                 The idea is, if white moves does that cause white to be in check, 
                 if it is in cheeck we can't move it.
