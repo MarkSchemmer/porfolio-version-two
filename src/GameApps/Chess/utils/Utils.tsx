@@ -1049,7 +1049,7 @@ export const getKingMovesSpecialBlack = (
 
   const canCastleRight = pieceLogic.CanBlackCastleRight(
     node as Square,
-    pieceLogic.GetWhiteRightRook(clonedBoard) as Square,
+    pieceLogic.GetBlackRightRook(clonedBoard) as Square,
     clonedBoard,
     turn
   );

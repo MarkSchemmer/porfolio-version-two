@@ -459,6 +459,12 @@ export class PieceLogicService {
     clonedBoard: Square[][],
     turn: number
   ) => {
+    if (
+      this.IsNullOrUndefined(kingNode.piece) ||
+      this.IsNullOrUndefined(leftRookNode.piece)
+    )
+      return false;
+
     const hasKingMoved = kingNode?.piece?.hasMoved === true; // to castle King can't move
     const hasRookMoved = leftRookNode?.piece?.hasMoved === true; // to castle rook can't move either
 
@@ -513,6 +519,12 @@ export class PieceLogicService {
     clonedBoard: Square[][],
     turn: number
   ) => {
+    if (
+      this.IsNullOrUndefined(kingNode.piece) ||
+      this.IsNullOrUndefined(rightRookNode.piece)
+    )
+      return false;
+
     const hasKingMoved = kingNode?.piece?.hasMoved === true; // to castle King can't move
     const hasRookMoved = rightRookNode?.piece?.hasMoved === true; // to castle rook can't move either
 
@@ -566,6 +578,12 @@ export class PieceLogicService {
     clonedBoard: Square[][],
     turn: number
   ) => {
+    if (
+      this.IsNullOrUndefined(kingNode.piece) ||
+      this.IsNullOrUndefined(leftRookNode.piece)
+    )
+      return false;
+
     const hasKingMoved = kingNode?.piece?.hasMoved === true; // to castle King can't move
     const hasRookMoved = leftRookNode?.piece?.hasMoved === true; // to castle rook can't move either
 
@@ -620,6 +638,12 @@ export class PieceLogicService {
     clonedBoard: Square[][],
     turn: number
   ) => {
+    if (
+      this.IsNullOrUndefined(kingNode.piece) ||
+      this.IsNullOrUndefined(rightRookNode.piece)
+    )
+      return false;
+
     const hasKingMoved = kingNode?.piece?.hasMoved === true; // to castle King can't move
     const hasRookMoved = rightRookNode?.piece?.hasMoved === true; // to castle rook can't move either
 
