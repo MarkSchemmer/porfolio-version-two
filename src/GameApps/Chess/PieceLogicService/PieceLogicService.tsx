@@ -282,29 +282,65 @@ export class PieceLogicService {
     );
   };
 
-  public IsWhiteKingAndDoubleMovingLeft = (kingSquare: Square, toSquare: Square) => {
+  public IsWhiteKingAndDoubleMovingLeft = (
+    kingSquare: Square,
+    toSquare: Square
+  ) => {
     const [kx, ky] = kingSquare.mathematicalCoordinate;
     const [tx, ty] = toSquare.mathematicalCoordinate;
-    return this.IsWhiteKing(kingSquare) && kx === 1 && ky === 5 && tx === 1 && ty === 3;
-  }
+    return (
+      this.IsWhiteKing(kingSquare) &&
+      kx === 1 &&
+      ky === 5 &&
+      tx === 1 &&
+      ty === 3
+    );
+  };
 
-  public IsWhiteKingAndDoubleMovingRight = (kingSquare: Square, toSquare: Square) => {
+  public IsWhiteKingAndDoubleMovingRight = (
+    kingSquare: Square,
+    toSquare: Square
+  ) => {
     const [kx, ky] = kingSquare.mathematicalCoordinate;
     const [tx, ty] = toSquare.mathematicalCoordinate;
-    return this.IsWhiteKing(kingSquare) && kx === 1 && ky === 5 && tx === 1 && ty === 7;
-  }
+    return (
+      this.IsWhiteKing(kingSquare) &&
+      kx === 1 &&
+      ky === 5 &&
+      tx === 1 &&
+      ty === 7
+    );
+  };
 
-  public IsBlackKingAndDoubleMovingLeft = (kingSquare: Square, toSquare: Square) => {
+  public IsBlackKingAndDoubleMovingLeft = (
+    kingSquare: Square,
+    toSquare: Square
+  ) => {
     const [kx, ky] = kingSquare.mathematicalCoordinate;
     const [tx, ty] = toSquare.mathematicalCoordinate;
-    return this.IsBlackKing(kingSquare) && kx === 8 && ky === 5 && tx === 8 && ty === 3;
-  }
+    return (
+      this.IsBlackKing(kingSquare) &&
+      kx === 8 &&
+      ky === 5 &&
+      tx === 8 &&
+      ty === 3
+    );
+  };
 
-  public IsBlackKingAndDoubleMovingRight = (kingSquare: Square, toSquare: Square) => {
+  public IsBlackKingAndDoubleMovingRight = (
+    kingSquare: Square,
+    toSquare: Square
+  ) => {
     const [kx, ky] = kingSquare.mathematicalCoordinate;
     const [tx, ty] = toSquare.mathematicalCoordinate;
-    return this.IsBlackKing(kingSquare) && kx === 8 && ky === 5 && tx === 8 && ty === 7;
-  }
+    return (
+      this.IsBlackKing(kingSquare) &&
+      kx === 8 &&
+      ky === 5 &&
+      tx === 8 &&
+      ty === 7
+    );
+  };
 
   public IsBlackKing = (node: Square) => {
     if (this.IsNullOrUndefined(node)) return false;
@@ -417,18 +453,25 @@ export class PieceLogicService {
     return getNode([8, 8], board);
   };
 
-  public CanBlackCastleLeft = (kingNode: Square, leftRookNode: Square, clonedBoard: Square[][], turn: number) => {
+  public CanBlackCastleLeft = (
+    kingNode: Square,
+    leftRookNode: Square,
+    clonedBoard: Square[][],
+    turn: number
+  ) => {
     const hasKingMoved = kingNode?.piece?.hasMoved === true; // to castle King can't move
     const hasRookMoved = leftRookNode?.piece?.hasMoved === true; // to castle rook can't move either
 
-    if (hasKingMoved || hasRookMoved) 
-        return false;
+    if (hasKingMoved || hasRookMoved) return false;
 
     // there is open space to castle, basically eqch square until the rook is epmpty
-    const pathFromKingToRookIsEmpty = [kingNode.left, kingNode.left?.left, kingNode.left?.left?.left].some(sq => sq?.SquareHasPiece());
+    const pathFromKingToRookIsEmpty = [
+      kingNode.left,
+      kingNode.left?.left,
+      kingNode.left?.left?.left,
+    ].some((sq) => sq?.SquareHasPiece());
 
-    if (pathFromKingToRookIsEmpty)
-      return false;
+    if (pathFromKingToRookIsEmpty) return false;
 
     // last check is white can't be in check, and next two moves over left cannot also
     // create a situation of check
@@ -441,43 +484,47 @@ export class PieceLogicService {
 
     let currentPostionCheck = this.IsBlackInCheck(newBoard);
 
-    if (currentPostionCheck) // can't move if white is in check
+    if (currentPostionCheck)
+      // can't move if white is in check
       return false;
-
 
     // now we simulate two moves and check for each one
 
     // [1, 5] -> [1, 4] -> Is in Check
     newBoard.movePieceFromTo([8, 5], [8, 4]);
     currentPostionCheck = this.IsBlackInCheck(newBoard);
-    if (currentPostionCheck)
-      return false;
-    
+    if (currentPostionCheck) return false;
+
     // [1, 4] -> [1, 3] -> Is in Check
     newBoard.movePieceFromTo([8, 4], [8, 3]);
     currentPostionCheck = this.IsBlackInCheck(newBoard);
-    if (currentPostionCheck)
-      return false;
+    if (currentPostionCheck) return false;
 
-    // if no checks then King to [1, 3] and Rook to [1, 4] 
+    // if no checks then King to [1, 3] and Rook to [1, 4]
     // and castle operation is complete
 
     // console.log("We can castle left.");
     return true;
-  }
+  };
 
-  public CanBlackCastleRight = (kingNode: Square, rightRookNode: Square, clonedBoard: Square[][], turn: number) => {
+  public CanBlackCastleRight = (
+    kingNode: Square,
+    rightRookNode: Square,
+    clonedBoard: Square[][],
+    turn: number
+  ) => {
     const hasKingMoved = kingNode?.piece?.hasMoved === true; // to castle King can't move
     const hasRookMoved = rightRookNode?.piece?.hasMoved === true; // to castle rook can't move either
 
-    if (hasKingMoved || hasRookMoved) 
-        return false;
+    if (hasKingMoved || hasRookMoved) return false;
 
     // there is open space to castle, basically eqch square until the rook is epmpty
-    const pathFromKingToRookIsEmpty = [kingNode.right, kingNode.right?.right].some(sq => sq?.SquareHasPiece());
+    const pathFromKingToRookIsEmpty = [
+      kingNode.right,
+      kingNode.right?.right,
+    ].some((sq) => sq?.SquareHasPiece());
 
-    if (pathFromKingToRookIsEmpty)
-      return false;
+    if (pathFromKingToRookIsEmpty) return false;
 
     // last check is white can't be in check, and next two moves over left cannot also
     // create a situation of check
@@ -490,43 +537,48 @@ export class PieceLogicService {
 
     let currentPostionCheck = this.IsBlackInCheck(newBoard);
 
-    if (currentPostionCheck) // can't move if white is in check
+    if (currentPostionCheck)
+      // can't move if white is in check
       return false;
-
 
     // now we simulate two moves and check for each one
 
     // [1, 5] -> [1, 4] -> Is in Check
     newBoard.movePieceFromTo([8, 5], [8, 6]);
     currentPostionCheck = this.IsBlackInCheck(newBoard);
-    if (currentPostionCheck)
-      return false;
-    
+    if (currentPostionCheck) return false;
+
     // [1, 4] -> [1, 3] -> Is in Check
     newBoard.movePieceFromTo([8, 6], [8, 7]);
     currentPostionCheck = this.IsBlackInCheck(newBoard);
-    if (currentPostionCheck)
-      return false;
+    if (currentPostionCheck) return false;
 
-    // if no checks then King to [1, 3] and Rook to [1, 4] 
+    // if no checks then King to [1, 3] and Rook to [1, 4]
     // and castle operation is complete
 
     // console.log("We can castle left.");
     return true;
-  }
+  };
 
-  public CanWhiteCastleLeft = (kingNode: Square, leftRookNode: Square, clonedBoard: Square[][], turn: number) => {
+  public CanWhiteCastleLeft = (
+    kingNode: Square,
+    leftRookNode: Square,
+    clonedBoard: Square[][],
+    turn: number
+  ) => {
     const hasKingMoved = kingNode?.piece?.hasMoved === true; // to castle King can't move
     const hasRookMoved = leftRookNode?.piece?.hasMoved === true; // to castle rook can't move either
 
-    if (hasKingMoved || hasRookMoved) 
-        return false;
+    if (hasKingMoved || hasRookMoved) return false;
 
     // there is open space to castle, basically eqch square until the rook is epmpty
-    const pathFromKingToRookIsEmpty = [kingNode.left, kingNode.left?.left, kingNode.left?.left?.left].some(sq => sq?.SquareHasPiece());
+    const pathFromKingToRookIsEmpty = [
+      kingNode.left,
+      kingNode.left?.left,
+      kingNode.left?.left?.left,
+    ].some((sq) => sq?.SquareHasPiece());
 
-    if (pathFromKingToRookIsEmpty)
-      return false;
+    if (pathFromKingToRookIsEmpty) return false;
 
     // last check is white can't be in check, and next two moves over left cannot also
     // create a situation of check
@@ -539,43 +591,47 @@ export class PieceLogicService {
 
     let currentPostionCheck = this.IsWhiteInCheck(newBoard);
 
-    if (currentPostionCheck) // can't move if white is in check
+    if (currentPostionCheck)
+      // can't move if white is in check
       return false;
-
 
     // now we simulate two moves and check for each one
 
     // [1, 5] -> [1, 4] -> Is in Check
     newBoard.movePieceFromTo([1, 5], [1, 4]);
     currentPostionCheck = this.IsWhiteInCheck(newBoard);
-    if (currentPostionCheck)
-      return false;
-    
+    if (currentPostionCheck) return false;
+
     // [1, 4] -> [1, 3] -> Is in Check
     newBoard.movePieceFromTo([1, 4], [1, 3]);
     currentPostionCheck = this.IsWhiteInCheck(newBoard);
-    if (currentPostionCheck)
-      return false;
+    if (currentPostionCheck) return false;
 
-    // if no checks then King to [1, 3] and Rook to [1, 4] 
+    // if no checks then King to [1, 3] and Rook to [1, 4]
     // and castle operation is complete
 
     // console.log("We can castle left.");
     return true;
-  }
+  };
 
-  public CanWhiteCastleRight = (kingNode: Square, rightRookNode: Square, clonedBoard: Square[][], turn: number) => {
+  public CanWhiteCastleRight = (
+    kingNode: Square,
+    rightRookNode: Square,
+    clonedBoard: Square[][],
+    turn: number
+  ) => {
     const hasKingMoved = kingNode?.piece?.hasMoved === true; // to castle King can't move
     const hasRookMoved = rightRookNode?.piece?.hasMoved === true; // to castle rook can't move either
 
-    if (hasKingMoved || hasRookMoved) 
-        return false;
+    if (hasKingMoved || hasRookMoved) return false;
 
     // there is open space to castle, basically eqch square until the rook is epmpty
-    const pathFromKingToRookIsEmpty = [kingNode.right, kingNode.right?.right].some(sq => sq?.SquareHasPiece());
+    const pathFromKingToRookIsEmpty = [
+      kingNode.right,
+      kingNode.right?.right,
+    ].some((sq) => sq?.SquareHasPiece());
 
-    if (pathFromKingToRookIsEmpty)
-      return false;
+    if (pathFromKingToRookIsEmpty) return false;
 
     // last check is white can't be in check, and next two moves over left cannot also
     // create a situation of check
@@ -588,28 +644,26 @@ export class PieceLogicService {
 
     let currentPostionCheck = this.IsWhiteInCheck(newBoard);
 
-    if (currentPostionCheck) // can't move if white is in check
+    if (currentPostionCheck)
+      // can't move if white is in check
       return false;
-
 
     // now we simulate two moves and check for each one
 
     // [1, 5] -> [1, 4] -> Is in Check
     newBoard.movePieceFromTo([1, 5], [1, 6]);
     currentPostionCheck = this.IsWhiteInCheck(newBoard);
-    if (currentPostionCheck)
-      return false;
-    
+    if (currentPostionCheck) return false;
+
     // [1, 4] -> [1, 3] -> Is in Check
     newBoard.movePieceFromTo([1, 6], [1, 7]);
     currentPostionCheck = this.IsWhiteInCheck(newBoard);
-    if (currentPostionCheck)
-      return false;
+    if (currentPostionCheck) return false;
 
-    // if no checks then King to [1, 3] and Rook to [1, 4] 
+    // if no checks then King to [1, 3] and Rook to [1, 4]
     // and castle operation is complete
 
     // console.log("We can castle left.");
     return true;
-  }
+  };
 }
