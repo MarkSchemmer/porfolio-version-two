@@ -210,7 +210,8 @@ export const generateStandardBoard = () => {
 export const getLegalAttackMovesForPieceFactory = (
   node: Square,
   logic: PieceLogicService,
-  turn: number
+  turn: number,
+  board: Square[][]
 ) => {
   const piece = node?.piece as Piece;
   const color = node?.piece?.pieceColor as PieceColor;
@@ -237,7 +238,7 @@ export const getLegalAttackMovesForPieceFactory = (
     }
     case PieceNames.KING: {
       // console.log("legal Kings moves");
-      return getKingMoves(node);
+      return getKingMoves(node, board, turn);
     }
     default: {
       return [];
@@ -959,7 +960,7 @@ export const getWhitePondMoves = (
   return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves];
 };
 
-export const getKingMoves = (node: Square | undefined): any => {
+export const getKingMoves = (node: Square | undefined, clonedBoard: Square[][], turn: number): any => {
   const pieceLogic = new PieceLogicService();
 
   let f = node?.forward;
@@ -973,12 +974,44 @@ export const getKingMoves = (node: Square | undefined): any => {
   let bl = node?.back?.left;
   let br = node?.back?.right;
 
-  return [f, l, r, b, fl, fr, bl, br]
+  const moves = [f, l, r, b, fl, fr, bl, br]
     .filter((sq) => isValue(sq))
     .filter((sq: Square | undefined) =>
       pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
     );
+
+    // const canCastleLeft = pieceLogic.CanWhiteCastleLeft(node as Square, pieceLogic.GetWhiteLeftRook(clonedBoard) as Square, clonedBoard, turn);
+
+    // if (canCastleLeft) {
+    //   moves.push(node?.left?.left);
+    // }
+
+    return moves;
 };
+
+export const getKingMovesSpecialWhite = (node: Square | undefined, clonedBoard: Square[][], turn: number): any => {
+  const pieceLogic = new PieceLogicService();
+
+  let moves: Square[] = []
+
+    const canCastleLeft = pieceLogic.CanWhiteCastleLeft(node as Square, pieceLogic.GetWhiteLeftRook(clonedBoard) as Square, clonedBoard, turn);
+
+    if (canCastleLeft) {
+      moves.push(node?.left?.left as Square);
+    }
+
+    return moves;
+};
+
+export const getKingMovesSpecialBlack = (node: Square | undefined, clonedBoard: Square[][], turn: number): any => {
+  const pieceLogic = new PieceLogicService();
+
+  let moves: Square[] = [];
+
+    return [];
+};
+
+
 
 export function uuidv4() {
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>

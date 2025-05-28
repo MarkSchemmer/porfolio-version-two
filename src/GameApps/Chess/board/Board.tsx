@@ -40,7 +40,6 @@ import {
   CheckMate,
   PieceLogicService,
 } from "../PieceLogicService/PieceLogicService";
-import { BlackKing } from "../pieces/King";
 import { Piece } from "../pieces/Piece";
 import { SettingsService } from "../SettingsService/SettingsService";
 import {
@@ -62,6 +61,8 @@ import {
   PieceColor,
   PieceFactory,
   getLegalAttackMovesForPieceFactory,
+  getKingMovesSpecialWhite,
+  getKingMovesSpecialBlack,
 } from "../utils/Utils";
 import { MathCoordinate, Square } from "./Square";
 
@@ -293,8 +294,15 @@ export class Board {
 
   public updateKingMoves = (coordiante: any) => {
     const node = getNode(coordiante, this.board) as Square;
-    const sqs = getKingMoves(node);
-    this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
+    const sqs = getKingMoves(node, this.board, this.turn); // attack
+    const specialMoves = node?.piece?.IsWhite()
+      ? getKingMovesSpecialWhite(node, this.board, this.turn)
+      : getKingMovesSpecialBlack(node, this.board, this.turn);
+
+    this.notifyUserOfMoveableSquaresAndSelectedPiece(
+      [...sqs, ...specialMoves],
+      node
+    );
   };
 
   public populateSquareWithPiece = (coordinate: any, piece: any) => {
@@ -416,17 +424,17 @@ export class Board {
   };
 
   public getAllSquaresWhoHavePieceAndColor = (
-    board: Board,
+    board: Square[][],
     pieceColor: PieceColor
   ) => {
-    return board.board.flatMap((sq) =>
+    return board.flatMap((sq) =>
       sq.filter(
         (s) => s?.SquareHasPiece() && s.piece?.pieceColor === pieceColor
       )
     );
   };
 
-  public getAllAttackingMoves = (board: Board, pieceColor: PieceColor) => {
+  public getAllAttackingMoves = (board: Square[][], pieceColor: PieceColor) => {
     let moves: Square[] = [];
     const allAttackingSquaresWithPieceAndSameColor =
       this.getAllSquaresWhoHavePieceAndColor(board, pieceColor);
@@ -434,7 +442,7 @@ export class Board {
     allAttackingSquaresWithPieceAndSameColor.forEach((sq: Square) => {
       moves = [
         ...moves,
-        ...getLegalAttackMovesForPieceFactory(sq, this.logic, this.turn),
+        ...getLegalAttackMovesForPieceFactory(sq, this.logic, this.turn, board),
       ];
     });
 
@@ -442,7 +450,7 @@ export class Board {
   };
 
   public getAllPossibleMovesOfPlayerInCheck = (
-    board: Board,
+    board: Square[][],
     pieceColorOfPlayerInCheck: PieceColor
   ) => {
     // console.log(pieceColorOfPlayerInCheck);
@@ -456,7 +464,8 @@ export class Board {
           SquareToPossibilities: getLegalAttackMovesForPieceFactory(
             sq,
             this.logic,
-            this.turn + 1
+            this.turn + 1,
+            board
           ),
         };
         return checkMateMoves;
@@ -465,8 +474,8 @@ export class Board {
     return allSquaresOfPlayerInCheck;
   };
 
-  public GetBlackKing = (board: Board) => {
-    return board.board
+  public GetBlackKing = (board: Square[][]) => {
+    return board
       .flatMap((s) => s)
       .find(
         (sq) =>
@@ -476,8 +485,8 @@ export class Board {
       );
   };
 
-  public GetWhiteKing = (board: Board) => {
-    return board.board
+  public GetWhiteKing = (board: Square[][]) => {
+    return board
       .flatMap((s) => s)
       .find(
         (sq) =>
@@ -487,8 +496,8 @@ export class Board {
       );
   };
 
-  public GetWhitePieces = (board: Board) => {
-    return board.board
+  public GetWhitePieces = (board: Square[][]) => {
+    return board
       .flatMap((s) => s)
       .filter(
         (sq) =>
@@ -496,28 +505,36 @@ export class Board {
       );
   };
 
-  public getAllWhiteAttackingMoves = (board: Board) => {
+  public getAllWhiteAttackingMoves = (
+    board: Square[][],
+    logic: PieceLogicService,
+    turn: number
+  ) => {
     const whitePieces: Square[] = this.GetWhitePieces(board);
     return whitePieces.reduce((acc, cur, idx) => {
       return [
         ...acc,
-        ...getLegalAttackMovesForPieceFactory(cur, board.logic, board.turn),
+        ...getLegalAttackMovesForPieceFactory(cur, logic, turn, board),
       ];
     }, [] as Square[]);
   };
 
-  public getAllBlackAttackingMoves = (board: Board) => {
+  public getAllBlackAttackingMoves = (
+    board: Square[][],
+    logic: PieceLogicService,
+    turn: number
+  ) => {
     const blackPieces: Square[] = this.GetBlackPieces(board);
     return blackPieces.reduce((acc, cur, idx) => {
       return [
         ...acc,
-        ...getLegalAttackMovesForPieceFactory(cur, board.logic, board.turn),
+        ...getLegalAttackMovesForPieceFactory(cur, logic, turn, board),
       ];
     }, [] as Square[]);
   };
 
-  public GetBlackPieces = (board: Board) => {
-    return board.board
+  public GetBlackPieces = (board: Square[][]) => {
+    return board
       .flatMap((s) => s)
       .filter(
         (sq) =>

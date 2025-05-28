@@ -10,7 +10,7 @@
 
 import { Board } from "../board/Board";
 import { MathCoordinate, Square } from "../board/Square";
-import { isSameSquare, PieceColor, PieceNames } from "../utils/Utils";
+import { getNode, isSameSquare, PieceColor, PieceNames } from "../utils/Utils";
 
 /*
     Checkmate we need to get all the pieces of the color that is in check
@@ -282,6 +282,12 @@ export class PieceLogicService {
     );
   };
 
+  public IsWhiteKingAndDoubleMovingLeft = (kingSquare: Square, toSquare: Square) => {
+    const [kx, ky] = kingSquare.mathematicalCoordinate;
+    const [tx, ty] = toSquare.mathematicalCoordinate;
+    return this.IsWhiteKing(kingSquare) && kx === 1 && ky === 5 && tx === 1 && ty === 3;
+  }
+
   public IsBlackKing = (node: Square) => {
     if (this.IsNullOrUndefined(node)) return false;
 
@@ -319,7 +325,7 @@ export class PieceLogicService {
     console.log("player who is checked: ", playerWhoIsInCheck);
 
     const getAllAttackingSquares = board
-      .getAllPossibleMovesOfPlayerInCheck(board, playerWhoIsInCheck)
+      .getAllPossibleMovesOfPlayerInCheck(board.board, playerWhoIsInCheck)
       .filter((cm: CheckMate) => cm.SquareToPossibilities.length > 0);
 
     console.log(
@@ -337,7 +343,7 @@ export class PieceLogicService {
           sq.mathematicalCoordinate
         );
         const getAllSquares = newBoard.getAllAttackingMoves(
-          newBoard,
+          newBoard.board,
           playerWhoIsChecking
         );
         let checkRes = this.CheckTwo(getAllSquares, playerWhoIsInCheck);
@@ -351,18 +357,20 @@ export class PieceLogicService {
     return true;
   };
 
-  public IsBlackInCheck = (board: Board) => {
-    const whiteAttackingPieces = board.getAllWhiteAttackingMoves(board);
+  public IsBlackInCheck = (chessBaord: Board) => {
+    const { board, logic, turn, getAllWhiteAttackingMoves } = chessBaord;
+    const whiteAttackingPieces = getAllWhiteAttackingMoves(board, logic, turn);
     const anyAttackingWhitePiecesHaveBlackKing = whiteAttackingPieces.some(
-      (sq) => board.logic.IsBlackKing(sq)
+      (sq) => logic.IsBlackKing(sq)
     );
     return anyAttackingWhitePiecesHaveBlackKing;
   };
 
-  public IsWhiteInCheck = (board: Board) => {
-    const blackAttackingPieces = board.getAllBlackAttackingMoves(board);
+  public IsWhiteInCheck = (chessBoard: Board) => {
+    const { board, logic, turn, getAllBlackAttackingMoves } = chessBoard;
+    const blackAttackingPieces = getAllBlackAttackingMoves(board, logic, turn);
     const anyAttackingBlackPiecesHaveWhiteKing = blackAttackingPieces.some(
-      (sq) => board.logic.IsWhiteKing(sq)
+      (sq) => logic.IsWhiteKing(sq)
     );
     return anyAttackingBlackPiecesHaveWhiteKing;
   };
@@ -374,4 +382,74 @@ export class PieceLogicService {
   public WhiteCheckMatingBlack = (board: Board) => {
     return this.CheckMate(PieceColor.WHITE, PieceColor.BLACK, board);
   };
+
+  public GetWhiteLeftRook = (board: Square[][]) => {
+    return getNode([1, 1], board);
+  };
+
+  public GetWhiteRightRook = (board: Square[][]) => {
+    return getNode([1, 8], board);
+  };
+
+  public GetBlackLeftRook = (board: Square[][]) => {
+    return getNode([8, 1], board);
+  };
+
+  public GetBlackRightRook = (board: Square[][]) => {
+    return getNode([8, 8], board);
+  };
+
+  public CanWhiteCastleLeft = (kingNode: Square, leftRookNode: Square, clonedBoard: Square[][], turn: number) => {
+    const hasKingMoved = kingNode?.piece?.hasMoved === true; // to castle King can't move
+    const hasRookMoved = leftRookNode?.piece?.hasMoved === true; // to castle rook can't move either
+
+    console.log("hello")
+    
+    if (hasKingMoved || hasRookMoved) 
+        return false;
+
+    // there is open space to castle, basically eqch square until the rook is epmpty
+    const pathFromKingToRookIsEmpty = [kingNode.left, kingNode.left?.left, kingNode.left?.left?.left].some(sq => sq?.SquareHasPiece());
+
+    if (pathFromKingToRookIsEmpty)
+      return false;
+
+
+
+    // last check is white can't be in check, and next two moves over left cannot also
+    // create a situation of check
+
+    let newBoard = new Board();
+    newBoard.board = clonedBoard;
+    newBoard.turn = turn;
+
+    newBoard = newBoard.deepClone();
+
+    let currentPostionCheck = this.IsWhiteInCheck(newBoard);
+
+    if (currentPostionCheck) // can't move if white is in check
+      return false;
+
+
+    // now we simulate two moves and check for each one
+
+    // [1, 5] -> [1, 4] -> Is in Check
+    newBoard.movePieceFromTo([1, 5], [1, 4]);
+    currentPostionCheck = this.IsWhiteInCheck(newBoard);
+    if (currentPostionCheck)
+      return false;
+    
+    // [1, 4] -> [1, 3] -> Is in Check
+    newBoard.movePieceFromTo([1, 4], [1, 3]);
+    currentPostionCheck = this.IsWhiteInCheck(newBoard);
+    if (currentPostionCheck)
+      return false;
+
+
+    // if no checks then King to [1, 3] and Rook to [1, 4] 
+    // and castle operation is complete
+
+    // console.log("We can castle left.");
+    return true;
+  }
 }

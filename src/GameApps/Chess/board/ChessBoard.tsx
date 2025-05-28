@@ -147,6 +147,32 @@ const BoardPiece = (props: any) => {
             // so we have a moveFromTo and then a check making sure to we can actually do this
             // other wise we just reset...
 
+
+
+            // needing an if check if this is a king moving double left or double right then rest of the state ment in the else
+            // block
+
+            if (boardobj.logic.IsWhiteKingAndDoubleMovingLeft(selectedPiece as Square, currentSquareClick as Square)) {
+              console.log("Moving double left");
+            
+  
+              boardobj.movePieceFromTo(
+                selectedPiece?.mathematicalCoordinate as MathCoordinate,
+                currentSquareClick.mathematicalCoordinate
+              );
+
+             
+              boardobj.movePieceFromTo(
+                [1, 1],
+                [1, 4]
+              );
+
+              const chessBoard = clearBoard(boardobj);
+              updateBoardAndSelectedPiece(chessBoard, null);
+
+
+            } 
+            else {
             /*
                 The idea is, if white moves does that cause white to be in check, 
                 if it is in cheeck we can't move it.
@@ -154,30 +180,35 @@ const BoardPiece = (props: any) => {
                 so If I'm trying to move white, then I take blacks pieces and I check if black is checking white
             
             */
-            const currentPlayerColorMoving = selectedPiece?.piece
-              ?.pieceColor as PieceColor;
-
-            const chessBoardCopy = boardobj.deepClone();
-
-            chessBoardCopy.movePieceFromTo(
-              selectedPiece?.mathematicalCoordinate as MathCoordinate,
-              currentSquareClick.mathematicalCoordinate
-            );
-
-            const isCausingCheck =
-              currentPlayerColorMoving === PieceColor.WHITE
-                ? boardobj.logic.IsWhiteInCheck(chessBoardCopy)
-                : boardobj.logic.IsBlackInCheck(chessBoardCopy);
-
-            if (isCausingCheck === false) {
-              boardobj.movePieceFromTo(
+                const currentPlayerColorMoving = selectedPiece?.piece
+                ?.pieceColor as PieceColor;
+  
+              const chessBoardCopy = boardobj.deepClone();
+  
+              chessBoardCopy.movePieceFromTo(
                 selectedPiece?.mathematicalCoordinate as MathCoordinate,
                 currentSquareClick.mathematicalCoordinate
               );
+  
+              const isCausingCheck =
+                currentPlayerColorMoving === PieceColor.WHITE
+                  ? boardobj.logic.IsWhiteInCheck(chessBoardCopy)
+                  : boardobj.logic.IsBlackInCheck(chessBoardCopy);
+  
+              if (isCausingCheck === false) {
+                boardobj.movePieceFromTo(
+                  selectedPiece?.mathematicalCoordinate as MathCoordinate,
+                  currentSquareClick.mathematicalCoordinate
+                );
+              }
+  
+              const chessBoard = clearBoard(boardobj);
+              updateBoardAndSelectedPiece(chessBoard, null);
             }
 
-            const chessBoard = clearBoard(boardobj);
-            updateBoardAndSelectedPiece(chessBoard, null);
+
+
+
 
             // theoretically we could test if pond moved and hit the end row
             // then trigger a popup.
