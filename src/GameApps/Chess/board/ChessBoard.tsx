@@ -1,5 +1,4 @@
 import { Box, Flex } from "@chakra-ui/layout";
-import { useEffect, useState } from "react";
 import { Board } from "./Board";
 import { MathCoordinate, Square } from "./Square";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,14 +15,11 @@ import {
 import {
   clearBoard,
   coordinateToLetterValueMap,
-  getHorizontalRow,
-  getNode,
   HandleSquareClickWithPiece,
   isSameSquare,
   PieceColor,
   PieceFactory,
 } from "../utils/Utils";
-import { current } from "@reduxjs/toolkit";
 import { PondPromotion } from "./ChessBoardDialogs/PondPromotion/PondPromotion";
 
 // Will draw the board.
@@ -38,7 +34,6 @@ const RowHolder = (props: any) => {
 };
 
 const BoardPiece = (props: any) => {
-  const [state, setState] = useState({ color: "none" });
   const [x, y] = props.sq.mathematicalCoordinate as [number, number];
   const dispatch = useDispatch();
   const testing = useSelector(getTestingState);
