@@ -780,23 +780,9 @@ export const getQueenMoves = (
   node: Square | undefined,
   logic: PieceLogicService
 ): any => {
-  const pieceLogic = new PieceLogicService();
   let horzAndVertMoves = getRookMoves(node, logic);
   let diagMoves = getBishopMoves(node, logic);
-
-  let allMovesWithoutNode = [...diagMoves, ...horzAndVertMoves]
-    .filter((sq: Square) => {
-      const [x, y] = sq.mathematicalCoordinate;
-      return (
-        (x === node?.mathematicalCoordinate[0] &&
-          y === node?.mathematicalCoordinate[1]) === false
-      );
-    })
-    .filter((sq: Square | undefined) => isValue(sq))
-    .filter((sq: Square | undefined) =>
-      pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
-    );
-
+  let allMovesWithoutNode = [...diagMoves, ...horzAndVertMoves];
   return allMovesWithoutNode;
 };
 
