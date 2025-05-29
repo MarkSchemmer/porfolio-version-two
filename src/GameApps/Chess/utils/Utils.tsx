@@ -951,7 +951,7 @@ export const getKingMoves = (
   clonedBoard: Square[][],
   turn: number
 ): any => {
-  const pieceLogic = new PieceLogicService();
+  const pieceLogic: PieceLogicService = new PieceLogicService();
 
   let f = node?.forward;
   let l = node?.left;
@@ -964,11 +964,31 @@ export const getKingMoves = (
   let bl = node?.back?.left;
   let br = node?.back?.right;
 
+  // const kingColor = pieceLogic.IsWhiteKing(node as Square);
+
   const moves = [f, l, r, b, fl, fr, bl, br]
     .filter((sq) => isValue(sq))
     .filter((sq: Square | undefined) =>
       pieceLogic.pieceIsOtherColor(node as Square, sq as Square)
-    );
+    )
+    // .filter((sq: Square | undefined) => {
+    //   let newBoard = new Board();
+    //   newBoard.board = clonedBoard;
+    //   newBoard.turn = turn;
+    //   let toSquare = sq as Square;
+    //   let fromSquare = node as Square;
+
+    //   newBoard.movePieceFromTo(
+    //     fromSquare.mathematicalCoordinate,
+    //     toSquare.mathematicalCoordinate
+    //   );
+
+    //   console.log("checking King moves deep.");
+
+    //   return kingColor
+    //     ? !pieceLogic.IsWhiteInCheck(newBoard)
+    //     : !pieceLogic.IsBlackInCheck(newBoard);
+    // });
 
   // const canCastleLeft = pieceLogic.CanWhiteCastleLeft(node as Square, pieceLogic.GetWhiteLeftRook(clonedBoard) as Square, clonedBoard, turn);
 

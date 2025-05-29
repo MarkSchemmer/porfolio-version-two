@@ -21,6 +21,7 @@ import {
   PieceFactory,
 } from "../utils/Utils";
 import { PondPromotion } from "./ChessBoardDialogs/PondPromotion/PondPromotion";
+import { EndGameHandler } from "../utils/EndGameHandler";
 
 // Will draw the board.
 const RowHolder = (props: any) => {
@@ -269,66 +270,19 @@ const BoardPiece = (props: any) => {
               );
             }
 
-            // going to check if move is causing check
-            // so I need all the current players turns moves
-            // and color...
-
-            // console.log(allAttackingSquaresWithPieceAndSameColor);
-
-            const currentPlayerColor = currentSquareClick.piece
-              ?.pieceColor as PieceColor;
-
-            const isCheck =
-              currentPlayerColor === PieceColor.WHITE
-                ? boardobj.logic.IsBlackInCheck(boardobj)
-                : boardobj.logic.IsWhiteInCheck(boardobj);
-
-            if (isCheck) {
-              /*
-                  The process is the currPlayerColor is the first move 
-                  upon move we calculate the check 
-              */
-              console.log(
-                currentPlayerColor +
-                  " Is checking " +
-                  (currentPlayerColor === PieceColor.WHITE
-                    ? PieceColor.BLACK
-                    : PieceColor.WHITE)
-              );
-              // later on in the future we will place checkmate here if it is so... a check for that.
-
-              // wait to implement king moves first
-              // currentPlayerColor is checking
-              // player who is in check is opposite color of currentPlayerColor
-              const playerChecking = currentPlayerColor;
-
-              const checkCheckMate =
-                playerChecking === PieceColor.WHITE
-                  ? boardobj.logic.WhiteCheckMatingBlack(boardobj)
-                  : boardobj.logic.BlackCheckMatingWhite(boardobj);
-
-              if (checkCheckMate) {
-                console.log(
-                  currentPlayerColor +
-                    " CheckMated " +
-                    (currentPlayerColor === PieceColor.WHITE
-                      ? PieceColor.BLACK
-                      : PieceColor.WHITE)
-                );
-              }
-            }
-          } else {
+            // Going to check
+            // - Check
+            // - CheckMate
+            // - Stalemate
+            EndGameHandler(currentSquareClick.piece?.pieceColor as PieceColor, boardobj);
+          } 
+          else {
             // Right now this is clicking a none blue square and just unselects the piece
             // should unselect piece and clearboard.
             const chessboard = clearBoard(boardobj);
             updateBoardAndSelectedPiece(chessboard, null);
           }
         }
-
-        // dispatch for next calculation...
-
-        //console.log("prev square: ", currentHistory.prev?.mathematicalCoordinate);
-        //console.log("current square: ", currentHistory.current?.mathematicalCoordinate);
       }}
       // bg={(x=== 1 && y === 1) ? "red": state.color}
       w={"99px"}

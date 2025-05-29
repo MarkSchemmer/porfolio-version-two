@@ -690,4 +690,32 @@ export class PieceLogicService {
     // console.log("We can castle left.");
     return true;
   };
+
+  public BlackStaleMate = (board: Board) => {
+    const blackMoves = board.getAllBlackAttackingMoves(
+      board.board,
+      board.logic,
+      board.turn
+    );
+
+    console.log(blackMoves.length);
+    return blackMoves.length === 0;
+  };
+
+  public WhiteStaleMate = (board: Board) => {
+    const whiteMoves = board.getAllWhiteAttackingMoves(
+      board.board,
+      board.logic,
+      board.turn
+    );
+
+    return whiteMoves.length === 0;
+  };
+
+  public IsStaleMate = (pieceColor: PieceColor, board: Board) => {
+    console.log("checking stalemate for:  " + pieceColor);
+    return pieceColor === PieceColor.WHITE
+      ? this.WhiteStaleMate(board)
+      : this.BlackStaleMate(board);
+  };
 }

@@ -6,9 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Text,
-  Box,
-  Button,
-  useDisclosure,
+  Box
 } from "@chakra-ui/react";
 import * as React from "react";
 
@@ -34,6 +32,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Board } from "../../Board";
 import { MathCoordinate } from "../../Square";
+import { EndGameHandler } from "../../../utils/EndGameHandler";
 
 const blackPieces = [
   { name: PieceNames.KNIGHT, image: blackKnight, pieceColor: PieceColor.BLACK },
@@ -76,44 +75,11 @@ const BoxPiece = (props: any) => {
 
         // we need to check for Check & CheckMate.
         const playerBeingPromotedColor = pieceColor;
-        // const otherPlayerColor =
-        //   playerBeingPromotedColor === PieceColor.WHITE
-        //     ? PieceColor.BLACK
-        //     : PieceColor.WHITE;
-
-
-          // if white is moving then check is black in check
-          // if black is moving then check is white in check
-
-          const isCheck =
-          playerBeingPromotedColor === PieceColor.WHITE
-              ? boardobj.logic.IsBlackInCheck(boardobj)
-              : boardobj.logic.IsWhiteInCheck(boardobj); 
-
-        if (isCheck) {
-          console.log(
-            playerBeingPromotedColor +
-              " Is checking " +
-              (playerBeingPromotedColor === PieceColor.WHITE
-                ? PieceColor.BLACK
-                : PieceColor.WHITE)
-          );
-
-          const checkCheckMate =
-          playerBeingPromotedColor === PieceColor.WHITE
-            ? boardobj.logic.WhiteCheckMatingBlack(boardobj)
-            : boardobj.logic.BlackCheckMatingWhite(boardobj);
-
-          if (checkCheckMate) {
-            console.log(
-              playerBeingPromotedColor +
-                " CheckMated " +
-                (playerBeingPromotedColor === PieceColor.WHITE
-                  ? PieceColor.BLACK
-                  : PieceColor.WHITE)
-            );
-          }
-        }
+        // Going to check
+        // - Check
+        // - CheckMate
+        // - Stalemate
+        EndGameHandler(playerBeingPromotedColor, boardobj);
       }}
       className="piece"
       style={{
