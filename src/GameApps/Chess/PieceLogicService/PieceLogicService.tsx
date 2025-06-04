@@ -282,6 +282,10 @@ export class PieceLogicService {
     );
   };
 
+  /*
+      --- Castle Logic ---
+  */
+
   public IsWhiteKingAndDoubleMovingLeft = (
     kingSquare: Square,
     toSquare: Square
@@ -341,6 +345,45 @@ export class PieceLogicService {
       ty === 7
     );
   };
+
+  public HandleCastleCanMoveLogic = (
+    kingSquare: Square,
+    toSquare: Square
+  ): { from: MathCoordinate; to: MathCoordinate } | null => {
+    if (this.IsWhiteKingAndDoubleMovingLeft(kingSquare, toSquare)) {
+      return {
+        from: [1, 1],
+        to: [1, 4],
+      };
+    }
+
+    if (this.IsWhiteKingAndDoubleMovingRight(kingSquare, toSquare)) {
+      return {
+        from: [1, 8],
+        to: [1, 6],
+      };
+    }
+
+    if (this.IsBlackKingAndDoubleMovingLeft(kingSquare, toSquare)) {
+      return {
+        from: [8, 1],
+        to: [8, 4],
+      };
+    }
+
+    if (this.IsBlackKingAndDoubleMovingRight(kingSquare, toSquare)) {
+      return {
+        from: [8, 8],
+        to: [8, 6],
+      };
+    }
+
+    return null;
+  };
+
+  /*
+      --- Castle Logic ---
+  */
 
   public IsBlackKing = (node: Square) => {
     if (this.IsNullOrUndefined(node)) return false;

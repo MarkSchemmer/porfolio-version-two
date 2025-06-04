@@ -146,71 +146,20 @@ const BoardPiece = (props: any) => {
             // needing an if check if this is a king moving double left or double right then rest of the state ment in the else
             // block
 
-            if (
-              boardobj.logic.IsWhiteKingAndDoubleMovingLeft(
-                selectedPiece as Square,
-                currentSquareClick as Square
-              )
-            ) {
-              console.log("Moving double left");
+            const handleCastle = boardobj.logic.HandleCastleCanMoveLogic(
+              selectedPiece as Square,
+              currentSquareClick as Square
+            );
 
+            if (handleCastle) {
               boardobj.movePieceFromTo(
                 selectedPiece?.mathematicalCoordinate as MathCoordinate,
                 currentSquareClick.mathematicalCoordinate
               );
 
-              boardobj.movePieceFromTo([1, 1], [1, 4]);
+              const { from, to } = handleCastle;
 
-              const chessBoard = clearBoard(boardobj);
-              updateBoardAndSelectedPiece(chessBoard, null);
-            } else if (
-              boardobj.logic.IsWhiteKingAndDoubleMovingRight(
-                selectedPiece as Square,
-                currentSquareClick as Square
-              )
-            ) {
-              console.log("Moving double right");
-
-              boardobj.movePieceFromTo(
-                selectedPiece?.mathematicalCoordinate as MathCoordinate,
-                currentSquareClick.mathematicalCoordinate
-              );
-
-              boardobj.movePieceFromTo([1, 8], [1, 6]);
-
-              const chessBoard = clearBoard(boardobj);
-              updateBoardAndSelectedPiece(chessBoard, null);
-            } else if (
-              boardobj.logic.IsBlackKingAndDoubleMovingLeft(
-                selectedPiece as Square,
-                currentSquareClick as Square
-              )
-            ) {
-              console.log("Moving double left - black");
-
-              boardobj.movePieceFromTo(
-                selectedPiece?.mathematicalCoordinate as MathCoordinate,
-                currentSquareClick.mathematicalCoordinate
-              );
-
-              boardobj.movePieceFromTo([8, 1], [8, 4]);
-
-              const chessBoard = clearBoard(boardobj);
-              updateBoardAndSelectedPiece(chessBoard, null);
-            } else if (
-              boardobj.logic.IsBlackKingAndDoubleMovingRight(
-                selectedPiece as Square,
-                currentSquareClick as Square
-              )
-            ) {
-              console.log("Moving double right - black");
-
-              boardobj.movePieceFromTo(
-                selectedPiece?.mathematicalCoordinate as MathCoordinate,
-                currentSquareClick.mathematicalCoordinate
-              );
-
-              boardobj.movePieceFromTo([8, 8], [8, 6]);
+              boardobj.movePieceFromTo(from, to);
 
               const chessBoard = clearBoard(boardobj);
               updateBoardAndSelectedPiece(chessBoard, null);
@@ -274,9 +223,11 @@ const BoardPiece = (props: any) => {
             // - Check
             // - CheckMate
             // - Stalemate
-            EndGameHandler(currentSquareClick.piece?.pieceColor as PieceColor, boardobj);
-          } 
-          else {
+            EndGameHandler(
+              currentSquareClick.piece?.pieceColor as PieceColor,
+              boardobj
+            );
+          } else {
             // Right now this is clicking a none blue square and just unselects the piece
             // should unselect piece and clearboard.
             const chessboard = clearBoard(boardobj);
