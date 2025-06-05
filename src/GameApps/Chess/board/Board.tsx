@@ -36,6 +36,8 @@
         .left .right .back .forward ect. ect. ect. 
 */
 
+import { ChessMoveBuffer } from "../ChessMoveBuffer/ChessMoveBuffer";
+import { MoveState } from "../ChessMoveBuffer/Move";
 import {
   CheckMate,
   PieceLogicService,
@@ -91,6 +93,8 @@ export class Board {
   public logic: PieceLogicService = new PieceLogicService();
 
   public turn: number = 0;
+
+  public moveBuffer: ChessMoveBuffer = new ChessMoveBuffer();
 
   // public currentSelectedSquare: currentSelectedChessSquare = null;
 
@@ -314,6 +318,152 @@ export class Board {
   public getSquare = (coordinate: MathCoordinate): Square => {
     const node = getNode(coordinate, this.board) as Square;
     return node;
+  };
+
+  public craftMove = (
+    from: MathCoordinate,
+    to: MathCoordinate,
+    board: Board,
+    testingMove: boolean
+  ) => {
+    const fromNode = getNode(from, this.board) as Square;
+    const toNode = getNode(to, this.board) as Square;
+
+    const move: MoveState = {
+      from,
+      to,
+      testingMove,
+      previousTurn: this.turn,
+      currentTurn: this.turn + 1,
+      movedPiece: fromNode?.piece as Piece,
+      capturedPiece: toNode?.piece,
+      special: {
+        promotion: undefined,
+        enPassantCapture: undefined,
+        castleKing: undefined,
+      },
+    };
+
+    // check the enPassant
+    const [canEnPassantLeft, canEnPassantRight] =
+      this.logic.shouldNotifySquaresLeftAndRightOfEnPassant(fromNode, toNode);
+    // write logic here for determing if it's a doulbe move pond
+    // if it is it's going to tag left square and right square if it's
+    // a pond and then it's going to flag pond piece type that they can en-passant
+    // and on what turn of the game it can so if we are on step 25, then the opposing
+    // player can en-passant step 26 and only on step 26, if a piece is there then it
+    // can take it if it's the other color
+
+    const leftNode = toNode?.left;
+    const rightNode = toNode?.right;
+
+    if (
+      canEnPassantLeft &&
+      this.logic.isValue(leftNode) &&
+      leftNode?.SquareHasPiece()
+    ) {
+      let pond = leftNode?.piece as Piece;
+      pond.enPassantDetails.CanEnPassant = true;
+      pond.enPassantDetails.turn = this.turn + 1;
+      // console.log(pond);
+    }
+
+    if (
+      canEnPassantRight &&
+      this.logic.isValue(rightNode) &&
+      rightNode?.SquareHasPiece()
+    ) {
+      let pond = rightNode?.piece as Piece;
+      pond.enPassantDetails.CanEnPassant = true;
+      pond.enPassantDetails.turn = this.turn + 1;
+      // console.log(pond);
+    }
+
+    // when a piece moves we need to flip that boolean
+    if (fromNode) fromNode.piece?.notifyPieceHasMoved();
+
+    // if pond is doing a doulbe move we need to set that turn #
+    // so later when doing en-passant logic we can have better tests...
+    if (this.logic.IsPondDoubleMove(fromNode as Square, toNode as Square)) {
+      fromNode?.piece?.setPondDoubleMoveTurn(this.turn);
+      move.special.pondDoubleMove = true;
+    }
+
+    if (toNode) {
+      const enPassantCheckRight =
+        toNode.IsEnPassantMove &&
+        this.logic.IsPondMoveForwardRight(fromNode as Square, toNode as Square);
+      const enPassantCheckLeft =
+        toNode.IsEnPassantMove &&
+        this.logic.IsPondMoveForwardLeft(fromNode as Square, toNode as Square);
+
+      if (enPassantCheckRight) {
+        // need to null out right piece // right node is now empty.
+        // fromNode?.right?.makeSquareEmpty();
+        move.special.enPassantCapture = {
+          pondTaken: fromNode?.right?.mathematicalCoordinate as MathCoordinate,
+        };
+        fromNode?.piece?.ResetEnPassantDetails();
+        toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
+      } else if (enPassantCheckLeft) {
+        // need to null out right piece // right node is now empty.
+        // fromNode?.left?.makeSquareEmpty();
+        move.special.enPassantCapture = {
+          pondTaken: fromNode?.left?.mathematicalCoordinate as MathCoordinate,
+        };
+        fromNode?.piece?.ResetEnPassantDetails();
+        toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
+      }
+
+      const handleCastle = this.logic.HandleCastleCanMoveLogic(
+        fromNode as Square,
+        toNode
+      );
+
+      if (handleCastle) {
+        move.special.castleKing = {
+          rookFrom: handleCastle.from,
+          rookTo: handleCastle.to,
+        };
+      }
+
+      if (this.logic.ShouldPondPromoteV2(fromNode, toNode)) {
+        move.special.promotion = true;
+      }
+    }
+
+    return move;
+  };
+
+
+  public makeMove = (move: MoveState) => {
+    const { from, to, movedPiece, capturedPiece, currentTurn, special} = move;
+
+    const fromNode = getNode(from, this.board) as Square;
+    const toNode = getNode(to, this.board) as Square;
+
+    fromNode.makeSquareEmpty(); // make the current square empty
+    toNode.SetNodeWithNewPiece(movedPiece); // move the piece from to, toNode... 
+
+    if (special) {
+      const {enPassantCapture, castleKing, pondDoubleMove, promotion} = special;
+
+      if (enPassantCapture) {
+        const pondToTake = getNode(enPassantCapture.pondTaken, this.board) as Square;
+        pondToTake.makeSquareEmpty(); // make square empty basically pond was taken.
+      }
+
+      if (castleKing) {
+        const { rookFrom, rookTo } = castleKing;
+        const rookFromNode = getNode(rookFrom, this.board) as Square;
+        const rookToNode = getNode(rookTo, this.board) as Square;
+
+        rookToNode.SetNodeWithNewPiece(rookFromNode.piece); // set from to, the to Node
+        rookFromNode.makeSquareEmpty(); // make from Node empty.
+      }
+    }
+
+    this.incrementTurn(); // increment the game
   };
 
   public movePieceFromTo = (from: MathCoordinate, to: MathCoordinate) => {

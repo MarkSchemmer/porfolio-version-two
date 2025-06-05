@@ -6,24 +6,24 @@ export interface MoveState {
   to: MathCoordinate;
 
   movedPiece: Piece;
-  capturedPiece: Piece | null;
+  capturedPiece: Piece | null | undefined;
 
   previousTurn: number;
   currentTurn: number;
 
-  // default to false this is when I'm 
-  // making moves but testing for check or check mate 
+  // default to false this is when I'm
+  // making moves but testing for check or check mate
   // or any other type of special move.
   testingMove: boolean;
 
-  special?: {
-    promotion: boolean;
+  special: {
+    promotion?: boolean;
     enPassantCapture?: { pondTaken: MathCoordinate };
     castleKing?: {
-      kingTo: MathCoordinate;
       rookFrom: MathCoordinate;
       rookTo: MathCoordinate;
     };
+    pondDoubleMove?: boolean;
   };
 }
 
@@ -33,17 +33,15 @@ export class Move implements MoveState {
   previousTurn: number;
   currentTurn: number;
   testingMove: boolean;
-  special?:
-    | {
-        promotion: boolean;
-        enPassantCapture?: { pondTaken: MathCoordinate };
-        castleKing?: {
-          kingTo: MathCoordinate;
-          rookFrom: MathCoordinate;
-          rookTo: MathCoordinate;
-        };
-      }
-    | undefined;
+  special: {
+    promotion?: boolean;
+    enPassantCapture?: { pondTaken: MathCoordinate };
+    castleKing?: {
+      rookFrom: MathCoordinate;
+      rookTo: MathCoordinate;
+    };
+    pondDoubleMove?: boolean;
+  };
   public from: MathCoordinate;
   public to: MathCoordinate;
 
@@ -53,7 +51,7 @@ export class Move implements MoveState {
     movedPiece: Piece,
     capturedPiece: Piece | null,
     currentTurn: number,
-    testingMove?:boolean
+    testingMove?: boolean
   ) {
     this.from = from;
     this.to = to;
@@ -62,5 +60,11 @@ export class Move implements MoveState {
     this.currentTurn = currentTurn;
     this.previousTurn = currentTurn - 1;
     this.testingMove = testingMove || false;
+    this.special = {
+      promotion: undefined,
+      enPassantCapture: undefined,
+      castleKing: undefined,
+      pondDoubleMove: undefined
+    };
   }
 }

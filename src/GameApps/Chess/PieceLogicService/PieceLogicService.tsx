@@ -272,6 +272,14 @@ export class PieceLogicService {
       : false;
   };
 
+    public ShouldPondPromoteV2 = (fromNode: Square, toNode: Square) => {
+    return this.SquareHasPond(fromNode)
+      ? fromNode.piece?.IsWhite()
+        ? toNode.mathematicalCoordinate[0] === 8
+        : toNode.mathematicalCoordinate[0] === 1
+      : false;
+  };
+
   public IsWhiteKing = (node: Square) => {
     if (this.IsNullOrUndefined(node)) return false;
 

@@ -146,31 +146,19 @@ const BoardPiece = (props: any) => {
             // needing an if check if this is a king moving double left or double right then rest of the state ment in the else
             // block
 
-            const handleCastle = boardobj.logic.HandleCastleCanMoveLogic(
-              selectedPiece as Square,
-              currentSquareClick as Square
+            const craftMove = boardobj.craftMove(
+              selectedPiece?.mathematicalCoordinate as MathCoordinate,
+              currentSquareClick.mathematicalCoordinate,
+              boardobj,
+              false
             );
-
-            if (handleCastle) {
-              boardobj.movePieceFromTo(
-                selectedPiece?.mathematicalCoordinate as MathCoordinate,
-                currentSquareClick.mathematicalCoordinate
-              );
-
-              const { from, to } = handleCastle;
-
-              boardobj.movePieceFromTo(from, to);
-
-              const chessBoard = clearBoard(boardobj);
-              updateBoardAndSelectedPiece(chessBoard, null);
-            } else {
               /*
-                The idea is, if white moves does that cause white to be in check, 
-                if it is in cheeck we can't move it.
+                    The idea is, if white moves does that cause white to be in check, 
+                    if it is in cheeck we can't move it.
 
-                so If I'm trying to move white, then I take blacks pieces and I check if black is checking white
+                    so If I'm trying to move white, then I take blacks pieces and I check if black is checking white
             
-            */
+              */
               const currentPlayerColorMoving = selectedPiece?.piece
                 ?.pieceColor as PieceColor;
 
@@ -187,15 +175,11 @@ const BoardPiece = (props: any) => {
                   : boardobj.logic.IsBlackInCheck(chessBoardCopy);
 
               if (isCausingCheck === false) {
-                boardobj.movePieceFromTo(
-                  selectedPiece?.mathematicalCoordinate as MathCoordinate,
-                  currentSquareClick.mathematicalCoordinate
-                );
+                boardobj.makeMove(craftMove);
               }
 
               const chessBoard = clearBoard(boardobj);
               updateBoardAndSelectedPiece(chessBoard, null);
-            }
 
             // theoretically we could test if pond moved and hit the end row
             // then trigger a popup.
