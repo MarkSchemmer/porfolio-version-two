@@ -341,6 +341,7 @@ export class Board {
         promotion: undefined,
         enPassantCapture: undefined,
         castleKing: undefined,
+        pondDoubleMove: undefined
       },
     };
 
@@ -466,6 +467,45 @@ export class Board {
     this.incrementTurn(); // increment the game
   };
 
+    public undoMove = (move: MoveState) => {
+    const { from, to, movedPiece, capturedPiece, currentTurn, special} = move;
+
+    const toNode = getNode(from, this.board) as Square;
+    const fromNode = getNode(to, this.board) as Square;
+
+    fromNode.makeSquareEmpty(); // make the current square empty
+    
+    if (capturedPiece) {
+      fromNode.SetNodeWithNewPiece(capturedPiece);
+    }
+
+    toNode.SetNodeWithNewPiece(movedPiece); // move the piece from to, toNode... 
+
+    if (special) {
+      const {enPassantCapture, castleKing, pondDoubleMove, promotion} = special;
+
+      if (enPassantCapture) {
+        const pondToTake = getNode(enPassantCapture.pondTaken, this.board) as Square;
+        pondToTake.SetNodeWithNewPiece(capturedPiece); // make square empty basically pond was taken.
+      }
+
+      if (castleKing) {
+        const { rookFrom, rookTo } = castleKing;
+        const rookFromNode = getNode(rookFrom, this.board) as Square;
+        const rookToNode = getNode(rookTo, this.board) as Square;
+
+        rookToNode.makeSquareEmpty(); // set from to, the to Node
+        rookFromNode.SetNodeWithNewPiece(rookFromNode.piece); // make from Node empty.
+      }
+
+      if (pondDoubleMove) {
+        movedPiece.setPondDoubleMoveTurn(0);
+      }
+    }
+
+    this.decrementTurn(); // decrement the game
+  };
+
   public movePieceFromTo = (from: MathCoordinate, to: MathCoordinate) => {
     const fromNode = getNode(from, this.board);
     const toNode = getNode(to, this.board);
@@ -562,6 +602,10 @@ export class Board {
 
   public incrementTurn = () => {
     this.turn += 1;
+  };
+
+  public decrementTurn = () => {
+    this.turn -= 1;
   };
 
   public promotePond = (

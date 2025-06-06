@@ -22,6 +22,7 @@ import {
 } from "../utils/Utils";
 import { PondPromotion } from "./ChessBoardDialogs/PondPromotion/PondPromotion";
 import { EndGameHandler } from "../utils/EndGameHandler";
+import { MoveState } from "../ChessMoveBuffer/Move";
 
 // Will draw the board.
 const RowHolder = (props: any) => {
@@ -162,20 +163,20 @@ const BoardPiece = (props: any) => {
               const currentPlayerColorMoving = selectedPiece?.piece
                 ?.pieceColor as PieceColor;
 
-              const chessBoardCopy = boardobj.deepClone();
+              boardobj.moveBuffer.recordMove(craftMove);
 
-              chessBoardCopy.movePieceFromTo(
-                selectedPiece?.mathematicalCoordinate as MathCoordinate,
-                currentSquareClick.mathematicalCoordinate
+              boardobj.makeMove(
+                boardobj.moveBuffer.LastMove as MoveState
               );
 
               const isCausingCheck =
                 currentPlayerColorMoving === PieceColor.WHITE
-                  ? boardobj.logic.IsWhiteInCheck(chessBoardCopy)
-                  : boardobj.logic.IsBlackInCheck(chessBoardCopy);
+                  ? boardobj.logic.IsWhiteInCheck(boardobj)
+                  : boardobj.logic.IsBlackInCheck(boardobj);
 
-              if (isCausingCheck === false) {
-                boardobj.makeMove(craftMove);
+              if (isCausingCheck) {
+                const lastMove = boardobj.moveBuffer.deepUndo() as MoveState;
+                boardobj.undoMove(lastMove);
               }
 
               const chessBoard = clearBoard(boardobj);
@@ -183,7 +184,7 @@ const BoardPiece = (props: any) => {
 
             // theoretically we could test if pond moved and hit the end row
             // then trigger a popup.
-            if (boardobj.logic.ShouldPondPromote(currentSquareClick)) {
+            if (craftMove.special.promotion) {
               // trigger screen that cannot be dismissed until
               // show which piece to promote to
               // save that value and then activate a board update where

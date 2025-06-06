@@ -272,7 +272,7 @@ export class PieceLogicService {
       : false;
   };
 
-    public ShouldPondPromoteV2 = (fromNode: Square, toNode: Square) => {
+  public ShouldPondPromoteV2 = (fromNode: Square, toNode: Square) => {
     return this.SquareHasPond(fromNode)
       ? fromNode.piece?.IsWhite()
         ? toNode.mathematicalCoordinate[0] === 8

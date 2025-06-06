@@ -9,6 +9,12 @@ export class ChessMoveBuffer {
     this.redoStack = [];
   };
 
+  public deepUndo(): MoveState | null {
+    if (this.undoStack.length === 0) return null;
+    const lastMove = this.undoStack.pop()!;
+    return lastMove;
+  }
+
   public undo(): MoveState | null {
     if (this.undoStack.length === 0) return null;
     const lastMove = this.undoStack.pop()!;

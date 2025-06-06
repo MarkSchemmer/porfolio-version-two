@@ -1,4 +1,3 @@
-
 /*
 
     Some development rules, all methods should pure, and in their stand alone file. 
@@ -69,15 +68,17 @@
     is cheating or not then if it is we can pause the game, and ban the player for a 
     6 month period. 
 */
+import { ChessDashboard } from "./ChessDashboard/ChessDashboard";
+import { TestingDashboard } from "./TestingDashboard/TestingDashBoard";
+import { ChessBoard } from "./board/ChessBoard";
 
-import { TestingDashboard } from "./TestingDashboard/TestingDashBoard"
-import { ChessBoard } from "./board/ChessBoard"
 
 export const ChessApp = () => {
-    return (
-        <>
-           <TestingDashboard />
-           <ChessBoard />
-        </>
-    )
-}
+  return (
+    <>
+      <TestingDashboard />
+      <ChessDashboard />
+      <ChessBoard />
+    </>
+  );
+};

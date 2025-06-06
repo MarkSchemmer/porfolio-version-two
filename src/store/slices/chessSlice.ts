@@ -67,6 +67,7 @@ export const chessSlice = createSlice({
       newBoard.board = action.payload.board;
       newBoard.turn = action.payload.turn;
       newBoard.rootNode = action.payload.rootNode;
+      newBoard.moveBuffer = action.payload.moveBuffer;
       state.board = newBoard;
     },
     updatePieceManipulationTesting: (
