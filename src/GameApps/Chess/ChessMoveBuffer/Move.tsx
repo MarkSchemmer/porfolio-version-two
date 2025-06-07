@@ -6,6 +6,7 @@ export interface MoveState {
   to: MathCoordinate;
 
   movedPiece: Piece;
+  previousMovedPieceState: Piece;
   capturedPiece: Piece | null | undefined;
 
   previousTurn: number;
@@ -22,6 +23,7 @@ export interface MoveState {
     castleKing?: {
       rookFrom: MathCoordinate;
       rookTo: MathCoordinate;
+      rookPiece: Piece;
     };
     pondDoubleMove?: boolean;
   };
@@ -29,6 +31,7 @@ export interface MoveState {
 
 export class Move implements MoveState {
   movedPiece: Piece;
+  previousMovedPieceState: Piece;
   capturedPiece: Piece | null;
   previousTurn: number;
   currentTurn: number;
@@ -39,6 +42,7 @@ export class Move implements MoveState {
     castleKing?: {
       rookFrom: MathCoordinate;
       rookTo: MathCoordinate;
+      rookPiece: Piece;
     };
     pondDoubleMove?: boolean;
   };
@@ -56,6 +60,7 @@ export class Move implements MoveState {
     this.from = from;
     this.to = to;
     this.movedPiece = movedPiece;
+    this.previousMovedPieceState = movedPiece.clone();
     this.capturedPiece = capturedPiece;
     this.currentTurn = currentTurn;
     this.previousTurn = currentTurn - 1;

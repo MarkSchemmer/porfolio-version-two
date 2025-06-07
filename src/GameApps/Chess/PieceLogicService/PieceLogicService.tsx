@@ -10,6 +10,7 @@
 
 import { Board } from "../board/Board";
 import { MathCoordinate, Square } from "../board/Square";
+import { MoveState } from "../ChessMoveBuffer/Move";
 import { getNode, isSameSquare, PieceColor, PieceNames } from "../utils/Utils";
 
 /*
@@ -442,23 +443,31 @@ export class PieceLogicService {
       // mutate the board
 
       for (let sq of SquareToPossibilities) {
-        const newBoard = board.deepClone();
-        newBoard.movePieceFromTo(
+        const move = board.craftMove(
           SquareFrom.mathematicalCoordinate,
-          sq.mathematicalCoordinate
+          sq.mathematicalCoordinate,
+          board,
+          true
         );
-        const getAllSquares = newBoard.getAllAttackingMoves(
-          newBoard.board,
+
+        board.moveBuffer.recordMove(move);
+
+        board.makeMove(board.moveBuffer.LastMove as MoveState);
+
+        const getAllSquares = board.getAllAttackingMoves(
+          board.board,
           playerWhoIsChecking
         );
         let checkRes = this.CheckTwo(getAllSquares, playerWhoIsInCheck);
+
+        let lastMove = board.moveBuffer.deepUndo() as MoveState;
+        board.undoMove(lastMove);
         // console.log(checkRes);
         if (checkRes === false) {
           return false;
         }
       }
     }
-
     return true;
   };
 
@@ -507,7 +516,7 @@ export class PieceLogicService {
   public CanBlackCastleLeft = (
     kingNode: Square,
     leftRookNode: Square,
-    clonedBoard: Square[][],
+    chessBoard: Board,
     turn: number
   ) => {
     if (
@@ -533,13 +542,7 @@ export class PieceLogicService {
     // last check is white can't be in check, and next two moves over left cannot also
     // create a situation of check
 
-    let newBoard = new Board();
-    newBoard.board = clonedBoard;
-    newBoard.turn = turn;
-
-    newBoard = newBoard.deepClone();
-
-    let currentPostionCheck = this.IsBlackInCheck(newBoard);
+    let currentPostionCheck = this.IsBlackInCheck(chessBoard);
 
     if (currentPostionCheck)
       // can't move if white is in check
@@ -547,27 +550,40 @@ export class PieceLogicService {
 
     // now we simulate two moves and check for each one
 
-    // [1, 5] -> [1, 4] -> Is in Check
-    newBoard.movePieceFromTo([8, 5], [8, 4]);
-    currentPostionCheck = this.IsBlackInCheck(newBoard);
-    if (currentPostionCheck) return false;
+    const moveOne = chessBoard.craftMove([8, 5], [8, 4], chessBoard, true);
+    chessBoard.moveBuffer.recordMove(moveOne);
+    chessBoard.makeMove(moveOne);
+
+    currentPostionCheck = this.IsBlackInCheck(chessBoard);
+
+    let lastMove = chessBoard.moveBuffer.deepUndo() as MoveState;
+    chessBoard.undoMove(lastMove);
+
+    if (currentPostionCheck) {
+      return false;
+    }
+
+    const moveTwo = chessBoard.craftMove([8, 4], [8, 3], chessBoard, true);
+    chessBoard.moveBuffer.recordMove(moveTwo);
+    chessBoard.makeMove(moveTwo);
 
     // [1, 4] -> [1, 3] -> Is in Check
-    newBoard.movePieceFromTo([8, 4], [8, 3]);
-    currentPostionCheck = this.IsBlackInCheck(newBoard);
-    if (currentPostionCheck) return false;
+    currentPostionCheck = this.IsBlackInCheck(chessBoard);
 
-    // if no checks then King to [1, 3] and Rook to [1, 4]
-    // and castle operation is complete
+    lastMove = chessBoard.moveBuffer.deepUndo() as MoveState;
+    chessBoard.undoMove(lastMove);
 
-    // console.log("We can castle left.");
+    if (currentPostionCheck) {
+      return false;
+    }
+
     return true;
   };
 
   public CanBlackCastleRight = (
     kingNode: Square,
     rightRookNode: Square,
-    clonedBoard: Square[][],
+    chessBoard: Board,
     turn: number
   ) => {
     if (
@@ -592,41 +608,47 @@ export class PieceLogicService {
     // last check is white can't be in check, and next two moves over left cannot also
     // create a situation of check
 
-    let newBoard = new Board();
-    newBoard.board = clonedBoard;
-    newBoard.turn = turn;
-
-    newBoard = newBoard.deepClone();
-
-    let currentPostionCheck = this.IsBlackInCheck(newBoard);
+    let currentPostionCheck = this.IsBlackInCheck(chessBoard);
 
     if (currentPostionCheck)
       // can't move if white is in check
       return false;
 
     // now we simulate two moves and check for each one
+    const moveOne = chessBoard.craftMove([8, 5], [8, 6], chessBoard, true);
+    chessBoard.moveBuffer.recordMove(moveOne);
+    chessBoard.makeMove(moveOne);
 
-    // [1, 5] -> [1, 4] -> Is in Check
-    newBoard.movePieceFromTo([8, 5], [8, 6]);
-    currentPostionCheck = this.IsBlackInCheck(newBoard);
-    if (currentPostionCheck) return false;
+    currentPostionCheck = this.IsBlackInCheck(chessBoard);
+
+    let lastMove = chessBoard.moveBuffer.deepUndo() as MoveState;
+    chessBoard.undoMove(lastMove);
+
+    if (currentPostionCheck) {
+      return false;
+    }
 
     // [1, 4] -> [1, 3] -> Is in Check
-    newBoard.movePieceFromTo([8, 6], [8, 7]);
-    currentPostionCheck = this.IsBlackInCheck(newBoard);
-    if (currentPostionCheck) return false;
+    const moveTwo = chessBoard.craftMove([8, 6], [8, 7], chessBoard, true);
+    chessBoard.moveBuffer.recordMove(moveTwo);
+    chessBoard.makeMove(moveTwo);
 
-    // if no checks then King to [1, 3] and Rook to [1, 4]
-    // and castle operation is complete
+    currentPostionCheck = this.IsBlackInCheck(chessBoard);
 
-    // console.log("We can castle left.");
+    lastMove = chessBoard.moveBuffer.deepUndo() as MoveState;
+    chessBoard.undoMove(lastMove);
+
+    if (currentPostionCheck) {
+      return false;
+    }
+
     return true;
   };
 
   public CanWhiteCastleLeft = (
     kingNode: Square,
     leftRookNode: Square,
-    clonedBoard: Square[][],
+    chessBoard: Board,
     turn: number
   ) => {
     if (
@@ -652,41 +674,47 @@ export class PieceLogicService {
     // last check is white can't be in check, and next two moves over left cannot also
     // create a situation of check
 
-    let newBoard = new Board();
-    newBoard.board = clonedBoard;
-    newBoard.turn = turn;
-
-    newBoard = newBoard.deepClone();
-
-    let currentPostionCheck = this.IsWhiteInCheck(newBoard);
+    let currentPostionCheck = this.IsWhiteInCheck(chessBoard);
 
     if (currentPostionCheck)
       // can't move if white is in check
       return false;
 
     // now we simulate two moves and check for each one
-
+    const moveOne = chessBoard.craftMove([1, 5], [1, 4], chessBoard, true);
+    chessBoard.moveBuffer.recordMove(moveOne);
+    chessBoard.makeMove(moveOne);
     // [1, 5] -> [1, 4] -> Is in Check
-    newBoard.movePieceFromTo([1, 5], [1, 4]);
-    currentPostionCheck = this.IsWhiteInCheck(newBoard);
-    if (currentPostionCheck) return false;
+    currentPostionCheck = this.IsWhiteInCheck(chessBoard);
+
+    let lastMove = chessBoard.moveBuffer.deepUndo() as MoveState;
+    chessBoard.undoMove(lastMove);
+
+    if (currentPostionCheck) {
+      return false;
+    }
 
     // [1, 4] -> [1, 3] -> Is in Check
-    newBoard.movePieceFromTo([1, 4], [1, 3]);
-    currentPostionCheck = this.IsWhiteInCheck(newBoard);
-    if (currentPostionCheck) return false;
+    const moveTwo = chessBoard.craftMove([1, 4], [1, 3], chessBoard, true);
+    chessBoard.moveBuffer.recordMove(moveTwo);
+    chessBoard.makeMove(moveTwo);
 
-    // if no checks then King to [1, 3] and Rook to [1, 4]
-    // and castle operation is complete
+    currentPostionCheck = this.IsWhiteInCheck(chessBoard);
 
-    // console.log("We can castle left.");
+    lastMove = chessBoard.moveBuffer.deepUndo() as MoveState;
+    chessBoard.undoMove(lastMove);
+
+    if (currentPostionCheck) {
+      return false;
+    }
+
     return true;
   };
 
   public CanWhiteCastleRight = (
     kingNode: Square,
     rightRookNode: Square,
-    clonedBoard: Square[][],
+    chessBoard: Board,
     turn: number
   ) => {
     if (
@@ -711,13 +739,7 @@ export class PieceLogicService {
     // last check is white can't be in check, and next two moves over left cannot also
     // create a situation of check
 
-    let newBoard = new Board();
-    newBoard.board = clonedBoard;
-    newBoard.turn = turn;
-
-    newBoard = newBoard.deepClone();
-
-    let currentPostionCheck = this.IsWhiteInCheck(newBoard);
+    let currentPostionCheck = this.IsWhiteInCheck(chessBoard);
 
     if (currentPostionCheck)
       // can't move if white is in check
@@ -725,15 +747,31 @@ export class PieceLogicService {
 
     // now we simulate two moves and check for each one
 
-    // [1, 5] -> [1, 4] -> Is in Check
-    newBoard.movePieceFromTo([1, 5], [1, 6]);
-    currentPostionCheck = this.IsWhiteInCheck(newBoard);
-    if (currentPostionCheck) return false;
+    const moveOne = chessBoard.craftMove([1, 5], [1, 6], chessBoard, true);
+    chessBoard.moveBuffer.recordMove(moveOne);
+    chessBoard.makeMove(chessBoard.moveBuffer.LastMove as MoveState);
+
+    currentPostionCheck = this.IsWhiteInCheck(chessBoard);
+    chessBoard.moveBuffer.deepUndo();
+    chessBoard.undoMove(moveOne);
+
+    if (currentPostionCheck) {
+      return false;
+    }
 
     // [1, 4] -> [1, 3] -> Is in Check
-    newBoard.movePieceFromTo([1, 6], [1, 7]);
-    currentPostionCheck = this.IsWhiteInCheck(newBoard);
-    if (currentPostionCheck) return false;
+
+    const moveTwo = chessBoard.craftMove([1, 6], [1, 7], chessBoard, true);
+    chessBoard.moveBuffer.recordMove(moveTwo);
+    chessBoard.makeMove(chessBoard.moveBuffer.LastMove as MoveState);
+
+    currentPostionCheck = this.IsWhiteInCheck(chessBoard);
+    chessBoard.moveBuffer.deepUndo();
+    chessBoard.undoMove(moveTwo);
+
+    if (currentPostionCheck) {
+      return false;
+    }
 
     // if no checks then King to [1, 3] and Rook to [1, 4]
     // and castle operation is complete

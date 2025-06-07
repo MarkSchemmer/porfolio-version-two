@@ -239,7 +239,7 @@ const BoardPiece = (props: any) => {
         </strong>
       ) : null}
       {props.sq.piece ? (
-        <Box position={"absolute"}>{props.sq.piece.draw()}</Box>
+        <Box position={"absolute"}>{props?.sq?.piece?.draw()}</Box>
       ) : null}
       {/*     
                     width: 10px;

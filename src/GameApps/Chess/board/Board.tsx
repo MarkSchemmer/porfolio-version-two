@@ -112,60 +112,6 @@ export class Board {
     // if (n)
     //     n.piece = new Pond();
   };
-
-  public deepClone(): Board {
-    const newBoard = new Board();
-    const cloneMap = new Map<string, Square>();
-
-    // Step 1: Clone Squares (structure only, no links yet)
-    newBoard.board = this.board.map((row) =>
-      row.map((sq) => {
-        const clone = sq.generateDeepClone();
-        cloneMap.set(
-          `${sq.mathematicalCoordinate[0]},${sq.mathematicalCoordinate[1]}`,
-          clone
-        );
-        return clone;
-      })
-    );
-
-    // Step 2: Reconnect directional references
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        const original = this.board[i][j];
-        const cloned = newBoard.board[i][j] as any;
-
-        const connect = (direction: keyof Square) => {
-          const neighbor = original[direction] as any;
-          if (neighbor) {
-            const key = `${neighbor.mathematicalCoordinate[0]},${neighbor.mathematicalCoordinate[1]}`;
-            cloned[direction] = cloneMap.get(key);
-          }
-        };
-
-        connect("left");
-        connect("right");
-        connect("forward");
-        connect("back");
-        connect("diagonalLeft");
-        connect("diagonalRight");
-        connect("diagonalBackLeft");
-        connect("diagonalBackRight");
-      }
-    }
-
-    // Step 3: Clone other board properties
-    newBoard.turn = this.turn;
-    newBoard.rootNode = newBoard.getSquare(
-      this.rootNode!.mathematicalCoordinate
-    ); // assumes rootNode exists
-    newBoard.settingsService = this.settingsService; // assuming stateless or safe to share
-    newBoard.logic = this.logic; // assuming stateless or safe to share
-    newBoard.triggerUpdate = Date.now(); // or clone if needed
-
-    return newBoard;
-  }
-
   // ******************************************************************
   // Testing only
   // ******************************************************************
@@ -298,10 +244,11 @@ export class Board {
 
   public updateKingMoves = (coordiante: any) => {
     const node = getNode(coordiante, this.board) as Square;
+    const bd = this;
     const sqs = getKingMoves(node, this.board, this.turn); // attack
     const specialMoves = node?.piece?.IsWhite()
-      ? getKingMovesSpecialWhite(node, this.board, this.turn)
-      : getKingMovesSpecialBlack(node, this.board, this.turn);
+      ? getKingMovesSpecialWhite(node, bd, this.turn)
+      : getKingMovesSpecialBlack(node, bd, this.turn);
 
     this.notifyUserOfMoveableSquaresAndSelectedPiece(
       [...sqs, ...specialMoves],
@@ -336,12 +283,13 @@ export class Board {
       previousTurn: this.turn,
       currentTurn: this.turn + 1,
       movedPiece: fromNode?.piece as Piece,
-      capturedPiece: toNode?.piece,
+      previousMovedPieceState: (fromNode?.piece as Piece)?.clone(),
+      capturedPiece: toNode?.piece?.clone(),
       special: {
         promotion: undefined,
         enPassantCapture: undefined,
         castleKing: undefined,
-        pondDoubleMove: undefined
+        pondDoubleMove: undefined,
       },
     };
 
@@ -422,10 +370,17 @@ export class Board {
       );
 
       if (handleCastle) {
+
+        const rookPiece = (
+          getNode(handleCastle.from, this.board) as Square
+        ).piece?.clone() as Piece;
+
         move.special.castleKing = {
           rookFrom: handleCastle.from,
           rookTo: handleCastle.to,
+          rookPiece,
         };
+
       }
 
       if (this.logic.ShouldPondPromoteV2(fromNode, toNode)) {
@@ -436,21 +391,24 @@ export class Board {
     return move;
   };
 
-
   public makeMove = (move: MoveState) => {
-    const { from, to, movedPiece, capturedPiece, currentTurn, special} = move;
+    const { from, to, movedPiece, capturedPiece, currentTurn, special } = move;
 
     const fromNode = getNode(from, this.board) as Square;
     const toNode = getNode(to, this.board) as Square;
 
     fromNode.makeSquareEmpty(); // make the current square empty
-    toNode.SetNodeWithNewPiece(movedPiece); // move the piece from to, toNode... 
+    toNode.SetNodeWithNewPiece(movedPiece); // move the piece from to, toNode...
 
     if (special) {
-      const {enPassantCapture, castleKing, pondDoubleMove, promotion} = special;
+      const { enPassantCapture, castleKing, pondDoubleMove, promotion } =
+        special;
 
       if (enPassantCapture) {
-        const pondToTake = getNode(enPassantCapture.pondTaken, this.board) as Square;
+        const pondToTake = getNode(
+          enPassantCapture.pondTaken,
+          this.board
+        ) as Square;
         pondToTake.makeSquareEmpty(); // make square empty basically pond was taken.
       }
 
@@ -467,39 +425,47 @@ export class Board {
     this.incrementTurn(); // increment the game
   };
 
-    public undoMove = (move: MoveState) => {
-    const { from, to, movedPiece, capturedPiece, currentTurn, special} = move;
+  public undoMove = (move: MoveState) => {
+    const {
+      from,
+      to,
+      movedPiece,
+      capturedPiece,
+      currentTurn,
+      special,
+      previousMovedPieceState,
+    } = move;
 
     const toNode = getNode(from, this.board) as Square;
     const fromNode = getNode(to, this.board) as Square;
 
     fromNode.makeSquareEmpty(); // make the current square empty
-    
+
     if (capturedPiece) {
       fromNode.SetNodeWithNewPiece(capturedPiece);
     }
 
-    toNode.SetNodeWithNewPiece(movedPiece); // move the piece from to, toNode... 
+    toNode.SetNodeWithNewPiece(previousMovedPieceState); // move the piece from to, toNode...
 
     if (special) {
-      const {enPassantCapture, castleKing, pondDoubleMove, promotion} = special;
+      const { enPassantCapture, castleKing, pondDoubleMove, promotion } =
+        special;
 
       if (enPassantCapture) {
-        const pondToTake = getNode(enPassantCapture.pondTaken, this.board) as Square;
+        const pondToTake = getNode(
+          enPassantCapture.pondTaken,
+          this.board
+        ) as Square;
         pondToTake.SetNodeWithNewPiece(capturedPiece); // make square empty basically pond was taken.
       }
 
       if (castleKing) {
-        const { rookFrom, rookTo } = castleKing;
+        const { rookFrom, rookTo, rookPiece } = castleKing;
         const rookFromNode = getNode(rookFrom, this.board) as Square;
         const rookToNode = getNode(rookTo, this.board) as Square;
 
         rookToNode.makeSquareEmpty(); // set from to, the to Node
-        rookFromNode.SetNodeWithNewPiece(rookFromNode.piece); // make from Node empty.
-      }
-
-      if (pondDoubleMove) {
-        movedPiece.setPondDoubleMoveTurn(0);
+        rookFromNode.SetNodeWithNewPiece(rookPiece); // make from Node empty.
       }
     }
 

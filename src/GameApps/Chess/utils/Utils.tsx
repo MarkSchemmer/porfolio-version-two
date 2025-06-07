@@ -1001,7 +1001,7 @@ export const getKingMoves = (
 
 export const getKingMovesSpecialWhite = (
   node: Square | undefined,
-  clonedBoard: Square[][],
+  chessBoard: Board,
   turn: number
 ): any => {
   const pieceLogic = new PieceLogicService();
@@ -1010,8 +1010,8 @@ export const getKingMovesSpecialWhite = (
 
   const canCastleLeft = pieceLogic.CanWhiteCastleLeft(
     node as Square,
-    pieceLogic.GetWhiteLeftRook(clonedBoard) as Square,
-    clonedBoard,
+    pieceLogic.GetWhiteLeftRook(chessBoard.board) as Square,
+    chessBoard,
     turn
   );
 
@@ -1021,8 +1021,8 @@ export const getKingMovesSpecialWhite = (
 
   const canCastleRight = pieceLogic.CanWhiteCastleRight(
     node as Square,
-    pieceLogic.GetWhiteRightRook(clonedBoard) as Square,
-    clonedBoard,
+    pieceLogic.GetWhiteRightRook(chessBoard.board) as Square,
+    chessBoard,
     turn
   );
 
@@ -1035,7 +1035,7 @@ export const getKingMovesSpecialWhite = (
 
 export const getKingMovesSpecialBlack = (
   node: Square | undefined,
-  clonedBoard: Square[][],
+  chessBoard: Board,
   turn: number
 ): any => {
   const pieceLogic = new PieceLogicService();
@@ -1044,8 +1044,8 @@ export const getKingMovesSpecialBlack = (
 
   const canCastleLeft = pieceLogic.CanBlackCastleLeft(
     node as Square,
-    pieceLogic.GetBlackLeftRook(clonedBoard) as Square,
-    clonedBoard,
+    pieceLogic.GetBlackLeftRook(chessBoard.board) as Square,
+    chessBoard,
     turn
   );
 
@@ -1055,8 +1055,8 @@ export const getKingMovesSpecialBlack = (
 
   const canCastleRight = pieceLogic.CanBlackCastleRight(
     node as Square,
-    pieceLogic.GetBlackRightRook(clonedBoard) as Square,
-    clonedBoard,
+    pieceLogic.GetBlackRightRook(chessBoard.board) as Square,
+    chessBoard,
     turn
   );
 

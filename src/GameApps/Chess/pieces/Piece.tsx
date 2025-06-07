@@ -1,4 +1,4 @@
-import { PieceColor, PieceNames } from "../utils/Utils";
+import { PieceColor, PieceFactory, PieceNames } from "../utils/Utils";
 
 export type EnPassantDetails = {
     turn: number, CanEnPassant: boolean
@@ -47,7 +47,7 @@ export class Piece {
     }
 
     public clone = (): Piece => {
-        const clonedPiece = new Piece(this.pieceName, this.pieceColor);
+        const clonedPiece = PieceFactory(this.pieceName, this.pieceColor)!;
     
         clonedPiece.hasMoved = this.hasMoved;
         clonedPiece.pondDoubleMoveTurn = this.pondDoubleMoveTurn;
