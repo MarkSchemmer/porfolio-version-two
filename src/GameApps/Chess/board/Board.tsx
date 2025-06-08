@@ -351,6 +351,7 @@ export class Board {
         // fromNode?.right?.makeSquareEmpty();
         move.special.enPassantCapture = {
           pondTaken: fromNode?.right?.mathematicalCoordinate as MathCoordinate,
+          pondTakenPiece: fromNode?.right?.piece?.clone() as Piece
         };
         fromNode?.piece?.ResetEnPassantDetails();
         toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
@@ -359,6 +360,7 @@ export class Board {
         // fromNode?.left?.makeSquareEmpty();
         move.special.enPassantCapture = {
           pondTaken: fromNode?.left?.mathematicalCoordinate as MathCoordinate,
+          pondTakenPiece: fromNode?.left?.piece?.clone() as Piece
         };
         fromNode?.piece?.ResetEnPassantDetails();
         toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
@@ -384,7 +386,7 @@ export class Board {
       }
 
       if (this.logic.ShouldPondPromoteV2(fromNode, toNode)) {
-        move.special.promotion = true;
+        move.special.promotion = { onSquareWhenPromoted: toNode.mathematicalCoordinate, piecePromotedTo: undefined };
       }
     }
 
@@ -419,6 +421,10 @@ export class Board {
 
         rookToNode.SetNodeWithNewPiece(rookFromNode.piece); // set from to, the to Node
         rookFromNode.makeSquareEmpty(); // make from Node empty.
+      }
+
+      if (promotion) {
+        toNode.SetNodeWithNewPiece(promotion.piecePromotedTo);
       }
     }
 
@@ -456,7 +462,7 @@ export class Board {
           enPassantCapture.pondTaken,
           this.board
         ) as Square;
-        pondToTake.SetNodeWithNewPiece(capturedPiece); // make square empty basically pond was taken.
+        pondToTake.SetNodeWithNewPiece(enPassantCapture.pondTakenPiece); // make square empty basically pond was taken.
       }
 
       if (castleKing) {
@@ -580,7 +586,23 @@ export class Board {
     pieceColor: PieceColor
   ) => {
     const squareToPromote = getNode(to, this.board);
-    squareToPromote?.SetNodeWithNewPiece(PieceFactory(pieceName, pieceColor));
+    const pieceToBePromotedTo = PieceFactory(pieceName, pieceColor);
+    let lastMove = this.moveBuffer.deepUndo() as MoveState;
+    const newMoveToRecord:MoveState = {
+      ...lastMove,
+      special: {
+        ...lastMove.special,
+        promotion: {
+          onSquareWhenPromoted: squareToPromote?.mathematicalCoordinate as MathCoordinate,
+          piecePromotedTo: pieceToBePromotedTo as Piece,
+          pieceThatWas: squareToPromote?.piece?.clone() as Piece
+        }
+      }
+    };
+
+    this.moveBuffer.recordMove(newMoveToRecord);
+    this.makeMove(newMoveToRecord);
+    squareToPromote?.SetNodeWithNewPiece(pieceToBePromotedTo);
   };
 
   public getAllSquaresWhoHavePieceAndColor = (

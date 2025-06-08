@@ -31,7 +31,7 @@ import {
 } from "../../../../../store/slices/chessSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Board } from "../../Board";
-import { MathCoordinate } from "../../Square";
+import { MathCoordinate, Square } from "../../Square";
 import { EndGameHandler } from "../../../utils/EndGameHandler";
 
 const blackPieces = [
@@ -53,14 +53,17 @@ const BoxPiece = (props: any) => {
   const dispatch = useDispatch();
   const boardobj = useSelector(getBoard) as Board;
   const pondPromotionData = useSelector(getPondPromotion);
+  // const selectedPiece = useSelector(getMoveHistory).cur as Square | null;
 
   return (
     <Box
       onClick={() => {
+        const pieceColorFinal = pieceColor;
+        // console.log(pieceColorFinal);
         boardobj.promotePond(
           pondPromotionData.coordinateToPromote as MathCoordinate,
           name,
-          pieceColor
+          pieceColorFinal
         );
 
         dispatch(UpdateChessBoard(boardobj));
@@ -105,7 +108,7 @@ export const PondPromotion = (props: any) => {
   const { IsOpen } = props;
   const cancelRef = React.useRef(null);
   const pondPromotionData = useSelector(getPondPromotion);
-
+  // console.log(pondPromotionData);
   return (
     <>
       <AlertDialog
@@ -125,8 +128,8 @@ export const PondPromotion = (props: any) => {
 
             <AlertDialogBody marginLeft={"12%"}>
               {(pondPromotionData.pieceColor === PieceColor.WHITE
-                ? whitePieces
-                : blackPieces
+                ? blackPieces
+                : whitePieces
               ).map((p) => (
                 <BoxPiece key={p.name} {...p} />
               ))}

@@ -18,8 +18,8 @@ export interface MoveState {
   testingMove: boolean;
 
   special: {
-    promotion?: boolean;
-    enPassantCapture?: { pondTaken: MathCoordinate };
+    promotion?: {onSquareWhenPromoted: MathCoordinate; piecePromotedTo?: Piece; pieceThatWas?: Piece; };
+    enPassantCapture?: { pondTaken: MathCoordinate; pondTakenPiece: Piece;  };
     castleKing?: {
       rookFrom: MathCoordinate;
       rookTo: MathCoordinate;
@@ -37,8 +37,8 @@ export class Move implements MoveState {
   currentTurn: number;
   testingMove: boolean;
   special: {
-    promotion?: boolean;
-    enPassantCapture?: { pondTaken: MathCoordinate };
+    promotion?: {onSquareWhenPromoted: MathCoordinate; piecePromotedTo: Piece; };
+    enPassantCapture?: { pondTaken: MathCoordinate; pondTakenPiece: Piece; };
     castleKing?: {
       rookFrom: MathCoordinate;
       rookTo: MathCoordinate;
