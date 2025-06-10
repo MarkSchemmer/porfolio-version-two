@@ -844,4 +844,38 @@ export class PieceLogicService {
       ? this.WhiteStaleMate(board)
       : this.BlackStaleMate(board);
   };
+
+  public InsuficentMaterial = (chessBoard: Board) => {
+    const checkKingBishopOrKnight = (
+      pieces: Square[],
+      otherPieces: Square[]
+    ) => {
+      const onlyKing = pieces.length === 0;
+
+      const otherPieceAm = otherPieces.length === 1;
+      const otherKnight = otherPieces.find(
+        (sq) => sq.piece?.pieceName === PieceNames.BISHOP || sq.piece?.pieceName === PieceNames.KNIGHT
+      );
+
+      return onlyKing && otherPieceAm && otherKnight;
+    };
+
+    const whitePieces = Array.from(chessBoard.whitePieceAndAttacksCache.keys());
+    const blackPieces = Array.from(chessBoard.blackPieceAndAttacksCache.keys());
+
+    console.log(whitePieces);
+
+    // king scenario
+    if (whitePieces.length === 0 && blackPieces.length === 0) return true;
+
+    const checkWhite = checkKingBishopOrKnight(whitePieces, blackPieces);
+
+    if (checkWhite) return true;
+
+    const checkBlack = checkKingBishopOrKnight(blackPieces, whitePieces);
+
+    if (checkBlack) return true;
+
+    return false;
+  };
 }

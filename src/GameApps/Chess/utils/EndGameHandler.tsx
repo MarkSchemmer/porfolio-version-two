@@ -47,10 +47,40 @@ export const EndGameHandler = (
       );
     }
   } else {
+    /*
+  
+        1. Stalemate (above)
 
+        2. Insufficient Material
+        Neither side can checkmate:
 
+        King vs King
 
+        King vs King + Bishop
 
+        King vs King + Knight
+
+        Detection: count active pieces and types.
+
+        3. Threefold Repetition
+        Same position occurs 3 times (not necessarily consecutively).
+
+        Detection: requires position hashing (Zobrist hash or similar) and storing a move history.
+
+        4. 50-Move Rule
+        If 50 consecutive moves happen without a pawn move or capture, either player can claim a draw.
+
+        Detection:
+
+        Maintain a halfMoveClock counter.
+
+        Reset to 0 on pawn move or capture.
+
+        5. Mutual Agreement (manual)
+        Not programmatically enforced unless you're building a GUI/UI interface for draw offers.
+  
+  
+  */
 
     // will need to check opposite player
     // because if the opposite player has no moves it's a stalemate
@@ -65,9 +95,15 @@ export const EndGameHandler = (
     );
 
     if (isStaleMate) {
-        console.log(
-            otherPlayerBeingChecked + " Has no moves, STALEMATE."
-        );
+      console.log(otherPlayerBeingChecked + " Has no moves, STALEMATE.");
+    }
+
+    const isInsuficientMaterial = chessBoard.logic.InsuficentMaterial(chessBoard);
+
+    console.log(isInsuficientMaterial)
+
+    if (isInsuficientMaterial) {
+      console.log(" Insuficient Material Stalemate ");
     }
   }
 };
