@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   cleanBoard,
   generateCastleScenario,
+  generateStaleMateScenarioOne,
   generateStandardBoard,
   PieceColor,
   PieceNames,
@@ -91,6 +92,16 @@ export const ButtonControls = (props: any) => {
           key={"castle-board"}
         >
           Castle Scenario
+        </Button>
+        <Button 
+          onClick={() => {
+            dispatch(UpdateChessBoard(generateStaleMateScenarioOne()));
+          }}        
+          variant="solid"
+          width={"100%"}
+          size={"md"}
+          key={"stalemate-scenario-one"}>
+            Stalemate Scenario
         </Button>
       </ButtonGroup>
     </>

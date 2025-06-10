@@ -78,6 +78,33 @@ export const cleanBoard = () => {
   return new Board();
 };
 
+// White King, White Pond and Black King
+export const generateStaleMateScenarioOne = () => {
+  const chessBaord = new Board();
+  // set ponds a2 -> h2
+  Array(1)
+    .fill(0)
+    .map((_, idx) => {
+      return idx + 5;
+    })
+    .forEach((y) => {
+      chessBaord.populateSquareWithPiece([2, y], new WhitePond());
+    });
+
+
+  // set White King
+  chessBaord.populateSquareWithPiece([1, 5], new WhiteKing());
+
+
+  // set Black King
+  chessBaord.populateSquareWithPiece([8, 5], new BlackKing());
+
+  chessBaord.reCacheBlackPieces();
+  chessBaord.reCacheWhitePieces();
+
+  return chessBaord;
+};
+
 export const generateCastleScenario = () => {
   const chessBaord = new Board();
   // set ponds a2 -> h2
@@ -112,6 +139,9 @@ export const generateCastleScenario = () => {
 
   // set Black King
   chessBaord.populateSquareWithPiece([8, 5], new BlackKing());
+
+  chessBaord.reCacheBlackPieces();
+  chessBaord.reCacheWhitePieces();
 
   return chessBaord;
 };
@@ -189,6 +219,9 @@ export const generateStandardBoard = () => {
   // set Black King
   chessBaord.populateSquareWithPiece([8, 5], new BlackKing());
 
+  chessBaord.reCacheBlackPieces();
+  chessBaord.reCacheWhitePieces();
+
   return chessBaord;
 };
 
@@ -207,44 +240,7 @@ export const generateStandardBoard = () => {
 // store and to update the board cache and a board is: Square[][]
 // so we store the board with all possible moves...
 // How should we store all the moves then
-export const getLegalAttackMovesForPieceFactory = (
-  node: Square,
-  logic: PieceLogicService,
-  turn: number,
-  board: Square[][]
-) => {
-  const piece = node?.piece as Piece;
-  const color = node?.piece?.pieceColor as PieceColor;
-  // console.log("I'm finding legal moves for ", color);
-  const isWhite = color === PieceColor.WHITE;
-  // console.log(piece.pieceName);
-  switch (piece.pieceName) {
-    case PieceNames.POND: {
-      return isWhite
-        ? getWhitePondMoves(node, logic, turn)
-        : getBlackPondMoves(node, logic, turn);
-    }
-    case PieceNames.KNIGHT: {
-      return getKnightMoves(node);
-    }
-    case PieceNames.BISHOP: {
-      return getBishopMoves(node, logic);
-    }
-    case PieceNames.ROOK: {
-      return getRookMoves(node, logic);
-    }
-    case PieceNames.QUEEN: {
-      return getQueenMoves(node, logic);
-    }
-    case PieceNames.KING: {
-      // console.log("legal Kings moves");
-      return getKingMoves(node, board, turn);
-    }
-    default: {
-      return [];
-    }
-  }
-};
+
 
 // End chess control buttons
 export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
@@ -278,9 +274,9 @@ export const HandleSquareClickWithPiece = (
   coordinate: MathCoordinate,
   chessBoard: Board
 ) => {
-  const node = getNode(coordinate, chessBoard.board);
+  const node = getNode(coordinate, chessBoard.board) as Square;
   const pieceName = node?.piece?.pieceName;
-  const pieceColor = node?.piece?.pieceColor;
+  const pieceColor = node?.piece?.pieceColor as PieceColor;
 
   switch (pieceName) {
     case PieceNames.POND: {
@@ -945,6 +941,56 @@ export const getWhitePondMoves = (
 
   return [...pondMoves, ...canMoveLeftOrRight, ...enPassantMoves];
 };
+
+// export const getKingMoves = (
+//   node: Square | undefined,
+//   clonedBoard: Square[][],
+//   turn: number
+// ): Square[] => {
+//   if (!node) return [];
+
+//   const logic = new PieceLogicService();
+//   const kingColor = logic.IsWhiteKing(node) ? 'white' : 'black';
+
+//   const surroundingSquares = [
+//     node.forward,
+//     node.back,
+//     node.left,
+//     node.right,
+//     node.forward?.left,
+//     node.forward?.right,
+//     node.back?.left,
+//     node.back?.right,
+//   ].filter((sq): sq is Square => !!sq);
+
+//   const legalMoves: Square[] = [];
+
+//   for (const target of surroundingSquares) {
+//     // Can't capture same color
+//     if (!logic.pieceIsOtherColor(node, target)) continue;
+
+//     // Simulate the move
+//     const from = node.mathematicalCoordinate;
+//     const to = target.mathematicalCoordinate;
+
+//     const virtualBoard = new Board();
+//     virtualBoard.board = testBoard;
+//     virtualBoard.turn = turn;
+//     virtualBoard.movePieceFromTo(from, to);
+
+//     const stillSafe =
+//       kingColor === 'white'
+//         ? !logic.IsWhiteInCheck(virtualBoard)
+//         : !logic.IsBlackInCheck(virtualBoard);
+
+//     if (stillSafe) {
+//       legalMoves.push(target);
+//     }
+//   }
+
+//   return legalMoves;
+// };
+
 
 export const getKingMoves = (
   node: Square | undefined,

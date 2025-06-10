@@ -472,8 +472,24 @@ export class PieceLogicService {
   };
 
   public IsBlackInCheck = (chessBaord: Board) => {
-    const { board, logic, turn, getAllWhiteAttackingMoves } = chessBaord;
-    const whiteAttackingPieces = getAllWhiteAttackingMoves(board, logic, turn);
+    const { logic, board, GetWhiteKing } = chessBaord;
+    const node = GetWhiteKing(board) as Square;
+    const surroundingSquares = [
+      node.forward,
+      node.back,
+      node.left,
+      node.right,
+      node.forward?.left,
+      node.forward?.right,
+      node.back?.left,
+      node.back?.right,
+    ]
+      .filter((sq): sq is Square => !!sq)
+      .filter((sq) => logic.pieceIsOtherColor(node, sq));
+    const whiteAttackingPieces = [
+      ...Array.from(chessBaord.whitePieceAndAttacksCache.values()).flat(),
+      ...surroundingSquares,
+    ];
     const anyAttackingWhitePiecesHaveBlackKing = whiteAttackingPieces.some(
       (sq) => logic.IsBlackKing(sq)
     );
@@ -481,8 +497,24 @@ export class PieceLogicService {
   };
 
   public IsWhiteInCheck = (chessBoard: Board) => {
-    const { board, logic, turn, getAllBlackAttackingMoves } = chessBoard;
-    const blackAttackingPieces = getAllBlackAttackingMoves(board, logic, turn);
+    const { logic, board, GetBlackKing } = chessBoard;
+    const node = GetBlackKing(board) as Square;
+    const surroundingSquares = [
+      node.forward,
+      node.back,
+      node.left,
+      node.right,
+      node.forward?.left,
+      node.forward?.right,
+      node.back?.left,
+      node.back?.right,
+    ]
+      .filter((sq): sq is Square => !!sq)
+      .filter((sq) => logic.pieceIsOtherColor(node, sq));
+    const blackAttackingPieces = [
+      ...Array.from(chessBoard.blackPieceAndAttacksCache.values()).flat(),
+      ...surroundingSquares,
+    ];
     const anyAttackingBlackPiecesHaveWhiteKing = blackAttackingPieces.some(
       (sq) => logic.IsWhiteKing(sq)
     );
@@ -787,8 +819,10 @@ export class PieceLogicService {
       board.turn
     );
 
-    console.log(blackMoves.length);
-    return blackMoves.length === 0;
+    const blackKing = board.GetBlackKing(board.board);
+    const blackKingMoves = board.getKingMovesV2(blackKing);
+
+    return [...blackMoves, ...blackKingMoves].length === 0;
   };
 
   public WhiteStaleMate = (board: Board) => {
@@ -798,7 +832,10 @@ export class PieceLogicService {
       board.turn
     );
 
-    return whiteMoves.length === 0;
+    const whiteKing = board.GetWhiteKing(board.board);
+    const whiteKingMoves = board.getKingMovesV2(whiteKing);
+
+    return [...whiteMoves, ...whiteKingMoves].length === 0;
   };
 
   public IsStaleMate = (pieceColor: PieceColor, board: Board) => {

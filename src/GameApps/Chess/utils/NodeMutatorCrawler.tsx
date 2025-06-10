@@ -62,7 +62,7 @@ export const NodeCrawler = (
 
   let step = NodeMutatorFactory(node as Square, crawlDirection);
 
-  while (step) {
+  while (logic.isValue(step)) {
     if (logic.IsNullOrUndefined(node)) {
       return squares;
     }
@@ -87,6 +87,9 @@ export const NodeCrawler = (
     ) {
       return [...squares, step];
     }
+
+    // if movement causes check end this and return value
+    // update nodeCrawler 
 
     let nextStep = NodeMutatorFactory(step as Square, crawlDirection) as Square;
 

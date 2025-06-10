@@ -58,11 +58,9 @@ import {
   getVerticalRow,
   getWhitePondMoves,
   getBlackPondMoves,
-  getKingMoves,
   PieceNames,
   PieceColor,
   PieceFactory,
-  getLegalAttackMovesForPieceFactory,
   getKingMovesSpecialWhite,
   getKingMovesSpecialBlack,
 } from "../utils/Utils";
@@ -96,6 +94,9 @@ export class Board {
 
   public moveBuffer: ChessMoveBuffer = new ChessMoveBuffer();
 
+  public blackPieceAndAttacksCache = new Map<Square, Square[]>();
+  public whitePieceAndAttacksCache = new Map<Square, Square[]>();
+
   // public currentSelectedSquare: currentSelectedChessSquare = null;
 
   constructor() {
@@ -105,13 +106,88 @@ export class Board {
 
   public boardSetup = () => {
     this.connectSquares();
-
     // if (this.rootNode)
     //     this.rootNode.piece = new Pond();
     //let n  = getNode([2, 2], this.board);
     // if (n)
     //     n.piece = new Pond();
   };
+
+  /*
+          public getAllAttackingMoves = (board: Square[][], pieceColor: PieceColor) => {
+    let moves: Square[] = [];
+    const allAttackingSquaresWithPieceAndSameColor =
+      this.getAllSquaresWhoHavePieceAndColor(board, pieceColor);
+
+    allAttackingSquaresWithPieceAndSameColor.forEach((sq: Square) => {
+      moves = [
+        ...moves,
+        ...this.getLegalAttackMovesForPieceFactory(
+          sq,
+          this.logic,
+          this.turn,
+          board
+        ),
+      ];
+    });
+
+    return moves;
+  };
+  
+  */
+
+  public reCacheWhitePieces = () => {
+    const whitePieces = this.getAllSquaresWhoHavePieceAndColor(
+      this.board,
+      PieceColor.WHITE
+    );
+
+    this.whitePieceAndAttacksCache = whitePieces.reduce((acc, cur, idx) => {
+      acc.set(
+        cur,
+        this.getLegalAttackMovesForPieceFactory(
+          cur,
+          this.logic,
+          this.turn,
+          this.board
+        )
+      );
+      return acc;
+    }, new Map<Square, Square[]>());
+
+    //const whiteKing = this.GetWhiteKing(this.board) as Square;
+    // const whiteKingMoves = this.getKingMovesV2(whiteKing, this.board, this.turn);
+    // this.whitePieceAndAttacksCache.set(whiteKing, whiteKingMoves);
+
+    return this.whitePieceAndAttacksCache;
+  };
+
+  public reCacheBlackPieces = () => {
+    const blackPieces = this.getAllSquaresWhoHavePieceAndColor(
+      this.board,
+      PieceColor.BLACK
+    );
+
+    this.blackPieceAndAttacksCache = blackPieces.reduce((acc, cur, idx) => {
+      acc.set(
+        cur,
+        this.getLegalAttackMovesForPieceFactory(
+          cur,
+          this.logic,
+          this.turn,
+          this.board
+        )
+      );
+      return acc;
+    }, new Map<Square, Square[]>());
+
+    // const blackKing = this.GetBlackKing(this.board) as Square;
+    // const blackKingMoves = this.getKingMovesV2(blackKing, this.board, this.turn);
+    // this.blackPieceAndAttacksCache.set(blackKing, blackKingMoves);
+
+    return this.blackPieceAndAttacksCache;
+  };
+
   // ******************************************************************
   // Testing only
   // ******************************************************************
@@ -170,7 +246,7 @@ export class Board {
   public make8_1Green = () => {
     const node = getNode([1, 8], this.board);
     const sqs = getDiagonalRightToLeft(node, []);
-    console.log(sqs);
+    // console.log(sqs);
     sqs.forEach((sq: Square) => {
       sq.SquareBgColor = "green";
     });
@@ -208,44 +284,86 @@ export class Board {
 
   public updateBishopMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getBishopMoves(node, this.logic);
+    const pieceColor = node.piece?.pieceColor as PieceColor;
+
+    let sqs: Square[] = [];
+    if (node.piece?.pieceColor === PieceColor.WHITE) {
+      sqs = this.whitePieceAndAttacksCache.get(node) || [];
+      // console.log(sqs);
+    } else {
+      sqs = this.blackPieceAndAttacksCache.get(node) || [];
+    }
+
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateRookMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getRookMoves(node, this.logic);
+    let sqs: Square[] = [];
+    if (node.piece?.pieceColor === PieceColor.WHITE) {
+      sqs = this.whitePieceAndAttacksCache.get(node) || [];
+      // console.log(sqs);
+    } else {
+      sqs = this.blackPieceAndAttacksCache.get(node) || [];
+    }
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateQueenMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getQueenMoves(node, this.logic);
+    let sqs: Square[] = [];
+    if (node.piece?.pieceColor === PieceColor.WHITE) {
+      sqs = this.whitePieceAndAttacksCache.get(node) || [];
+      // console.log(sqs);
+    } else {
+      sqs = this.blackPieceAndAttacksCache.get(node) || [];
+    }
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateKnightMoves = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getKnightMoves(node);
+    let sqs: Square[] = [];
+    if (node.piece?.pieceColor === PieceColor.WHITE) {
+      sqs = this.whitePieceAndAttacksCache.get(node) || [];
+      // console.log(sqs);
+    } else {
+      sqs = this.blackPieceAndAttacksCache.get(node) || [];
+    }
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updatePondMovesWhite = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getWhitePondMoves(node, this.logic, this.turn);
+    let sqs: Square[] = [];
+    if (node.piece?.pieceColor === PieceColor.WHITE) {
+      sqs = this.whitePieceAndAttacksCache.get(node) || [];
+      // console.log(sqs);
+    } else {
+      sqs = this.blackPieceAndAttacksCache.get(node) || [];
+    }
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updatePondMovesBlack = (coordinate: any) => {
     const node = getNode(coordinate, this.board) as Square;
-    const sqs = getBlackPondMoves(node, this.logic, this.turn);
+    let sqs: Square[] = [];
+    if (node.piece?.pieceColor === PieceColor.WHITE) {
+      sqs = this.whitePieceAndAttacksCache.get(node) || [];
+    } else {
+      sqs = this.blackPieceAndAttacksCache.get(node) || [];
+    }
+
     this.notifyUserOfMoveableSquaresAndSelectedPiece(sqs, node);
   };
 
   public updateKingMoves = (coordiante: any) => {
     const node = getNode(coordiante, this.board) as Square;
     const bd = this;
-    const sqs = getKingMoves(node, this.board, this.turn); // attack
+    let sqs: Square[] = this.getKingMovesV2(node);
+   
+
+
     const specialMoves = node?.piece?.IsWhite()
       ? getKingMovesSpecialWhite(node, bd, this.turn)
       : getKingMovesSpecialBlack(node, bd, this.turn);
@@ -351,7 +469,7 @@ export class Board {
         // fromNode?.right?.makeSquareEmpty();
         move.special.enPassantCapture = {
           pondTaken: fromNode?.right?.mathematicalCoordinate as MathCoordinate,
-          pondTakenPiece: fromNode?.right?.piece?.clone() as Piece
+          pondTakenPiece: fromNode?.right?.piece?.clone() as Piece,
         };
         fromNode?.piece?.ResetEnPassantDetails();
         toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
@@ -360,7 +478,7 @@ export class Board {
         // fromNode?.left?.makeSquareEmpty();
         move.special.enPassantCapture = {
           pondTaken: fromNode?.left?.mathematicalCoordinate as MathCoordinate,
-          pondTakenPiece: fromNode?.left?.piece?.clone() as Piece
+          pondTakenPiece: fromNode?.left?.piece?.clone() as Piece,
         };
         fromNode?.piece?.ResetEnPassantDetails();
         toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
@@ -372,7 +490,6 @@ export class Board {
       );
 
       if (handleCastle) {
-
         const rookPiece = (
           getNode(handleCastle.from, this.board) as Square
         ).piece?.clone() as Piece;
@@ -382,11 +499,13 @@ export class Board {
           rookTo: handleCastle.to,
           rookPiece,
         };
-
       }
 
       if (this.logic.ShouldPondPromoteV2(fromNode, toNode)) {
-        move.special.promotion = { onSquareWhenPromoted: toNode.mathematicalCoordinate, piecePromotedTo: undefined };
+        move.special.promotion = {
+          onSquareWhenPromoted: toNode.mathematicalCoordinate,
+          piecePromotedTo: undefined,
+        };
       }
     }
 
@@ -398,6 +517,8 @@ export class Board {
 
     const fromNode = getNode(from, this.board) as Square;
     const toNode = getNode(to, this.board) as Square;
+
+    const colorOfPieceMoving = fromNode.piece?.pieceColor as PieceColor;
 
     fromNode.makeSquareEmpty(); // make the current square empty
     toNode.SetNodeWithNewPiece(movedPiece); // move the piece from to, toNode...
@@ -428,6 +549,9 @@ export class Board {
       }
     }
 
+    this.reCacheWhitePieces();
+    this.reCacheBlackPieces();
+
     this.incrementTurn(); // increment the game
   };
 
@@ -444,6 +568,8 @@ export class Board {
 
     const toNode = getNode(from, this.board) as Square;
     const fromNode = getNode(to, this.board) as Square;
+
+    const colorOfPieceMoving = fromNode.piece?.pieceColor as PieceColor;
 
     fromNode.makeSquareEmpty(); // make the current square empty
 
@@ -474,6 +600,9 @@ export class Board {
         rookFromNode.SetNodeWithNewPiece(rookPiece); // make from Node empty.
       }
     }
+
+    this.reCacheWhitePieces();
+    this.reCacheBlackPieces();
 
     this.decrementTurn(); // decrement the game
   };
@@ -588,16 +717,17 @@ export class Board {
     const squareToPromote = getNode(to, this.board);
     const pieceToBePromotedTo = PieceFactory(pieceName, pieceColor);
     let lastMove = this.moveBuffer.deepUndo() as MoveState;
-    const newMoveToRecord:MoveState = {
+    const newMoveToRecord: MoveState = {
       ...lastMove,
       special: {
         ...lastMove.special,
         promotion: {
-          onSquareWhenPromoted: squareToPromote?.mathematicalCoordinate as MathCoordinate,
+          onSquareWhenPromoted:
+            squareToPromote?.mathematicalCoordinate as MathCoordinate,
           piecePromotedTo: pieceToBePromotedTo as Piece,
-          pieceThatWas: squareToPromote?.piece?.clone() as Piece
-        }
-      }
+          pieceThatWas: squareToPromote?.piece?.clone() as Piece,
+        },
+      },
     };
 
     this.moveBuffer.recordMove(newMoveToRecord);
@@ -611,24 +741,17 @@ export class Board {
   ) => {
     return board.flatMap((sq) =>
       sq.filter(
-        (s) => s?.SquareHasPiece() && s.piece?.pieceColor === pieceColor
+        (s) => s?.SquareHasPiece() && s.piece?.pieceColor === pieceColor && s.piece.pieceName !== PieceNames.KING
       )
     );
   };
 
   public getAllAttackingMoves = (board: Square[][], pieceColor: PieceColor) => {
-    let moves: Square[] = [];
-    const allAttackingSquaresWithPieceAndSameColor =
-      this.getAllSquaresWhoHavePieceAndColor(board, pieceColor);
-
-    allAttackingSquaresWithPieceAndSameColor.forEach((sq: Square) => {
-      moves = [
-        ...moves,
-        ...getLegalAttackMovesForPieceFactory(sq, this.logic, this.turn, board),
-      ];
-    });
-
-    return moves;
+    if (pieceColor === PieceColor.WHITE) {
+      return Array.from(this.whitePieceAndAttacksCache.values()).flat();
+    } else {
+      return Array.from(this.blackPieceAndAttacksCache.values()).flat();
+    }
   };
 
   public getAllPossibleMovesOfPlayerInCheck = (
@@ -643,7 +766,7 @@ export class Board {
       ).map((sq: Square) => {
         const checkMateMoves: CheckMate = {
           SquareFrom: sq,
-          SquareToPossibilities: getLegalAttackMovesForPieceFactory(
+          SquareToPossibilities: this.getLegalAttackMovesForPieceFactory(
             sq,
             this.logic,
             this.turn + 1,
@@ -683,7 +806,8 @@ export class Board {
       .flatMap((s) => s)
       .filter(
         (sq) =>
-          sq.SquareHasPiece() && sq?.piece?.pieceColor === PieceColor.WHITE
+          sq.SquareHasPiece() &&
+          sq?.piece?.pieceColor === PieceColor.WHITE
       );
   };
 
@@ -692,13 +816,10 @@ export class Board {
     logic: PieceLogicService,
     turn: number
   ) => {
-    const whitePieces: Square[] = this.GetWhitePieces(board);
-    return whitePieces.reduce((acc, cur, idx) => {
-      return [
-        ...acc,
-        ...getLegalAttackMovesForPieceFactory(cur, logic, turn, board),
-      ];
-    }, [] as Square[]);
+    
+    const whiteAttacks = Array.from(this.whitePieceAndAttacksCache.values()).flat();
+
+    return [...whiteAttacks];
   };
 
   public getAllBlackAttackingMoves = (
@@ -706,13 +827,10 @@ export class Board {
     logic: PieceLogicService,
     turn: number
   ) => {
-    const blackPieces: Square[] = this.GetBlackPieces(board);
-    return blackPieces.reduce((acc, cur, idx) => {
-      return [
-        ...acc,
-        ...getLegalAttackMovesForPieceFactory(cur, logic, turn, board),
-      ];
-    }, [] as Square[]);
+    
+    const blackAttacks = Array.from(this.blackPieceAndAttacksCache.values()).flat();
+
+    return [...blackAttacks];
   };
 
   public GetBlackPieces = (board: Square[][]) => {
@@ -720,7 +838,101 @@ export class Board {
       .flatMap((s) => s)
       .filter(
         (sq) =>
-          sq.SquareHasPiece() && sq?.piece?.pieceColor === PieceColor.BLACK
+          sq.SquareHasPiece() &&
+          sq?.piece?.pieceColor === PieceColor.BLACK
       );
+  };
+
+  public getKingMovesV2 = (
+    node: Square | undefined
+  ): Square[] => {
+
+
+      if (!node) return [];
+
+      const kingColor = this.logic.IsWhiteKing(node) ? "white" : "black";
+
+      const surroundingSquares = [
+        node.forward,
+        node.back,
+        node.left,
+        node.right,
+        node.forward?.left,
+        node.forward?.right,
+        node.back?.left,
+        node.back?.right,
+      ].filter((sq): sq is Square => !!sq);
+
+      const legalMoves: Square[] = [];
+
+      const bd = this;
+
+      for (const target of surroundingSquares) {
+        // Can't capture same color
+        if (!this.logic.pieceIsOtherColor(node, target)) continue;
+
+        // Simulate the move
+        const from = node.mathematicalCoordinate;
+        const to = target.mathematicalCoordinate;
+
+        const move = bd.craftMove(from, to, bd, true);
+        this.makeMove(move);
+
+        //console.log(kingColor);
+
+        const stillSafe =
+          kingColor === "white"
+            ? !bd.logic.IsWhiteInCheck(bd)
+            : !bd.logic.IsBlackInCheck(bd);
+
+        bd.undoMove(move);
+
+        if (stillSafe) {
+          legalMoves.push(target);
+        }
+      }
+     console.log(legalMoves);
+
+      return legalMoves;
+  };
+
+  public getLegalAttackMovesForPieceFactory = (
+    node: Square,
+    logic: PieceLogicService,
+    turn: number,
+    board: Square[][]
+  ) => {
+    const piece = node?.piece as Piece;
+    const color = node?.piece?.pieceColor as PieceColor;
+    // console.log("I'm finding legal moves for ", color);
+    const isWhite = color === PieceColor.WHITE;
+
+    // console.log(piece.pieceName);
+    switch (piece.pieceName) {
+      case PieceNames.POND: {
+        return isWhite
+          ? getWhitePondMoves(node, logic, turn)
+          : getBlackPondMoves(node, logic, turn);
+      }
+      case PieceNames.KNIGHT: {
+        return getKnightMoves(node);
+      }
+      case PieceNames.BISHOP: {
+        return getBishopMoves(node, logic);
+      }
+      case PieceNames.ROOK: {
+        return getRookMoves(node, logic);
+      }
+      case PieceNames.QUEEN: {
+        return getQueenMoves(node, logic);
+      }
+      case PieceNames.KING: {
+        // console.log("legal Kings moves");
+        return this.getKingMovesV2(node);
+      }
+      default: {
+        return [];
+      }
+    }
   };
 }
