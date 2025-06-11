@@ -1,4 +1,4 @@
-import { Move, MoveState } from "./Move";
+import { MoveState } from "./Move";
 
 export class ChessMoveBuffer {
   private undoStack: MoveState[] = [];
