@@ -100,10 +100,16 @@ export const EndGameHandler = (
 
     const isInsuficientMaterial = chessBoard.logic.InsuficentMaterial(chessBoard);
 
-    console.log(isInsuficientMaterial)
+    //console.log(isInsuficientMaterial)
 
     if (isInsuficientMaterial) {
       console.log(" Insuficient Material Stalemate ");
+    }
+
+    const threeFoldRepition = chessBoard.logic.IsThreeFoldRepition(chessBoard);
+
+    if (threeFoldRepition) {
+      console.log("three fold repition - STALEMATE - ");
     }
   }
 };

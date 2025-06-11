@@ -839,7 +839,7 @@ export class PieceLogicService {
   };
 
   public IsStaleMate = (pieceColor: PieceColor, board: Board) => {
-    console.log("checking stalemate for:  " + pieceColor);
+    // console.log("checking stalemate for:  " + pieceColor);
     return pieceColor === PieceColor.WHITE
       ? this.WhiteStaleMate(board)
       : this.BlackStaleMate(board);
@@ -854,7 +854,9 @@ export class PieceLogicService {
 
       const otherPieceAm = otherPieces.length === 1;
       const otherKnight = otherPieces.find(
-        (sq) => sq.piece?.pieceName === PieceNames.BISHOP || sq.piece?.pieceName === PieceNames.KNIGHT
+        (sq) =>
+          sq.piece?.pieceName === PieceNames.BISHOP ||
+          sq.piece?.pieceName === PieceNames.KNIGHT
       );
 
       return onlyKing && otherPieceAm && otherKnight;
@@ -863,7 +865,7 @@ export class PieceLogicService {
     const whitePieces = Array.from(chessBoard.whitePieceAndAttacksCache.keys());
     const blackPieces = Array.from(chessBoard.blackPieceAndAttacksCache.keys());
 
-    console.log(whitePieces);
+    // console.log(whitePieces);
 
     // king scenario
     if (whitePieces.length === 0 && blackPieces.length === 0) return true;
@@ -877,5 +879,18 @@ export class PieceLogicService {
     if (checkBlack) return true;
 
     return false;
+  };
+
+  public IsThreeFoldRepition = (chessBoard: Board) => {
+    const hasHistory = Array.from(chessBoard.positionHistory.entries());
+    console.log(hasHistory);
+    const whiteTurn = hasHistory.find(
+      ([s, n]) => n === 3 && s.includes("white-turn")
+    );
+    const blackTurn = hasHistory.find(
+      ([s, n]) => n === 3 && s.includes("black-turn")
+    );
+
+    return whiteTurn && blackTurn;
   };
 }

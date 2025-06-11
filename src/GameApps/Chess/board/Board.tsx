@@ -97,6 +97,8 @@ export class Board {
   public blackPieceAndAttacksCache = new Map<Square, Square[]>();
   public whitePieceAndAttacksCache = new Map<Square, Square[]>();
 
+  public positionHistory = new Map<string, number>();
+
   // public currentSelectedSquare: currentSelectedChessSquare = null;
 
   constructor() {
@@ -135,6 +137,22 @@ export class Board {
   };
   
   */
+
+  public undoLastPositionHistory = () => {
+    const hash = this.generateHash();
+    const count = this.positionHistory.get(hash) || 1;
+    if (count <= 1) {
+      this.positionHistory.delete(hash);
+    } else {
+      this.positionHistory.set(hash, count - 1);
+    }
+  };
+
+  public updatePositionHistory = () => {
+    const hash = this.generateHash();
+    const count = this.positionHistory.get(hash) || 0;
+    this.positionHistory.set(hash, count+1);
+  };
 
   public reCacheWhitePieces = () => {
     const whitePieces = this.getAllSquaresWhoHavePieceAndColor(
@@ -361,8 +379,6 @@ export class Board {
     const node = getNode(coordiante, this.board) as Square;
     const bd = this;
     let sqs: Square[] = this.getKingMovesV2(node);
-   
-
 
     const specialMoves = node?.piece?.IsWhite()
       ? getKingMovesSpecialWhite(node, bd, this.turn)
@@ -552,6 +568,7 @@ export class Board {
     this.reCacheWhitePieces();
     this.reCacheBlackPieces();
 
+    this.updatePositionHistory();
     this.incrementTurn(); // increment the game
   };
 
@@ -604,6 +621,7 @@ export class Board {
     this.reCacheWhitePieces();
     this.reCacheBlackPieces();
 
+    this.undoLastPositionHistory();
     this.decrementTurn(); // decrement the game
   };
 
@@ -741,7 +759,10 @@ export class Board {
   ) => {
     return board.flatMap((sq) =>
       sq.filter(
-        (s) => s?.SquareHasPiece() && s.piece?.pieceColor === pieceColor && s.piece.pieceName !== PieceNames.KING
+        (s) =>
+          s?.SquareHasPiece() &&
+          s.piece?.pieceColor === pieceColor &&
+          s.piece.pieceName !== PieceNames.KING
       )
     );
   };
@@ -806,8 +827,7 @@ export class Board {
       .flatMap((s) => s)
       .filter(
         (sq) =>
-          sq.SquareHasPiece() &&
-          sq?.piece?.pieceColor === PieceColor.WHITE
+          sq.SquareHasPiece() && sq?.piece?.pieceColor === PieceColor.WHITE
       );
   };
 
@@ -816,8 +836,9 @@ export class Board {
     logic: PieceLogicService,
     turn: number
   ) => {
-    
-    const whiteAttacks = Array.from(this.whitePieceAndAttacksCache.values()).flat();
+    const whiteAttacks = Array.from(
+      this.whitePieceAndAttacksCache.values()
+    ).flat();
 
     return [...whiteAttacks];
   };
@@ -827,8 +848,9 @@ export class Board {
     logic: PieceLogicService,
     turn: number
   ) => {
-    
-    const blackAttacks = Array.from(this.blackPieceAndAttacksCache.values()).flat();
+    const blackAttacks = Array.from(
+      this.blackPieceAndAttacksCache.values()
+    ).flat();
 
     return [...blackAttacks];
   };
@@ -838,62 +860,57 @@ export class Board {
       .flatMap((s) => s)
       .filter(
         (sq) =>
-          sq.SquareHasPiece() &&
-          sq?.piece?.pieceColor === PieceColor.BLACK
+          sq.SquareHasPiece() && sq?.piece?.pieceColor === PieceColor.BLACK
       );
   };
 
-  public getKingMovesV2 = (
-    node: Square | undefined
-  ): Square[] => {
+  public getKingMovesV2 = (node: Square | undefined): Square[] => {
+    if (!node) return [];
 
+    const kingColor = this.logic.IsWhiteKing(node) ? "white" : "black";
 
-      if (!node) return [];
+    const surroundingSquares = [
+      node.forward,
+      node.back,
+      node.left,
+      node.right,
+      node.forward?.left,
+      node.forward?.right,
+      node.back?.left,
+      node.back?.right,
+    ].filter((sq): sq is Square => !!sq);
 
-      const kingColor = this.logic.IsWhiteKing(node) ? "white" : "black";
+    const legalMoves: Square[] = [];
 
-      const surroundingSquares = [
-        node.forward,
-        node.back,
-        node.left,
-        node.right,
-        node.forward?.left,
-        node.forward?.right,
-        node.back?.left,
-        node.back?.right,
-      ].filter((sq): sq is Square => !!sq);
+    const bd = this;
 
-      const legalMoves: Square[] = [];
+    for (const target of surroundingSquares) {
+      // Can't capture same color
+      if (!this.logic.pieceIsOtherColor(node, target)) continue;
 
-      const bd = this;
+      // Simulate the move
+      const from = node.mathematicalCoordinate;
+      const to = target.mathematicalCoordinate;
 
-      for (const target of surroundingSquares) {
-        // Can't capture same color
-        if (!this.logic.pieceIsOtherColor(node, target)) continue;
+      const move = bd.craftMove(from, to, bd, true);
+      this.makeMove(move);
 
-        // Simulate the move
-        const from = node.mathematicalCoordinate;
-        const to = target.mathematicalCoordinate;
+      //console.log(kingColor);
 
-        const move = bd.craftMove(from, to, bd, true);
-        this.makeMove(move);
+      const stillSafe =
+        kingColor === "white"
+          ? !bd.logic.IsWhiteInCheck(bd)
+          : !bd.logic.IsBlackInCheck(bd);
 
-        //console.log(kingColor);
+      bd.undoMove(move);
 
-        const stillSafe =
-          kingColor === "white"
-            ? !bd.logic.IsWhiteInCheck(bd)
-            : !bd.logic.IsBlackInCheck(bd);
-
-        bd.undoMove(move);
-
-        if (stillSafe) {
-          legalMoves.push(target);
-        }
+      if (stillSafe) {
+        legalMoves.push(target);
       }
-     console.log(legalMoves);
+    }
+    // console.log(legalMoves);
 
-      return legalMoves;
+    return legalMoves;
   };
 
   public getLegalAttackMovesForPieceFactory = (
@@ -934,5 +951,18 @@ export class Board {
         return [];
       }
     }
+  };
+
+  public generateHash = () => {
+    const squares = this.board.flatMap((s) => s);
+    let hash = squares.reduce((acc, cur, idx) => {
+      return (acc += cur?.SquareHasPiece()
+        ? `${cur.piece?.pieceName}-${cur.piece?.pieceColor}-${cur.mathematicalCoordinate}`
+        : `--${cur.mathematicalCoordinate}`);
+    }, "");
+
+    hash += `|turn:${(this.turn % 2 === 0 ? 'white-turn' : 'black-turn')}`;
+
+    return hash;
   };
 }
