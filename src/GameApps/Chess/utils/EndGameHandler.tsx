@@ -79,7 +79,6 @@ export const EndGameHandler = (
         5. Mutual Agreement (manual)
         Not programmatically enforced unless you're building a GUI/UI interface for draw offers.
   
-  
   */
 
     // will need to check opposite player
@@ -98,7 +97,8 @@ export const EndGameHandler = (
       console.log(otherPlayerBeingChecked + " Has no moves, STALEMATE.");
     }
 
-    const isInsuficientMaterial = chessBoard.logic.InsuficentMaterial(chessBoard);
+    const isInsuficientMaterial =
+      chessBoard.logic.InsuficentMaterial(chessBoard);
 
     //console.log(isInsuficientMaterial)
 
@@ -110,6 +110,11 @@ export const EndGameHandler = (
 
     if (threeFoldRepition) {
       console.log("three fold repition - STALEMATE - ");
+    }
+    const fiftyMovePondRule = chessBoard.logic.fiftyPondMoveRule(chessBoard);
+
+    if (fiftyMovePondRule) {
+      console.log("50 move pond rule - STALEMATE - ");
     }
   }
 };

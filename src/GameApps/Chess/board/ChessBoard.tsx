@@ -179,9 +179,12 @@ const BoardPiece = (props: any) => {
                 boardobj.undoMove(lastMove);
               }
 
-              const chessBoard = clearBoard(boardobj);
+              const chessBoard = clearBoard(boardobj) as Board;
+              const hash = chessBoard.generateHash(chessBoard, chessBoard.turn);
+              // console.log(hash);
+              chessBoard.updatePositionHistory(hash);
               updateBoardAndSelectedPiece(chessBoard, null);
-
+              //console.log(chessBoard.turn);
             // theoretically we could test if pond moved and hit the end row
             // then trigger a popup.
             if (craftMove.special.promotion) {

@@ -4,7 +4,8 @@ import { Piece } from "../pieces/Piece";
 export interface MoveState {
   from: MathCoordinate;
   to: MathCoordinate;
-
+  IsPond: boolean;
+  previousFiftyMoveStepCounter: number;
   movedPiece: Piece;
   previousMovedPieceState: Piece;
   capturedPiece: Piece | null | undefined;

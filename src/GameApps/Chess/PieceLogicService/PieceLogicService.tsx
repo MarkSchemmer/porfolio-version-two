@@ -883,7 +883,7 @@ export class PieceLogicService {
 
   public IsThreeFoldRepition = (chessBoard: Board) => {
     const hasHistory = Array.from(chessBoard.positionHistory.entries());
-    console.log(hasHistory);
+    // console.log(hasHistory);
     const whiteTurn = hasHistory.find(
       ([s, n]) => n === 3 && s.includes("white-turn")
     );
@@ -893,4 +893,9 @@ export class PieceLogicService {
 
     return whiteTurn && blackTurn;
   };
+
+  public fiftyPondMoveRule = (chessBoard: Board) => {
+      // console.log(chessBoard.pondFiftyMoveRule);
+      return chessBoard.pondFiftyMoveRule === 50;
+  }
 }

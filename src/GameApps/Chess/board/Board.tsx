@@ -99,6 +99,8 @@ export class Board {
 
   public positionHistory = new Map<string, number>();
 
+  public pondFiftyMoveRule: number = 0;
+
   // public currentSelectedSquare: currentSelectedChessSquare = null;
 
   constructor() {
@@ -138,8 +140,9 @@ export class Board {
   
   */
 
-  public undoLastPositionHistory = () => {
-    const hash = this.generateHash();
+
+
+  public undoLastPositionHistory = (hash: string) => {
     const count = this.positionHistory.get(hash) || 1;
     if (count <= 1) {
       this.positionHistory.delete(hash);
@@ -148,8 +151,7 @@ export class Board {
     }
   };
 
-  public updatePositionHistory = () => {
-    const hash = this.generateHash();
+  public updatePositionHistory = (hash: string) => {
     const count = this.positionHistory.get(hash) || 0;
     this.positionHistory.set(hash, count+1);
   };
@@ -409,7 +411,7 @@ export class Board {
   ) => {
     const fromNode = getNode(from, this.board) as Square;
     const toNode = getNode(to, this.board) as Square;
-
+    const IsPond = fromNode.piece?.pieceName === PieceNames.POND;
     const move: MoveState = {
       from,
       to,
@@ -417,6 +419,8 @@ export class Board {
       previousTurn: this.turn,
       currentTurn: this.turn + 1,
       movedPiece: fromNode?.piece as Piece,
+      IsPond,
+      previousFiftyMoveStepCounter: this.pondFiftyMoveRule,
       previousMovedPieceState: (fromNode?.piece as Piece)?.clone(),
       capturedPiece: toNode?.piece?.clone(),
       special: {
@@ -528,8 +532,8 @@ export class Board {
     return move;
   };
 
-  public makeMove = (move: MoveState) => {
-    const { from, to, movedPiece, capturedPiece, currentTurn, special } = move;
+  public makeMove = (move: MoveState, pondPromotion:boolean = false) => {
+    const { from, to, movedPiece, capturedPiece, currentTurn, special, IsPond } = move;
 
     const fromNode = getNode(from, this.board) as Square;
     const toNode = getNode(to, this.board) as Square;
@@ -565,14 +569,21 @@ export class Board {
       }
     }
 
+    if (IsPond === false && capturedPiece?.pieceName !== PieceNames.POND) {
+      this.pondFiftyMoveRule += 1;
+    } else {
+      this.pondFiftyMoveRule = 0;
+    }
+
     this.reCacheWhitePieces();
     this.reCacheBlackPieces();
 
-    this.updatePositionHistory();
-    this.incrementTurn(); // increment the game
+    // this.updatePositionHistory();
+    if (pondPromotion === false)
+      this.incrementTurn(); // increment the game
   };
 
-  public undoMove = (move: MoveState) => {
+  public undoMove = (move: MoveState) => { 
     const {
       from,
       to,
@@ -581,6 +592,8 @@ export class Board {
       currentTurn,
       special,
       previousMovedPieceState,
+      IsPond,
+      previousFiftyMoveStepCounter
     } = move;
 
     const toNode = getNode(from, this.board) as Square;
@@ -618,94 +631,14 @@ export class Board {
       }
     }
 
+
+    this.pondFiftyMoveRule = previousFiftyMoveStepCounter;
+
     this.reCacheWhitePieces();
     this.reCacheBlackPieces();
 
-    this.undoLastPositionHistory();
+    // this.undoLastPositionHistory();
     this.decrementTurn(); // decrement the game
-  };
-
-  public movePieceFromTo = (from: MathCoordinate, to: MathCoordinate) => {
-    const fromNode = getNode(from, this.board);
-    const toNode = getNode(to, this.board);
-    // check the enPassant
-    const [canEnPassantLeft, canEnPassantRight] =
-      this.logic.shouldNotifySquaresLeftAndRightOfEnPassant(fromNode, toNode);
-    // write logic here for determing if it's a doulbe move pond
-    // if it is it's going to tag left square and right square if it's
-    // a pond and then it's going to flag pond piece type that they can en-passant
-    // and on what turn of the game it can so if we are on step 25, then the opposing
-    // player can en-passant step 26 and only on step 26, if a piece is there then it
-    // can take it if it's the other color
-
-    const leftNode = toNode?.left;
-    const rightNode = toNode?.right;
-
-    if (
-      canEnPassantLeft &&
-      this.logic.isValue(leftNode) &&
-      leftNode?.SquareHasPiece()
-    ) {
-      let pond = leftNode?.piece as Piece;
-      pond.enPassantDetails.CanEnPassant = true;
-      pond.enPassantDetails.turn = this.turn + 1;
-      // console.log(pond);
-    }
-
-    if (
-      canEnPassantRight &&
-      this.logic.isValue(rightNode) &&
-      rightNode?.SquareHasPiece()
-    ) {
-      let pond = rightNode?.piece as Piece;
-      pond.enPassantDetails.CanEnPassant = true;
-      pond.enPassantDetails.turn = this.turn + 1;
-      // console.log(pond);
-    }
-
-    // when a piece moves we need to flip that boolean
-    if (fromNode) fromNode.piece?.notifyPieceHasMoved();
-
-    // if pond is doing a doulbe move we need to set that turn #
-    // so later when doing en-passant logic we can have better tests...
-    if (this.logic.IsPondDoubleMove(fromNode as Square, toNode as Square)) {
-      fromNode?.piece?.setPondDoubleMoveTurn(this.turn);
-    }
-
-    if (toNode) {
-      const enPassantCheckRight =
-        toNode.IsEnPassantMove &&
-        this.logic.IsPondMoveForwardRight(fromNode as Square, toNode as Square);
-      const enPassantCheckLeft =
-        toNode.IsEnPassantMove &&
-        this.logic.IsPondMoveForwardLeft(fromNode as Square, toNode as Square);
-
-      if (enPassantCheckRight) {
-        // need to null out right piece // right node is now empty.
-        fromNode?.right?.makeSquareEmpty();
-        fromNode?.piece?.ResetEnPassantDetails();
-        toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
-      } else if (enPassantCheckLeft) {
-        // need to null out right piece // right node is now empty.
-        fromNode?.left?.makeSquareEmpty();
-        fromNode?.piece?.ResetEnPassantDetails();
-        toNode.piece?.ResetEnPassantDetails(); // reset deails of en-passant
-      }
-
-      // need to check the left side...
-
-      toNode.SetNodeWithNewPiece(fromNode?.piece);
-    }
-
-    if (fromNode) fromNode.makeSquareEmpty();
-
-    // check if a pond hit 8 line or a 1 line depending on the
-    // piece color -> trigger the alert window selection so user has to select a new piece
-    // have the clicks options and just click which one
-    // Queen, Rook, Knight, Bishop
-
-    // incerement the turn so we know we made a move on our on the next...
-    this.incrementTurn();
   };
 
   public notifyUserOfMoveableSquaresAndSelectedPiece = (
@@ -749,7 +682,7 @@ export class Board {
     };
 
     this.moveBuffer.recordMove(newMoveToRecord);
-    this.makeMove(newMoveToRecord);
+    this.makeMove(newMoveToRecord, true);
     squareToPromote?.SetNodeWithNewPiece(pieceToBePromotedTo);
   };
 
@@ -893,7 +826,8 @@ export class Board {
       const to = target.mathematicalCoordinate;
 
       const move = bd.craftMove(from, to, bd, true);
-      this.makeMove(move);
+      
+      bd.makeMove(move);
 
       //console.log(kingColor);
 
@@ -953,15 +887,18 @@ export class Board {
     }
   };
 
-  public generateHash = () => {
-    const squares = this.board.flatMap((s) => s);
+  public generateHash = (chessBoard: Board, turn: number) => {
+    const squares = chessBoard.board.flatMap((s) => s);
+    // console.log(squares.length);
     let hash = squares.reduce((acc, cur, idx) => {
       return (acc += cur?.SquareHasPiece()
         ? `${cur.piece?.pieceName}-${cur.piece?.pieceColor}-${cur.mathematicalCoordinate}`
         : `--${cur.mathematicalCoordinate}`);
     }, "");
-
-    hash += `|turn:${(this.turn % 2 === 0 ? 'white-turn' : 'black-turn')}`;
+    // onsole.log(this.turn);
+    const PlayersTurn = (turn % 2 === 0 ? 'white-turn' : 'black-turn');
+    // console.log(turn);
+    hash += `|turn:${PlayersTurn}`;
 
     return hash;
   };
