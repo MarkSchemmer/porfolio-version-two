@@ -6,6 +6,7 @@ import { getBoard, getMoveHistory, UpdateChessBoard, updateSelectedPiece } from 
 import { Board } from "../board/Board";
 import { Square } from "../board/Square";
 import { MoveState } from "../ChessMoveBuffer/Move";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 // import "../ChessDashboard/ChessDashboard.scss";
 
 export function ChessDashboard() {
@@ -32,7 +33,7 @@ export function ChessDashboard() {
         marginRight: '100px',
         borderRadius: '10px'
       }}>
-        <FontAwesomeIcon icon={faArrowLeft} style={{
+        <FontAwesomeIcon icon={faArrowLeft as IconProp} style={{
             height: '100px',
             marginRight: '50px',
             padding: '25px',
@@ -47,7 +48,7 @@ export function ChessDashboard() {
             }
         }}
         />
-        <FontAwesomeIcon icon={faArrowRight} style={{
+        <FontAwesomeIcon icon={faArrowRight as IconProp} style={{
             height: '100px', marginLeft: '50px',
             padding: '25px', border: '1px solid black'
         }}

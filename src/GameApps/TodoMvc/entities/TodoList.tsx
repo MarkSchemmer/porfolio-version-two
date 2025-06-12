@@ -8,6 +8,7 @@ import { TodoOperations } from './TodoOperations';
 import { faCircle, faCircleCheck, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TodoFilter, selectFilter } from '../../../store/slices/todoFilterSlice';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 
 const CompleteTodoEdit = (props: {todo: Todo, todoStyles : React.CSSProperties}) => {
@@ -32,8 +33,8 @@ const CompleteTodoEdit = (props: {todo: Todo, todoStyles : React.CSSProperties})
     }
 
     return (
-        props.todo.completed ? <FontAwesomeIcon style={CompletedCircle} icon={faCircleCheck} onClick={CompletedFalse} /> 
-        : <FontAwesomeIcon icon={faCircle}  style={styles} onClick={CompletedTrue} /> 
+        props.todo.completed ? <FontAwesomeIcon style={CompletedCircle} icon={faCircleCheck as IconProp} onClick={CompletedFalse} /> 
+        : <FontAwesomeIcon icon={faCircle as IconProp}  style={styles} onClick={CompletedTrue} /> 
     )
 }
 
@@ -53,7 +54,7 @@ const NoneEditableDisplayTodo = (props: {todo: Todo, todoStyles : React.CSSPrope
     return (
         <>
             <button className='complete-button' onClick={deleteTodoById}>
-            <FontAwesomeIcon icon={faTrash} />
+            <FontAwesomeIcon icon={faTrash as IconProp} />
             </button>
             <CompleteTodoEdit todo={props.todo} todoStyles={{}} />
             <span contentEditable={props.todo.canEdit} style={additionalStyles} className={"todo-text " + (props.todo.completed ? " line-slash " : "")} >
@@ -118,7 +119,7 @@ const TodoComponent = (props: {todo: Todo}) => {
           { props.todo.canEdit === false ?  <NoneEditableDisplayTodo todo={props.todo} todoStyles={todoStyles} /> : 
                     <>
                       <button className='complete-button' onClick={deleteTodoById}>
-                      <FontAwesomeIcon icon={faTrash} />
+                      <FontAwesomeIcon icon={faTrash as IconProp} />
                       </button>
                         <GenericInput
                             operationForInput={TodoOperations.UpdateTodo}
