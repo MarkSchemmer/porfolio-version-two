@@ -6,7 +6,6 @@ import { CanvasProps } from './CanvasProps';
 
 const Canvas = (props:CanvasProps) => {  
   const { Instructions, handleClick, options, ...rest } = props;
-  const { context, ...moreConfig } = options;
   const canvasRef = useCanvas(props);
   options.canvasRef = canvasRef;
   return <canvas onClick={(e) => {

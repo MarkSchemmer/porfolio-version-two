@@ -587,12 +587,9 @@ export class Board {
     const {
       from,
       to,
-      movedPiece,
       capturedPiece,
-      currentTurn,
       special,
       previousMovedPieceState,
-      IsPond,
       previousFiftyMoveStepCounter
     } = move;
 
@@ -610,7 +607,7 @@ export class Board {
     toNode.SetNodeWithNewPiece(previousMovedPieceState); // move the piece from to, toNode...
 
     if (special) {
-      const { enPassantCapture, castleKing, pondDoubleMove, promotion } =
+      const { enPassantCapture, castleKing } =
         special;
 
       if (enPassantCapture) {
