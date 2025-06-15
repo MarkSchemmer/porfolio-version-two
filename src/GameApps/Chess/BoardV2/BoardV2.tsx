@@ -42,7 +42,8 @@ export const BoardV2 = () => {
             maxWidth: "min(80vmin, 80vh)",
             aspectRatio: "1",
             border: "4px solid black",
-            marginRight: '25px'
+            marginRight: '25px',
+            minWidth: '400px'
           }}
         >
           {createBoard()}
