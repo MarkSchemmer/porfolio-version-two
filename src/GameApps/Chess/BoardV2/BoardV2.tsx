@@ -1,6 +1,6 @@
 import React from "react";
 import { ChessDashboard } from "../ChessDashboard/ChessDashboard";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 
 export const BoardV2 = () => {
   const rows = 8;
