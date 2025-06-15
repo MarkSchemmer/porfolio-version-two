@@ -68,6 +68,7 @@
     is cheating or not then if it is we can pause the game, and ban the player for a 
     6 month period. 
 */
+import { BoardV2 } from "./BoardV2/BoardV2";
 import { ChessDashboard } from "./ChessDashboard/ChessDashboard";
 import { TestingDashboard } from "./TestingDashboard/TestingDashBoard";
 import { ChessBoard } from "./board/ChessBoard";
@@ -76,9 +77,10 @@ import { ChessBoard } from "./board/ChessBoard";
 export const ChessApp = () => {
   return (
     <>
-      <TestingDashboard />
-      <ChessDashboard />
-      <ChessBoard />
+      {/* <TestingDashboard /> */}
+      {/* <ChessDashboard /> */}
+      {/* <ChessBoard /> */}
+      <BoardV2 />
     </>
   );
 };

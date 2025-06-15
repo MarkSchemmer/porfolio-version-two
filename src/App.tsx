@@ -25,9 +25,14 @@ import { ChessApp } from './GameApps/Chess/Chess';
 const Layout = () => {
   return (
     <ChakraProvider>
-      <Box>
+      <Box flexDirection={"column"} minHeight={'100vh'}>
           <Header />
+          <Box style={{
+           margin: '100px',
+           // maxHeight: '800px'
+          }}>
             <Outlet />
+            </Box>
           <Footer />
       </Box>
     </ChakraProvider>

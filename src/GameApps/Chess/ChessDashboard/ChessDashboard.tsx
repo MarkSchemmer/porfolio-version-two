@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,14 +24,8 @@ export function ChessDashboard() {
   return (
     <>
       <Box className="chess-dashboard" style={{
-        height: '500px',
-        width: '500px',
         border: '5px solid black', 
-        display: 'inline-block',
-        float: 'right',
-        marginTop: '100px',
-        marginRight: '100px',
-        borderRadius: '10px'
+        width: "45%",
       }}>
         <FontAwesomeIcon icon={faArrowLeft as IconProp} style={{
             height: '100px',

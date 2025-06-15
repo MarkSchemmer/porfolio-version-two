@@ -75,7 +75,7 @@ const StackMenu = () => {
 export default function Header() {
   const [isSmallerThan700] = useMediaQuery('(max-width: 700px)');
   return (
-        <Flex  direction={"column"}>
+        <Flex className="header-me" direction={"column"}>
            {isSmallerThan700 ? <DropDownMenu /> : <StackMenu />}       
         </Flex>
   );
