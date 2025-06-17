@@ -1,23 +1,22 @@
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 
 export default function Footer() {
     return (
-            <Flex   
-            style={{
-                position: 'absolute',
-                top: '100%',
-                marginTop: '100px'
-            }}
-        justify="center"
+            <Box   
 
-        align="center"
+            display={'flex'}
+            marginTop={'auto'}
+
         bg="blue.500"
         color="white"
         h={"100px"}
         width="100%">
-                    Porfolio - SS Engineers 
-            </Flex>
+            <Box>
+                Porfolio - SS Engineers 
+            </Box>
+                    
+            </Box>
 
     );
 }

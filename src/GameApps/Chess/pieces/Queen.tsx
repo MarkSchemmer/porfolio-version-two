@@ -11,12 +11,7 @@ export class BlackQueen extends Piece {
   }
 
   public draw = () => {
-    return (
-      <img
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
-        src={this.queenImg}
-      />
-    );
+    return <img style={this.pieceDisplayStyleProperties} src={this.queenImg} />;
   };
 }
 
@@ -28,11 +23,6 @@ export class WhiteQueen extends Piece {
   }
 
   public draw = () => {
-    return (
-      <img
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
-        src={this.queenImg}
-      />
-    );
+    return <img style={this.pieceDisplayStyleProperties} src={this.queenImg} />;
   };
 }

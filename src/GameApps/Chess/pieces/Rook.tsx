@@ -14,7 +14,7 @@ export class BlackRook extends Piece {
     return (
       <img
         alt="Black Rook"
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
+        style={this.pieceDisplayStyleProperties}
         src={this.rookImg}
       />
     );
@@ -32,7 +32,7 @@ export class WhiteRook extends Piece {
     return (
       <img
         alt="White Rook"
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
+        style={this.pieceDisplayStyleProperties}
         src={this.rookImg}
       />
     );

@@ -12,10 +12,7 @@ export class BlackBishop extends Piece {
 
   public draw = () => {
     return (
-      <img
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
-        src={this.bishopImg}
-      />
+      <img style={this.pieceDisplayStyleProperties} src={this.bishopImg} />
     );
   };
 }
@@ -29,10 +26,7 @@ export class WhiteBishop extends Piece {
 
   public draw = () => {
     return (
-      <img
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
-        src={this.bishopImg}
-      />
+      <img style={this.pieceDisplayStyleProperties} src={this.bishopImg} />
     );
   };
 }

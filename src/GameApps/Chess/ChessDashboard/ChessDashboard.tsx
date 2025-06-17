@@ -1,5 +1,10 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faPlus,
+  faStop,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,6 +17,7 @@ import { Board } from "../board/Board";
 import { Square } from "../board/Square";
 import { MoveState } from "../ChessMoveBuffer/Move";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { generateStandardBoard } from "../utils/Utils";
 // import "../ChessDashboard/ChessDashboard.scss";
 
 export function ChessDashboard() {
@@ -29,47 +35,91 @@ export function ChessDashboard() {
   return (
     <>
       <Box
+        display={"flex"}
+        flexDirection={"column"}
         className="chess-dashboard"
         style={{
           border: "5px solid black",
           width: "45%",
-          maxWidth: '500px'
+          maxWidth: "500px",
+          borderRadius: '5px'
         }}
       >
-        <FontAwesomeIcon
-          icon={faArrowLeft as IconProp}
-          style={{
-            height: "100px",
-            marginRight: "50px",
-            padding: "25px",
-            border: "1px solid black",
-          }}
-          onClick={() => {
-            console.log("undoing now.");
-            const lastUndo = boardobj.moveBuffer.undo();
-            if (boardobj.logic.isValue(lastUndo)) {
-              boardobj.undoMove(lastUndo as MoveState);
-              updateBoardAndSelectedPiece(boardobj, null);
-            }
-          }}
-        />
-        <FontAwesomeIcon
-          icon={faArrowRight as IconProp}
-          style={{
-            height: "100px",
-            marginLeft: "50px",
-            padding: "25px",
-            border: "1px solid black",
-          }}
-          onClick={() => {
-            console.log("redoing move");
-            const lastRedo = boardobj.moveBuffer.redo();
-            if (boardobj.logic.isValue(lastRedo)) {
-              boardobj.makeMove(lastRedo as MoveState);
-              updateBoardAndSelectedPiece(boardobj, null);
-            }
-          }}
-        />
+        <Box
+          display={"flex"}
+          justifyContent={"space-between"}
+          marginTop={"auto"}
+          className="control-panel"
+          style={{}}
+        >
+          {/* New game */}
+          <FontAwesomeIcon
+            onClick={() => {
+              dispatch(UpdateChessBoard(generateStandardBoard()));
+            }}
+            style={{
+              height: "50px",
+              width: "25%",
+              border: "3px solid black",
+              borderRadius: "5px",
+              padding: "5px",
+              margin: "1px",
+            }}
+            icon={faPlus as IconProp}
+          />
+
+          {/* Stop game or resign game */}
+          <FontAwesomeIcon
+            style={{
+              height: "50px",
+              width: "25%",
+              border: "3px solid black",
+              borderRadius: "5px",
+              padding: "5px",
+              margin: "1px",
+            }}
+            icon={faStop as IconProp}
+          />
+
+          <FontAwesomeIcon
+            icon={faArrowLeft as IconProp}
+            style={{
+              height: "50px",
+              width: "25%",
+              border: "3px solid black",
+              borderRadius: "5px",
+              padding: "5px",
+              margin: "1px",
+            }}
+            onClick={() => {
+              console.log("undoing now.");
+              const lastUndo = boardobj.moveBuffer.undo();
+              if (boardobj.logic.isValue(lastUndo)) {
+                boardobj.undoMove(lastUndo as MoveState);
+                updateBoardAndSelectedPiece(boardobj, null);
+              }
+            }}
+          />
+          <FontAwesomeIcon
+            icon={faArrowRight as IconProp}
+            style={{
+              height: "50px",
+              width: "25%",
+              border: "3px solid black",
+              borderRadius: "5px",
+              padding: "5px",
+              margin: "1px",
+            }}
+            onClick={() => {
+              console.log("redoing move");
+              const lastRedo = boardobj.moveBuffer.redo();
+              if (boardobj.logic.isValue(lastRedo)) {
+                boardobj.makeMove(lastRedo as MoveState);
+                updateBoardAndSelectedPiece(boardobj, null);
+              }
+            }}
+          />
+        </Box>
       </Box>
     </>
   );

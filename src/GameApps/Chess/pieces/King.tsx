@@ -11,12 +11,7 @@ export class BlackKing extends Piece {
   }
 
   public draw = () => {
-    return (
-      <img
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
-        src={this.kingImg}
-      />
-    );
+    return <img style={this.pieceDisplayStyleProperties} src={this.kingImg} />;
   };
 }
 
@@ -28,11 +23,6 @@ export class WhiteKing extends Piece {
   }
 
   public draw = () => {
-    return (
-      <img
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
-        src={this.kingImg}
-      />
-    );
+    return <img style={this.pieceDisplayStyleProperties} src={this.kingImg} />;
   };
 }

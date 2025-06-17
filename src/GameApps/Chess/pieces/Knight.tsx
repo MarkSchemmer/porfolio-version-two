@@ -12,10 +12,7 @@ export class BlackKnight extends Piece {
 
   public draw = () => {
     return (
-      <img
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
-        src={this.knightImg}
-      />
+      <img style={this.pieceDisplayStyleProperties} src={this.knightImg} />
     );
   };
 }
@@ -29,10 +26,7 @@ export class WhiteKnight extends Piece {
 
   public draw = () => {
     return (
-      <img
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
-        src={this.knightImg}
-      />
+      <img style={this.pieceDisplayStyleProperties} src={this.knightImg} />
     );
   };
 }

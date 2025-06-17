@@ -5,6 +5,9 @@ export type EnPassantDetails = {
   }
 
 export class Piece {
+    public pieceDisplayStyleProperties: React.CSSProperties = {
+        maxHeight: '70%'
+    }
     public pieceName: PieceNames;
     public pieceColor: PieceColor;
     public hasMoved: boolean = false;

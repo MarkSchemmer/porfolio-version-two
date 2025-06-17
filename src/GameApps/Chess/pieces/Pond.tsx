@@ -21,7 +21,7 @@ export class BlackPond extends Piece {
     return (
       <img
         alt="Black Pond"
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
+        style={this.pieceDisplayStyleProperties}
         src={this.pondImg}
       />
     );
@@ -44,7 +44,7 @@ export class WhitePond extends Piece {
     return (
       <img
         alt="White Pond"
-        style={{ height: "75px", marginLeft: "12px", marginTop: "5px" }}
+            style={this.pieceDisplayStyleProperties}
         src={this.pondImg}
       />
     );

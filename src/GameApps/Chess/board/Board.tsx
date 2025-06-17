@@ -43,7 +43,7 @@ import {
   PieceLogicService,
 } from "../PieceLogicService/PieceLogicService";
 import { Piece } from "../pieces/Piece";
-import { SettingsService } from "../SettingsService/SettingsService";
+import  SettingsService  from "../SettingsService/SettingsService";
 import {
   connectAllSquares,
   generateBoardOfSquares,
@@ -87,7 +87,7 @@ export class Board {
 
   public triggerUpdate: any = Date.now();
 
-  public settingsService: SettingsService = new SettingsService();
+  public settingsService = SettingsService;
   public logic: PieceLogicService = new PieceLogicService();
 
   public turn: number = 0;
