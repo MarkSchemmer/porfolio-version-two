@@ -34,37 +34,38 @@ const BoardPiece = (props: {
   const [x, y] = props.xy;
   const bottomRight = props.bottomRight;
   return (
-<Box width={'100%'} height={'100%'}>
-  <Box padding={"5px"}>
-    {y === 1 ? (
-      <Box style={{ position: "absolute", left: 1, fontWeight: 'bolder' }}>{x}</Box>
-    ) : null}
+    <Box width={"100%"} height={"100%"}>
+      <Box padding={"5px"}>
+        {y === 1 ? (
+          <Box style={{ position: "absolute", left: 1, fontWeight: "bolder" }}>
+            {x}
+          </Box>
+        ) : null}
 
         {x === 1 ? (
-      <Box
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 1,
-          fontWeight: 'bolder'
-          
-        }}
-      >
-        {bottomRight}
-      </Box>
-    ) : null}
+          <Box
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 1,
+              fontWeight: "bolder",
+            }}
+          >
+            {bottomRight}
+          </Box>
+        ) : null}
 
-    {props.sq?.SquareHasPiece()
-      ? (props as any)?.sq?.piece?.draw()
-      : null}
-  </Box>
-</Box>
+        {props.sq?.SquareHasPiece() ? (props as any)?.sq?.piece?.draw() : null}
+      </Box>
+    </Box>
   );
 };
 
 export const BoardV2 = () => {
   // will update the input into Board later to be proper.
   const boardobj = useSelector(getBoard) as Board;
+  const playerToMove =
+    boardobj.turn % 2 === 0 ? PieceColor.WHITE : PieceColor.BLACK;
   const isOpen = useSelector(getPondPromotion);
   const chB = boardobj.board;
   const dispatch = useDispatch();
@@ -92,7 +93,7 @@ export const BoardV2 = () => {
             border: "4px solid black",
             marginRight: "25px",
             minWidth: "400px",
-            borderRadius: '5px'
+            borderRadius: "5px",
           }}
         >
           {boardobj.board
@@ -149,7 +150,7 @@ export const BoardV2 = () => {
                         chessBoard,
                         currentSquareClick
                       );
-                    } else if (currentSquareClick.canMoveHere()) {
+                    } else if (currentSquareClick.canMoveHere() && selectedPiece?.piece?.pieceColor === playerToMove) {
                       // in future we need to know also that
                       // if we move fromTo and it causes check then the method is cancelled
                       // And we won't update the board but reset it to current place
@@ -243,7 +244,7 @@ export const BoardV2 = () => {
                     backgroundColor: bgColor,
                     width: "100%",
                     height: "100%",
-                    position: 'relative'
+                    position: "relative",
                   }}
                 >
                   <BoardPiece

@@ -17,12 +17,15 @@ import { Board } from "../board/Board";
 import { Square } from "../board/Square";
 import { MoveState } from "../ChessMoveBuffer/Move";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { generateStandardBoard } from "../utils/Utils";
+import { generateStandardBoard, PieceColor } from "../utils/Utils";
 // import "../ChessDashboard/ChessDashboard.scss";
 
 export function ChessDashboard() {
   const dispatch = useDispatch();
   const boardobj = useSelector(getBoard) as Board;
+
+  const playerToMove =
+    boardobj.turn % 2 === 0 ? PieceColor.WHITE : PieceColor.BLACK;
 
   // if we select square and it has a piece we populate with this square.
   const selectedPiece = useSelector(getMoveHistory).cur as Square | null;
@@ -42,9 +45,37 @@ export function ChessDashboard() {
           border: "5px solid black",
           width: "45%",
           maxWidth: "500px",
-          borderRadius: '5px'
+          borderRadius: "5px",
         }}
       >
+        <Box
+          style={{
+            fontWeight: "bolder",
+            padding: "10px",
+            textAlign: "center",
+            textDecoration: "underline",
+          }}
+        >
+          {playerToMove} to Move
+        </Box>
+
+        <Box
+          style={{
+            border: "1px solid black",
+            flex: "1 1 auto",
+            width: "90%",
+            margin: "auto",
+            marginBottom: "10px",
+            overflowY: "auto",
+            maxHeight: "calc(min(80vmin, 80vh) - 135px)", // matches board max height minus padding
+          }}
+          className="chess-notation"
+        >
+          {boardobj.moveBuffer.Moves.map((move: MoveState) => {
+            return <Box>{move.currentTurn}: </Box>;
+          })}
+        </Box>
+
         <Box
           display={"flex"}
           justifyContent={"space-between"}
