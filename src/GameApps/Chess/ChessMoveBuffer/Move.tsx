@@ -1,6 +1,17 @@
 import { MathCoordinate } from "../board/Square";
 import { Piece } from "../pieces/Piece";
 
+/*
+
+  - Add check
+  - Add checkmate 
+
+  - Add kingside castle
+  - Add queen side castle
+  - Add en-passant
+
+*/
+
 export interface MoveState {
   from: MathCoordinate;
   to: MathCoordinate;

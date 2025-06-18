@@ -111,7 +111,6 @@ export const BoardV2 = () => {
                 <div
                   key={sq.id}
                   onClick={() => {
-                    console.log(sq.mathematicalCoordinate);
                     // if the board is click check if piece is there then if the piece is there
                     // we need a signal that activates and store active piece, [x, y] coordinate as well
                     // I'm guessing what I can do is I can pass the piecename, coordinate, and finally piece color

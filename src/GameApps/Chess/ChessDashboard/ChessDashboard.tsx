@@ -18,6 +18,7 @@ import { Square } from "../board/Square";
 import { MoveState } from "../ChessMoveBuffer/Move";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { generateStandardBoard, PieceColor } from "../utils/Utils";
+import ChessNotationHelper from "../ChessNotationService/ChessNotationHelper";
 // import "../ChessDashboard/ChessDashboard.scss";
 
 export function ChessDashboard() {
@@ -68,11 +69,12 @@ export function ChessDashboard() {
             marginBottom: "10px",
             overflowY: "auto",
             maxHeight: "calc(min(80vmin, 80vh) - 135px)", // matches board max height minus padding
+            padding: '10px'
           }}
           className="chess-notation"
         >
           {boardobj.moveBuffer.Moves.map((move: MoveState) => {
-            return <Box>{move.currentTurn}: </Box>;
+            return ChessNotationHelper.processMoveForDisplay(move)
           })}
         </Box>
 

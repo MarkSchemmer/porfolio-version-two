@@ -16,6 +16,39 @@ import { BlackQueen, WhiteQueen } from "../pieces/Queen";
 import { BlackRook, WhiteRook } from "../pieces/Rook";
 import { DirectionCrawl, NodeCrawler } from "./NodeMutatorCrawler";
 
+import blackKingImg from "../utils/GameImages/bk.png";
+import whtieKingImg from "../utils/GameImages/wk.png";
+
+import blackPondImg from "../utils/GameImages/bp.png";
+import whitePondImg from "../utils/GameImages/wp.png";
+
+import blackRookImg from "../utils/GameImages/br.png";
+import whiteRookImg from "../utils/GameImages/wr.png";
+
+import blackBishopImg from "../utils/GameImages/bb.png";
+import whiteBishopImg from "../utils/GameImages/wb.png";
+
+import blackKnightImg from "../utils/GameImages/bn.png";
+import whiteKnightImg from "../utils/GameImages/wn.png";
+
+import blackQueenImg from "../utils/GameImages/bq.png";
+import whiteQueenImg from "../utils/GameImages/wq.png";
+
+export const pieceImages = {
+  blackKingImg,
+  whtieKingImg,
+  blackPondImg,
+  whitePondImg,
+  blackRookImg,
+  whiteRookImg,
+  blackBishopImg,
+  whiteBishopImg,
+  blackKnightImg,
+  whiteKnightImg,
+  blackQueenImg,
+  whiteQueenImg,
+};
+
 export const isNullOrUndefined = (obj: any) =>
   obj === null || obj === undefined;
 export const isValue = (obj: any) => !isNullOrUndefined(obj);
@@ -91,10 +124,8 @@ export const generateStaleMateScenarioOne = () => {
       chessBaord.populateSquareWithPiece([2, y], new WhitePond());
     });
 
-
   // set White King
   chessBaord.populateSquareWithPiece([1, 5], new WhiteKing());
-
 
   // set Black King
   chessBaord.populateSquareWithPiece([8, 5], new BlackKing());
@@ -240,7 +271,6 @@ export const generateStandardBoard = () => {
 // store and to update the board cache and a board is: Square[][]
 // so we store the board with all possible moves...
 // How should we store all the moves then
-
 
 // End chess control buttons
 export const PieceFactory = (piece: PieceNames, color: PieceColor) => {
@@ -990,7 +1020,6 @@ export const getWhitePondMoves = (
 
 //   return legalMoves;
 // };
-
 
 export const getKingMoves = (
   node: Square | undefined,
