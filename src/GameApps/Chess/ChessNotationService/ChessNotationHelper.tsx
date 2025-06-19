@@ -74,6 +74,14 @@ class ChessNotationHelper {
     const isCheckMate = move.isCheck && move.isCheckMate;
     const isCastle = move?.special?.castleKing?.desc;
     const isEnpassant = move?.special?.enPassantCapture;
+    const isPromotion = move?.special?.promotion;
+    const promotedTo = isPromotion ? <img
+            style={{ height: "3vh", opacity: 0.4 }}
+            src={this.pieceImageFactory(
+              move.special.promotion?.piecePromotedTo?.pieceName as PieceNames,
+              move.special.promotion?.piecePromotedTo?.pieceColor as PieceColor
+            )}
+          /> : null;
     const display = isCastle ? (
       isCastle
     ) : (
@@ -90,6 +98,7 @@ class ChessNotationHelper {
         {(move.capturedPiece  || isEnpassant) ? this.chessNotationSymbols.capture : null}
         {" "}
         {this.convertChessCoordinateToNotation(move.to)}
+        {isPromotion ? (this.chessNotationSymbols.promotion) : null} {promotedTo}
         {isEnpassant ? chessNotationSymbols.enPassant : null}
       </>
     );
