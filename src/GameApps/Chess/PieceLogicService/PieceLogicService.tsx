@@ -11,6 +11,7 @@
 import { Board } from "../board/Board";
 import { MathCoordinate, Square } from "../board/Square";
 import { MoveState } from "../ChessMoveBuffer/Move";
+import ChessNotationHelper from "../ChessNotationService/ChessNotationHelper";
 import { getNode, isSameSquare, PieceColor, PieceNames } from "../utils/Utils";
 
 /*
@@ -358,11 +359,12 @@ export class PieceLogicService {
   public HandleCastleCanMoveLogic = (
     kingSquare: Square,
     toSquare: Square
-  ): { from: MathCoordinate; to: MathCoordinate } | null => {
+  ): { from: MathCoordinate; to: MathCoordinate, desc?: any } | null => {
     if (this.IsWhiteKingAndDoubleMovingLeft(kingSquare, toSquare)) {
       return {
         from: [1, 1],
         to: [1, 4],
+        desc: ChessNotationHelper.chessNotationSymbols.queenSideCastle
       };
     }
 
@@ -370,6 +372,7 @@ export class PieceLogicService {
       return {
         from: [1, 8],
         to: [1, 6],
+        desc: ChessNotationHelper.chessNotationSymbols.kingSideCastle
       };
     }
 
@@ -377,6 +380,7 @@ export class PieceLogicService {
       return {
         from: [8, 1],
         to: [8, 4],
+        desc: ChessNotationHelper.chessNotationSymbols.queenSideCastle
       };
     }
 
@@ -384,6 +388,7 @@ export class PieceLogicService {
       return {
         from: [8, 8],
         to: [8, 6],
+        desc: ChessNotationHelper.chessNotationSymbols.kingSideCastle
       };
     }
 
@@ -891,7 +896,7 @@ export class PieceLogicService {
       ([s, n]) => n === 3 && s.includes("black-turn")
     );
 
-    return whiteTurn && blackTurn;
+    return chessBoard.logic.isValue(whiteTurn) && chessBoard.logic.isValue(blackTurn);
   };
 
   public fiftyPondMoveRule = (chessBoard: Board) => {

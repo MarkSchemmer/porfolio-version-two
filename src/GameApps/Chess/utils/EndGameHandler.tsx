@@ -1,14 +1,20 @@
 import { Board } from "../board/Board";
+import { MoveState } from "../ChessMoveBuffer/Move";
 import { PieceColor } from "./Utils";
 
 export const EndGameHandler = (
   currentPlayerColor: PieceColor,
   chessBoard: Board
 ) => {
+
+  const lastMove = chessBoard.moveBuffer.LastMove as MoveState;
+
   const isCheck =
     currentPlayerColor === PieceColor.WHITE
       ? chessBoard.logic.IsBlackInCheck(chessBoard)
       : chessBoard.logic.IsWhiteInCheck(chessBoard);
+
+  lastMove.isCheck = isCheck;
 
   const playerChecking = currentPlayerColor;
   const otherPlayerBeingChecked =
@@ -19,6 +25,7 @@ export const EndGameHandler = (
                       The process is the currPlayerColor is the first move 
                       upon move we calculate the check 
                   */
+    
     console.log(
       currentPlayerColor +
         " Is checking " +
@@ -36,6 +43,7 @@ export const EndGameHandler = (
       playerChecking === PieceColor.WHITE
         ? chessBoard.logic.WhiteCheckMatingBlack(chessBoard)
         : chessBoard.logic.BlackCheckMatingWhite(chessBoard);
+    lastMove.isCheckMate = checkCheckMate;
 
     if (checkCheckMate) {
       console.log(
@@ -92,7 +100,7 @@ export const EndGameHandler = (
       otherPlayerBeingChecked,
       chessBoard
     );
-
+    lastMove.isDraw = isStaleMate;
     if (isStaleMate) {
       console.log(otherPlayerBeingChecked + " Has no moves, STALEMATE.");
     }
@@ -101,18 +109,18 @@ export const EndGameHandler = (
       chessBoard.logic.InsuficentMaterial(chessBoard);
 
     //console.log(isInsuficientMaterial)
-
+    lastMove.isInsuficientMaterial = isInsuficientMaterial;
     if (isInsuficientMaterial) {
       console.log(" Insuficient Material Stalemate ");
     }
 
     const threeFoldRepition = chessBoard.logic.IsThreeFoldRepition(chessBoard);
-
+    lastMove.isThreeFoldRepition = threeFoldRepition;
     if (threeFoldRepition) {
       console.log("three fold repition - STALEMATE - ");
     }
     const fiftyMovePondRule = chessBoard.logic.fiftyPondMoveRule(chessBoard);
-
+    lastMove.isFiftyMovePondRule = fiftyMovePondRule;
     if (fiftyMovePondRule) {
       console.log("50 move pond rule - STALEMATE - ");
     }

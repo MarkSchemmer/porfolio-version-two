@@ -8,7 +8,20 @@ import {
 } from "../utils/Utils";
 import { MathCoordinate } from "../board/Square";
 
+const chessNotationSymbols = {
+  capture: "x",
+  draw: "1/2 - 1/2",
+  enPassant: "e.p.",
+  check: "+",
+  checkMate: "#",
+  promotion: "=",
+  kingSideCastle: "O-O",
+  queenSideCastle: "O-O-O",
+};
+
 class ChessNotationHelper {
+  public chessNotationSymbols = chessNotationSymbols;
+
   public convertChessCoordinateToNotation = (coordinate: MathCoordinate) => {
     const [x, y] = coordinate;
 
@@ -16,7 +29,8 @@ class ChessNotationHelper {
 
     return (
       <strong>
-        {xCoord}-{x}
+        {xCoord}
+        {x}
       </strong>
     );
   };
@@ -56,17 +70,14 @@ class ChessNotationHelper {
   };
 
   public processMoveForDisplay = (move: MoveState) => {
-    return (
-      <Box
-        style={{
-          display: "flex",
-          alignItems: "center", // aligns items vertically centered (inline baseline)
-          gap: "0.5rem",
-        }}
-      >
-      <Box minWidth="3rem" textAlign="left">
-        * {move.currentTurn} - 
-      </Box>
+    const isCheck = move.isCheck && !move.isCheckMate;
+    const isCheckMate = move.isCheck && move.isCheckMate;
+    const isCastle = move?.special?.castleKing?.desc;
+    const isEnpassant = move?.special?.enPassantCapture;
+    const display = isCastle ? (
+      isCastle
+    ) : (
+      <>
         <span>
           <img
             style={{ height: "3vh", opacity: 0.4 }}
@@ -76,7 +87,27 @@ class ChessNotationHelper {
             )}
           />
         </span>
+        {(move.capturedPiece  || isEnpassant) ? this.chessNotationSymbols.capture : null}
+        {" "}
         {this.convertChessCoordinateToNotation(move.to)}
+        {isEnpassant ? chessNotationSymbols.enPassant : null}
+      </>
+    );
+    return (
+      <Box
+        key={JSON.stringify(move)}
+        style={{
+          display: "flex",
+          alignItems: "center", // aligns items vertically centered (inline baseline)
+          gap: "0.5rem",
+        }}
+      >
+        <Box minWidth="3rem" textAlign="left">
+          * {move.currentTurn} -
+        </Box>
+        {display}
+        {(isCheck && chessNotationSymbols.check) || null}{" "}
+        {(isCheckMate && chessNotationSymbols.checkMate) || null}
       </Box>
     );
   };

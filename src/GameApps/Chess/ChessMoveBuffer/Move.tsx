@@ -6,6 +6,7 @@ import { Piece } from "../pieces/Piece";
   - Add check
   - Add checkmate 
 
+
   - Add kingside castle
   - Add queen side castle
   - Add en-passant
@@ -13,6 +14,12 @@ import { Piece } from "../pieces/Piece";
 */
 
 export interface MoveState {
+  isCheck?: boolean;
+  isCheckMate?: boolean;
+  isDraw?: boolean;
+  isInsuficientMaterial?:boolean;
+  isThreeFoldRepition?:boolean;
+  isFiftyMovePondRule?:boolean;
   from: MathCoordinate;
   to: MathCoordinate;
   IsPond: boolean;
@@ -36,6 +43,7 @@ export interface MoveState {
       rookFrom: MathCoordinate;
       rookTo: MathCoordinate;
       rookPiece: Piece;
+      desc: string;
     };
     pondDoubleMove?: boolean;
   };

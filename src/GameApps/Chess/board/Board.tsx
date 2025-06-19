@@ -518,6 +518,7 @@ export class Board {
           rookFrom: handleCastle.from,
           rookTo: handleCastle.to,
           rookPiece,
+          desc: handleCastle.desc
         };
       }
 

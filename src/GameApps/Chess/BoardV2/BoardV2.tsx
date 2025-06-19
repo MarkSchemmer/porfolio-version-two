@@ -149,7 +149,10 @@ export const BoardV2 = () => {
                         chessBoard,
                         currentSquareClick
                       );
-                    } else if (currentSquareClick.canMoveHere() && selectedPiece?.piece?.pieceColor === playerToMove) {
+                    } else if (
+                      currentSquareClick.canMoveHere() &&
+                      selectedPiece?.piece?.pieceColor === playerToMove
+                    ) {
                       // in future we need to know also that
                       // if we move fromTo and it causes check then the method is cancelled
                       // And we won't update the board but reset it to current place
@@ -181,25 +184,18 @@ export const BoardV2 = () => {
                         boardobj.moveBuffer.LastMove as MoveState
                       );
 
+                      let chessBoard = clearBoard(boardobj) as Board;
+
                       const isCausingCheck =
                         currentPlayerColorMoving === PieceColor.WHITE
-                          ? boardobj.logic.IsWhiteInCheck(boardobj)
-                          : boardobj.logic.IsBlackInCheck(boardobj);
+                          ? boardobj.logic.IsWhiteInCheck(chessBoard)
+                          : boardobj.logic.IsBlackInCheck(chessBoard);
 
                       if (isCausingCheck) {
                         const lastMove =
-                          boardobj.moveBuffer.deepUndo() as MoveState;
-                        boardobj.undoMove(lastMove);
-                      }
-
-                      const chessBoard = clearBoard(boardobj) as Board;
-                      const hash = chessBoard.generateHash(
-                        chessBoard,
-                        chessBoard.turn
-                      );
-                      // console.log(hash);
-                      chessBoard.updatePositionHistory(hash);
-                      updateBoardAndSelectedPiece(chessBoard, null);
+                          chessBoard.moveBuffer.deepUndo() as MoveState;
+                          chessBoard.undoMove(lastMove);
+                      } else {
                       //console.log(chessBoard.turn);
                       // theoretically we could test if pond moved and hit the end row
                       // then trigger a popup.
@@ -222,6 +218,7 @@ export const BoardV2 = () => {
                           })
                         );
                       }
+                      
 
                       // Going to check
                       // - Check
@@ -229,8 +226,18 @@ export const BoardV2 = () => {
                       // - Stalemate
                       EndGameHandler(
                         currentSquareClick.piece?.pieceColor as PieceColor,
-                        boardobj
+                        chessBoard
                       );
+                      }
+
+                      const hash = chessBoard.generateHash(
+                        chessBoard,
+                        chessBoard.turn
+                      );
+                      // console.log(hash);
+                      chessBoard.updatePositionHistory(hash);
+                      updateBoardAndSelectedPiece(chessBoard, null);
+
                     } else {
                       // Right now this is clicking a none blue square and just unselects the piece
                       // should unselect piece and clearboard.
