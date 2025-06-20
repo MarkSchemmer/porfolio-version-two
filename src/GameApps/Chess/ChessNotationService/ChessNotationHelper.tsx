@@ -70,13 +70,13 @@ class ChessNotationHelper {
   };
 
   public processMoveForDisplay = (move: MoveState) => {
-    const isCheck = move.isCheck && !move.isCheckMate;
-    const isCheckMate = move.isCheck && move.isCheckMate;
+    const isCheck = move.isCheck === true && !move.isCheckMate;
+    const isCheckMate = move.isCheck === true && move.isCheckMate === true;
     const isCastle = move?.special?.castleKing?.desc;
     const isEnpassant = move?.special?.enPassantCapture;
     const isPromotion = move?.special?.promotion;
     const promotedTo = isPromotion ? <img
-            style={{ height: "3vh", opacity: 0.4 }}
+            style={{ height: "3vh", opacity: 0.5 }}
             src={this.pieceImageFactory(
               move.special.promotion?.piecePromotedTo?.pieceName as PieceNames,
               move.special.promotion?.piecePromotedTo?.pieceColor as PieceColor
@@ -88,7 +88,7 @@ class ChessNotationHelper {
       <>
         <span>
           <img
-            style={{ height: "3vh", opacity: 0.4 }}
+            style={{ height: "3vh", opacity: 0.5 }}
             src={this.pieceImageFactory(
               move.movedPiece.pieceName,
               move.movedPiece.pieceColor
@@ -109,6 +109,9 @@ class ChessNotationHelper {
           display: "flex",
           alignItems: "center", // aligns items vertically centered (inline baseline)
           gap: "0.5rem",
+          border: move.currentMove ? '3px solid black' : '',
+          padding: '5px',
+          borderRadius: '3px'
         }}
       >
         <Box minWidth="3rem" textAlign="left">

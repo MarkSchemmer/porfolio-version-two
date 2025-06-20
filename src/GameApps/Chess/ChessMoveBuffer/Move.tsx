@@ -14,6 +14,7 @@ import { Piece } from "../pieces/Piece";
 */
 
 export interface MoveState {
+  currentMove?:boolean; // this is the last move in the undo stack and be thought of as current move being rendered
   isCheck?: boolean;
   isCheckMate?: boolean;
   isDraw?: boolean;

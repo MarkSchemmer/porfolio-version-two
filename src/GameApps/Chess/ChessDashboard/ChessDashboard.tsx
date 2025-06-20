@@ -73,7 +73,7 @@ export function ChessDashboard() {
           }}
           className="chess-notation"
         >
-          {boardobj.moveBuffer.Moves.map((move: MoveState) => {
+          {boardobj.moveBuffer.AllMoves.sort((a, b) => a.currentTurn - b.currentTurn).map((move: MoveState) => {
             return ChessNotationHelper.processMoveForDisplay(move)
           })}
         </Box>
