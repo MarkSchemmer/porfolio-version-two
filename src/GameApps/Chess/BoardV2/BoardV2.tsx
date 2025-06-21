@@ -200,6 +200,7 @@ export const BoardV2 = () => {
                       // theoretically we could test if pond moved and hit the end row
                       // then trigger a popup.
                       if (craftMove.special.promotion) {
+                      //updateBoardAndSelectedPiece(chessBoard, null);
                         // trigger screen that cannot be dismissed until
                         // show which piece to promote to
                         // save that value and then activate a board update where

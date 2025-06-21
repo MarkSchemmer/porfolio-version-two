@@ -69,9 +69,12 @@
     6 month period. 
 */
 import { BoardV2 } from "./BoardV2/BoardV2";
-import { ChessDashboard } from "./ChessDashboard/ChessDashboard";
-import { TestingDashboard } from "./TestingDashboard/TestingDashBoard";
-import { ChessBoard } from "./board/ChessBoard";
+// import { ChessDashboard } from "./ChessDashboard/ChessDashboard";
+// import { TestingDashboard } from "./TestingDashboard/TestingDashBoard";
+// import { ChessBoard } from "./board/ChessBoard";
+
+// import { TouchBackend } from 'react-dnd-touch-backend'
+// import { DndProvider } from 'react-dnd'
 
 
 export const ChessApp = () => {

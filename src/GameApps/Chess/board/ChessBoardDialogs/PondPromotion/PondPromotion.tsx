@@ -58,10 +58,11 @@ const BoxPiece = (props: any) => {
   return (
     <Box
       onClick={() => {
-        const pieceColorFinal = pieceColor;
+        const [x, y] = pondPromotionData.coordinateToPromote as MathCoordinate
+        const pieceColorFinal = x === 8 ? PieceColor.WHITE : PieceColor.BLACK;
         // console.log(pieceColorFinal);
         boardobj.promotePond(
-          pondPromotionData.coordinateToPromote as MathCoordinate,
+          [x, y],
           name,
           pieceColorFinal
         );
@@ -108,6 +109,9 @@ export const PondPromotion = (props: any) => {
   const { IsOpen } = props;
   const cancelRef = React.useRef(null);
   const pondPromotionData = useSelector(getPondPromotion);
+
+  const [x, y] = pondPromotionData?.coordinateToPromote as MathCoordinate || [0, 0]
+  const pieceColorFinal = x === 8 ? PieceColor.WHITE : PieceColor.BLACK;
   // console.log(pondPromotionData);
   return (
     <>
@@ -127,9 +131,9 @@ export const PondPromotion = (props: any) => {
             </AlertDialogHeader>
 
             <AlertDialogBody marginLeft={"12%"}>
-              {(pondPromotionData.pieceColor === PieceColor.WHITE
-                ? blackPieces
-                : whitePieces
+              {(pieceColorFinal === PieceColor.WHITE
+                ? whitePieces
+                : blackPieces
               ).map((p) => (
                 <BoxPiece key={p.name} {...p} />
               ))}
