@@ -359,12 +359,12 @@ export class PieceLogicService {
   public HandleCastleCanMoveLogic = (
     kingSquare: Square,
     toSquare: Square
-  ): { from: MathCoordinate; to: MathCoordinate, desc?: any } | null => {
+  ): { from: MathCoordinate; to: MathCoordinate; desc?: any } | null => {
     if (this.IsWhiteKingAndDoubleMovingLeft(kingSquare, toSquare)) {
       return {
         from: [1, 1],
         to: [1, 4],
-        desc: ChessNotationHelper.chessNotationSymbols.queenSideCastle
+        desc: ChessNotationHelper.chessNotationSymbols.queenSideCastle,
       };
     }
 
@@ -372,7 +372,7 @@ export class PieceLogicService {
       return {
         from: [1, 8],
         to: [1, 6],
-        desc: ChessNotationHelper.chessNotationSymbols.kingSideCastle
+        desc: ChessNotationHelper.chessNotationSymbols.kingSideCastle,
       };
     }
 
@@ -380,7 +380,7 @@ export class PieceLogicService {
       return {
         from: [8, 1],
         to: [8, 4],
-        desc: ChessNotationHelper.chessNotationSymbols.queenSideCastle
+        desc: ChessNotationHelper.chessNotationSymbols.queenSideCastle,
       };
     }
 
@@ -388,7 +388,7 @@ export class PieceLogicService {
       return {
         from: [8, 8],
         to: [8, 6],
-        desc: ChessNotationHelper.chessNotationSymbols.kingSideCastle
+        desc: ChessNotationHelper.chessNotationSymbols.kingSideCastle,
       };
     }
 
@@ -425,6 +425,167 @@ export class PieceLogicService {
     return checkingFor === PieceColor.WHITE
       ? opposingPlayersAttackingSquares.some((sq) => this.IsWhiteKing(sq))
       : opposingPlayersAttackingSquares.some((sq) => this.IsBlackKing(sq));
+  };
+
+  /*
+    public IsBlackInCheck = (chessBaord: Board) => {
+    const { logic, board, GetBlackKing } = chessBaord;
+    const node = GetBlackKing(board) as Square;
+    const surroundingSquares = [
+      node.forward,
+      node.back,
+      node.left,
+      node.right,
+      node.forward?.left,
+      node.forward?.right,
+      node.back?.left,
+      node.back?.right,
+    ]
+      .filter((sq): sq is Square => !!sq)
+      .filter((sq) => logic.pieceIsOtherColor(node, sq));
+    const whiteAttackingPieces = [
+      ...Array.from(chessBaord.whitePieceAndAttacksCache.values()).flat(),
+      ...surroundingSquares,
+    ];
+    const anyAttackingWhitePiecesHaveBlackKing = whiteAttackingPieces.some(
+      (sq) => logic.IsBlackKing(sq)
+    );
+    return anyAttackingWhitePiecesHaveBlackKing;
+  };
+  */
+
+  public CheckMateBlack = (
+    playerWhoIsChecking: PieceColor,
+    playerWhoIsInCheck: PieceColor,
+    board: Board
+  ): boolean => {
+    console.log("player who is checking: ", playerWhoIsChecking);
+    console.log("player who is checked: ", playerWhoIsInCheck);
+
+    const getAllAttackingSquares = board
+      .getAllPossibleMovesOfPlayerInCheck(board.board, playerWhoIsInCheck)
+      .filter((cm: CheckMate) => cm.SquareToPossibilities.length > 0);
+
+    const node = board.GetWhiteKing(board.board) as Square;
+
+    const surroundingSquares = [
+      node.forward,
+      node.back,
+      node.left,
+      node.right,
+      node.forward?.left,
+      node.forward?.right,
+      node.back?.left,
+      node.back?.right,
+    ].filter((sq): sq is Square => !!sq);
+
+    getAllAttackingSquares.push({
+      SquareFrom: node,
+      SquareToPossibilities: surroundingSquares,
+    });
+
+    console.log(
+      "amount of Legal moves for player in Check: ",
+      getAllAttackingSquares
+    );
+
+    for (let { SquareToPossibilities, SquareFrom } of getAllAttackingSquares) {
+      // mutate the board
+
+      for (let sq of SquareToPossibilities) {
+        const move = board.craftMove(
+          SquareFrom.mathematicalCoordinate,
+          sq.mathematicalCoordinate,
+          board,
+          true
+        );
+
+        board.moveBuffer.recordMove(move);
+
+        board.makeMove(board.moveBuffer.LastMove as MoveState);
+
+        const getAllSquares = board.getAllAttackingMoves(
+          board.board,
+          playerWhoIsChecking
+        );
+        let checkRes = this.CheckTwo(getAllSquares, playerWhoIsInCheck);
+
+        let lastMove = board.moveBuffer.deepUndo() as MoveState;
+        board.undoMove(lastMove);
+        // console.log(checkRes);
+        if (checkRes === false) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  public CheckMateWhite = (
+    playerWhoIsChecking: PieceColor,
+    playerWhoIsInCheck: PieceColor,
+    board: Board
+  ): boolean => {
+    console.log("player who is checking: ", playerWhoIsChecking);
+    console.log("player who is checked: ", playerWhoIsInCheck);
+
+    const getAllAttackingSquares = board
+      .getAllPossibleMovesOfPlayerInCheck(board.board, playerWhoIsInCheck)
+      .filter((cm: CheckMate) => cm.SquareToPossibilities.length > 0);
+
+    const node = board.GetBlackKing(board.board) as Square;
+
+    const surroundingSquares = [
+      node.forward,
+      node.back,
+      node.left,
+      node.right,
+      node.forward?.left,
+      node.forward?.right,
+      node.back?.left,
+      node.back?.right,
+    ].filter((sq): sq is Square => !!sq);
+
+    getAllAttackingSquares.push({
+      SquareFrom: node,
+      SquareToPossibilities: surroundingSquares,
+    });
+
+    console.log(
+      "amount of Legal moves for player in Check: ",
+      getAllAttackingSquares
+    );
+
+    for (let { SquareToPossibilities, SquareFrom } of getAllAttackingSquares) {
+      // mutate the board
+
+      for (let sq of SquareToPossibilities) {
+        const move = board.craftMove(
+          SquareFrom.mathematicalCoordinate,
+          sq.mathematicalCoordinate,
+          board,
+          true
+        );
+
+        board.moveBuffer.recordMove(move);
+
+        board.makeMove(board.moveBuffer.LastMove as MoveState);
+
+        const getAllSquares = board.getAllAttackingMoves(
+          board.board,
+          playerWhoIsChecking
+        );
+        let checkRes = this.CheckTwo(getAllSquares, playerWhoIsInCheck);
+
+        let lastMove = board.moveBuffer.deepUndo() as MoveState;
+        board.undoMove(lastMove);
+        // console.log(checkRes);
+        if (checkRes === false) {
+          return false;
+        }
+      }
+    }
+    return true;
   };
 
   public CheckMate = (
@@ -477,8 +638,8 @@ export class PieceLogicService {
   };
 
   public IsBlackInCheck = (chessBaord: Board) => {
-    const { logic, board, GetWhiteKing } = chessBaord;
-    const node = GetWhiteKing(board) as Square;
+    const { logic, board, GetBlackKing } = chessBaord;
+    const node = GetBlackKing(board) as Square;
     const surroundingSquares = [
       node.forward,
       node.back,
@@ -527,11 +688,11 @@ export class PieceLogicService {
   };
 
   public BlackCheckMatingWhite = (board: Board) => {
-    return this.CheckMate(PieceColor.BLACK, PieceColor.WHITE, board);
+    return this.CheckMateBlack(PieceColor.BLACK, PieceColor.WHITE, board);
   };
 
   public WhiteCheckMatingBlack = (board: Board) => {
-    return this.CheckMate(PieceColor.WHITE, PieceColor.BLACK, board);
+    return this.CheckMateWhite(PieceColor.WHITE, PieceColor.BLACK, board);
   };
 
   public GetWhiteLeftRook = (board: Square[][]) => {
@@ -896,11 +1057,13 @@ export class PieceLogicService {
       ([s, n]) => n === 3 && s.includes("black-turn")
     );
 
-    return chessBoard.logic.isValue(whiteTurn) && chessBoard.logic.isValue(blackTurn);
+    return (
+      chessBoard.logic.isValue(whiteTurn) && chessBoard.logic.isValue(blackTurn)
+    );
   };
 
   public fiftyPondMoveRule = (chessBoard: Board) => {
-      // console.log(chessBoard.pondFiftyMoveRule);
-      return chessBoard.pondFiftyMoveRule === 50;
-  }
+    // console.log(chessBoard.pondFiftyMoveRule);
+    return chessBoard.pondFiftyMoveRule === 50;
+  };
 }
