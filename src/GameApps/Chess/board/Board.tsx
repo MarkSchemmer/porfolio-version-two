@@ -554,6 +554,8 @@ export class Board {
           this.board
         ) as Square;
         pondToTake.makeSquareEmpty(); // make square empty basically pond was taken.
+        //this.resetEnPassantDetailsAfterTake(this);
+        toNode?.piece?.ResetEnPassantDetails();
       }
 
       if (castleKing) {
