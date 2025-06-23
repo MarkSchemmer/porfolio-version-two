@@ -468,20 +468,9 @@ export class PieceLogicService {
 
     const node = board.GetWhiteKing(board.board) as Square;
 
-    const surroundingSquares = [
-      node.forward,
-      node.back,
-      node.left,
-      node.right,
-      node.forward?.left,
-      node.forward?.right,
-      node.back?.left,
-      node.back?.right,
-    ].filter((sq): sq is Square => !!sq);
-
     getAllAttackingSquares.push({
       SquareFrom: node,
-      SquareToPossibilities: surroundingSquares,
+      SquareToPossibilities: board.getKingMovesV2(node),
     });
 
     console.log(
@@ -535,20 +524,9 @@ export class PieceLogicService {
 
     const node = board.GetBlackKing(board.board) as Square;
 
-    const surroundingSquares = [
-      node.forward,
-      node.back,
-      node.left,
-      node.right,
-      node.forward?.left,
-      node.forward?.right,
-      node.back?.left,
-      node.back?.right,
-    ].filter((sq): sq is Square => !!sq);
-
     getAllAttackingSquares.push({
       SquareFrom: node,
-      SquareToPossibilities: surroundingSquares,
+      SquareToPossibilities: board.getKingMovesV2(node),
     });
 
     console.log(
