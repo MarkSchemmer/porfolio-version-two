@@ -73,6 +73,7 @@ class ChessNotationHelper {
     const isCheck = move.isCheck === true && !move.isCheckMate;
     const isCheckMate = move.isCheck === true && move.isCheckMate === true;
     const isCastle = move?.special?.castleKing?.desc;
+    const isDraw = move?.isDraw || move.isFiftyMovePondRule || move.isInsuficientMaterial || move.isThreeFoldRepition;
     const isEnpassant = move?.special?.enPassantCapture?.pondTaken && move?.special?.enPassantCapture?.pondTakenPiece;
     const isPromotion = move?.special?.promotion;
     const promotedTo = isPromotion ? <img
@@ -120,6 +121,7 @@ class ChessNotationHelper {
         {display}
         {(isCheck && chessNotationSymbols.check) || null}{" "}
         {(isCheckMate && chessNotationSymbols.checkMate) || null}
+        {(isDraw && <strong>{chessNotationSymbols.draw}</strong>) || null}
       </Box>
     );
   };
