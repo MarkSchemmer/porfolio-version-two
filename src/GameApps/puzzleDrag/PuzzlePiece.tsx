@@ -58,6 +58,8 @@ export const PuzzlePiece = (props:IPuzzlePiece) => {
     }
 
     const pieceStyles: React.CSSProperties = {
+            width: "149px",
+            height: "149px",
             position: "absolute",
             left: `${state.pos.x}px`,
             top: `${state.pos.y}px`,

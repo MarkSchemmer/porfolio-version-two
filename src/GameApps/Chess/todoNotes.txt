@@ -1,0 +1,516 @@
+
+/*   
+
+          TODO: 
+
+
+
+
+
+
+          -- URGENT GET THIS DONE ---
+
+
+
+
+
+            Refactor game so move is completely calculated then board is updated 
+
+            in this manner we can include all the data in MoveState which will 
+
+            then can be decomposed and resolved in ChessNotationHelper to 
+
+            be then properly displayed in ChessDashboard
+
+            Also then account for castle kingside queen side, check, checkmate, tie ect 
+
+
+
+
+            List of symbols to account for 
+
+            1/2 - 1/2 -> draw
+
+            en-passant e.p. 
+
+            x -> capture 
+
+            + -> check 
+
+            # -> checkmate 
+
+            = -> promotion 
+
+            O-O -> KingSide Castle 
+
+            O-O-O -> Queenside Castle 
+
+
+            Add all these symbols to the ChessNotationHelper library for additonal 
+            access and usage and organization.
+
+
+            Also have the current move highlighted we are on with a border and background opacity color 
+            and we can go forward and backwards in history but all moves are visible -> add a AllMoves to moveBuffer...
+
+
+
+
+          -- URGENT GET THIS DONE ---
+
+
+
+
+
+          Clean up board to grow and shrink -> current name is BoardV2 -> update name to -> ChessBoardV2 for clarity. 
+
+          Make dashboard as well grow and shrink and aligned 
+                  Make a forwards, backwards, skip to end, skip to beggining, Resign button
+                  Players move on dashboard alert
+
+          Get the board and dashboard setup so it's obvious how to proceed when someone directs to page
+
+          setup BoardV2 to have all features of Board (version 1) and dashboard 
+
+
+          Remove testing dashboard for the moment -> 
+            this will be achieved with the revamp to v2 but will also then do next step which is 
+            clean Board logic 
+
+          Clean up and remove code of board like old methods to other old development
+
+          - Give squares a board color either white or green but tournament style color
+
+        - Chess Notation and board history
+          - Be able to see all moves
+          - Be able to tap forwards and backwards through game
+          Note this is the buffer of move, redo, undo of board game... so we can flip through going
+          forward and backwards of a game 
+
+
+        - Add a settings manipulation dashboard where user can pick and choose what he wants 
+          pieces, bord colors, background images ect... 
+
+
+      
+
+        - Drag and Drop of pieces 
+
+        - Sound effects for: movement, take, check, and checkmate.
+
+        - End game scenario we show which color won the game and then 
+          a choice to review the game or start a new game. 
+
+        - If in check next move needs to stop check... -> PENDING
+          - when turn base is implemented... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+                Overall notes with the porfolio on direction, making the chess App responsive and enterprise level in beauty and design. 
+                building out the UI to be beautiful and snappy for the entire porfolio and the chess app itself
+                The final big apps to build for this porfolio will be: 
+
+                - Chess
+                - Solitaire
+                - Tetris 
+                - LeetCode webcrawler and display of solutions to problems
+
+
+                After final completion of porfolio
+
+                  - Geometric wars 
+                  - Game engine building a halo wars 3 type game -> cruche 
+
+                what? 
+                how? 
+                why? 
+                when?
+
+
+                it's pushing the apps until they're enterprise, it's not giving up, like my Uncle. 
+
+                Even now after all the time that has passed, I feel bad for mistreating my Father
+
+                I'm guessing I should try and make amends and do Good, maybe I can't move forward 
+
+                If I don't try.  Well even if it is just between and God, I am sorry actually. 
+
+                But if that's the case, maybe I have to act it out, because only, show that 
+
+                I have faith, and that's the same reason as why I should finish this proeject and Goal
+
+                And do great at my work project it all matters and it's all a testament for my love and faith
+
+                in the people around me, so Mark, start acting like it matters 
+
+                Act as if it is. Do it, for the 'I AM' for his Son, Jesus Christ my Lord and Savior 
+
+                My Teacher, my master, I bow to you Lord and I will follow through on your 
+
+                Commandments. 
+
+                I Love You. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      -------------------------------------------------------------
+               -----   COMPLETED - TASKS     -----
+      -------------------------------------------------------------
+
+
+
+        - Add King movement logic -> need to account for check as well.
+            Add calculation for Kings moves, basically if King is in Check then 
+            remove those viable moves. -> will add this when I have optimizations in place that make 
+            cloning and testing faster
+
+
+        - Draw detection -> PENDING -> possible moves is 0 and not in check 
+        - Stalemate draw detection -> PENDING 
+        -> such as stalemate 
+        -> insuficent material 
+        -> threefold repition using the zobrist hash
+
+
+            I wrote some very important logic theory in ChessBoard.tsx lines 144-148
+            The point is that we will be needing to understand the process of manipulating a board 
+            testing for check then confirming that move or not. 
+
+            So future manipulation confirmation and then undoing is all happening in this scenario
+            And will aid me in castle and check mate of course. 
+
+            History will need to be applied to the game and a dashboard with controls as well
+            then I think the final sort of touch to this game is a draw type method or stalemate. 
+
+            When the game is complete optimizations are going to make and break this application...
+            types of optimizations that I should look into in the future...
+
+
+            Note optimizations should be done after the game is completed and solved... 
+            Because then... I can more logically 
+
+            1. Cache move calculations
+            2. less unnessary work such as pinned or immobile 
+            3. avoid deep clones per move... so basically a sort of a do, undo type buffer for performance.
+
+            So may targets of improvement after game is... 
+            cache the moves, improving the NodeCrawler with early end to calculations
+            avoid deep clones per move so shallow manipulation with a move, undo, redo, 
+            type of data structure so a chess buffer 
+
+
+                    - Should I do this for all moves...? should show a move if it causes check?
+                      this can figured out later.
+
+                Handling the castle left and right for both white and black.
+                Remove duplication by using a function and at the same time 
+                by thunking all the if checks and then only executing them when 
+
+                // Next step notes for game direction: 
+                // If stalemate is to be properly implemented I need faster check basically I'm able to 
+                // test a move and verify check also I can store all the moves 
+                // and easily keep a history of state so I can move forwards and backwards through the game
+                // basically we need a faster way of placing moves and then checking if it's able to move there 
+                // and then a quick undo but entire implementation of deepClone() needs to be undone and abstracted away 
+                // deepClone() is way to expensive and there should also be a thought of even abstracting all methods off
+                // of cloned items even removing logic from board I'm creating way too many objects and it's needs to be 
+                // used in a smarter way, also I need to abstract all the methods in a way that maybe even uses those into 
+                // smaller composable parts but organized into modules such as PieceLogicService is just a module with functions 
+                // same with board less bloaded classes more 
+
+                // caching moves
+                // removing uneeded object creation instead use singletons where needed 
+                // remove deepClone and implement a move history taking advantage of Move, undo, redo sort of buffer also include a 
+                // purge not related to game moves so when I'm doing testing and I need to do a bunch of theory I can do 
+                // just filter all moves on a boolean so maybe GameTestingTheory then just filter out moves when done... 
+
+                Writing a higher level function which will handle the entire story 
+                of check and checkMate and even include stalemate and draw
+                to refactor duplicated logic.
+
+
+
+          If I'm going to persue stalemate insuficient material or threefold repition
+
+          I should write these checks into a centrailized method where we do checks for
+
+          - Check
+          - CheckMate 
+          - Stalemate
+          - Insuficient Material
+          - ThreeFold repition 
+          - 50 - Move rule -> 
+                If 50 consecutive moves happen without a pawn move or capture, either player can claim a draw.
+
+                Detection:
+
+                Maintain a halfMoveClock counter.
+
+                Reset to 0 on pawn move or capture.
+
+
+                    - getLegalAttackMovesForPieceFactory -> move to Board class -> DONE
+
+                    - UPDATE NODE CRAWLER so when called it was stop process if causing check against it's own color. -> pending 
+
+                    - add white pieces cash and black pieces cache protocol
+                      update cache upon completed move or pond promotion -> DONE
+
+
+                    - add King refactor -> DONE
+
+                    - Refactor kings move for understanding check before showing possible moves -> DONE
+
+
+      
+              - I added the Buffer and the Move, object for making moves, it's time to implement this in the code 
+                so I make a move and it's documented on the buffer 
+
+                    - refactor castle detection to a function in piece logic service then condense entire if - else chain to one if check... -> DONE
+
+                    - Move castle logic and pond promotion into MoveToFrom (makeMove) -> PENDING -> TO BE DETERMINED
+
+                    - A move generator function which will get all the needed details and record the move then pass those details to
+                      the MoveFromTo method which will then make the move -> DONE
+
+                    - create a method for undo move and redo move so when a undo or redo is triggered we can manipulate the board 
+                      to be current with the moves we're wanting to make. -> DONE
+
+                        - start this process chessBoard and fudging this process with undo and redo of moves of board
+                          so in other words I have the process of going forward which is makeMove now it's time to do 
+                          undo move and in doing this I add in the record move and then do undo and redo of a move... 
+
+                          so I add to the buffer and the remove from buffer but the board will always reflect the latest 
+                          move then I can add a board of going forward and backwards like the next todo... 
+                    
+                    - Create a dashboard for undoing moves and redoing moves with arrows for moving forwards and backwards -> DONE  
+
+                    - start the refactor of removing the deepclone and just using the buffer for fudging moves and then removing them
+                      to simulate -> DONE 
+
+                    - Fix en-passant bug, you make en-passant then undo move and then basically the pond disappears easy fix
+                      follow the king castle piece preservation methodology -> DONE 
+
+                    - Fix pond promotion forwards and backwards logic as well -> DONE
+
+
+ - castle detection and implementation -> COMPLETED
+
+
+        - Define and understand castle logic
+        - Can't castle into check
+        - Can't castle when king has moved
+        - can't castle if rook has moved
+
+
+
+      ****************************************************************
+
+          - COMPLETED -
+
+
+            For additonal faster composure of methods... 
+            create a method that finds king based on color.
+            Then a method that checks if a king is in check all you need to do is pass that king...
+            Or Better yet, just write BlackInCheck and WhiteInCheck then use those... 
+            GetBlackKing -> MathCoordinate
+            GetWhiteKing -> MathCoordinate
+            method will get opposing teams pieces and all attacking squares then determine if that king is in check...
+
+            When these methods are written, we can refacotr ChessBoard.tsx use the check Methods for clarity and
+            for removal of code duplication and technical debt.
+
+            Remember PondPromotion.tsx lines 67 is where we need to 
+            put these new methods which will check for Check & CheckMate 
+
+
+
+                      I'm going to have to change the abstraction of how I do things, I need 
+
+          to start passing just the board such as Square[][], then doing a clone of that with the checks 
+          for faster reading and white... 
+
+          Instead of a complete board cloned, as per speed and efficency so I'm guessing a transition of 
+          passing board:Board it's now board: Square and same with piece logic.
+
+          Need to separate 
+
+          ***
+          I need to separate the idea of calculating special moves and attack moves
+          ***
+
+          - COMPLETED - 
+
+     ****************************************************************
+
+
+          - Can Piece move if causes check (so a method so understand if it causes a pin...) -> DONE
+
+          - Add a en passant button scenario -> PENDING -> not needed I feel at this moment.
+
+          - Checkmate detection -> DONE
+
+          - Resolve red errors in log screen - DONE 
+
+           - Check detection -> DONE
+
+             - Add a castle scenario setup -> DONE
+              - Add pond logic: 
+            1. only being able to double move if it's it's first move -> DONE
+            2. Only being able to take diagonally if a piece is there -> DONE
+            3. En-passant detection and implementation -> DONE 
+
+            3.5 En-passant BUG if you en-passant, then move, then en-passant to other side you have ability to en-passant to the 
+              side that is not available, we need side determination when en-passanting -> DONE
+
+            4. reaching end of board and showing a dropdown menu bar and piece selection
+                make it forced so we know we have to make a selection -> DONE
+
+                Notes on 4. : 
+                      Read notes on ChessBoard.tsx on line 158 - 166
+                      Because we will finish the implementation on the 
+                      Pond Promotion story and functionality.
+                      
+                      Also note it might be a good idea to move the PondPromotion logic to 
+                      MovePieceFromTo function to better determine if pond promotion triggers a check or checkmate.
+                      Or I can start the next iteration always checking for a check and checkmate.
+                      Just something contemplate on.
+
+      - refactor nodeCrawler with pieceLogicService for checks that can be isolated
+            and moved to that service... -> DONE
+
+
+      
+      Look at line 564, and fix getRookMoves then getBishopMoves as well and all functions in that chain
+
+                1. move over own piece -> done
+                2. if you it's another piece they can take that piece then end the cycle -> done
+                3. cannot take own piece -> done
+                4. remove console.log's -> done 
+
+        NOTE: ROOK moves are done basicaly horz and vert... NEED TO DO DIAGONALS NOW!!!! Horizontals and Diagonals are completed now.
+
+        - also making sure we have a method for making square disabled as well so we can select and disselect. -> DONE I think...?
+
+        - making a method update for making a square moveable -> a reusable method - DONE -
+
+        - Add Basic king movement. -> - DONE -
+
+        - Add pond moves -> double first move and then 1 move, attack vision as well. - DONE -
+
+        - create a standard set board button -> - DONE -
+
+        - create a reset or clean board button -> - DONE -
+
+        - split chess button pieces in rows so they stack on themselves - DONE
+      
+        - click on piece so it shows moves then if you want to unselect that piece you can click 
+          out side of the viable moves or the piece itself to unselect it
+
+            * currently I have active square unactive square mechinaism but what I should do is make a more complex object with prev-click square current click square 
+              and then on top of that bascially I filter through the clicks and cycle it like so -> DONE -> I added a mechanism for selecting piece and unselecting piece. 
+
+        - Make a method that tests square has piece and is disactive -> DONE
+
+        - Make method that tests square has a piece and is active, then determine 
+          if both statements are true then determine if outside square -> NOT NEEDED AT THIS MOMENT.
+
+        - Make a isSameCoordinate funtion comparing the arrays but in a more functional simple way -> DONE
+
+        - click current piece then click one of the blue squares to move piece but only be able to move piece if
+          it's a valid move. -> DONE ->  pieces can move if it's valid but still no rules taking pieces.
+
+
+        - Fix Knight button icon, currently it's a king and not a knight - DONE
+        - Need to activate piece then click chess board to place piece be able to do this for all pieces. - DONE. 
+        - when pieces are on board be able to click piece see visible moves and move them. - DONE
+        - Add row of white pieces as well to add white pieces - DONE
+        - Fix errors in console - DONE 
+        - update board method name and respond to comment line 173 board.tsx - DONE
+        - update chess color border scheme to be something different than gold or blue, maybe black or red... DONE, I made it black. 
+*/

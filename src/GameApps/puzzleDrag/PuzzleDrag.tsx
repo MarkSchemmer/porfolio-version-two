@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import "../puzzleDrag/styles/main.css";
 import { ArePointsEqual, Point, e2 } from "../../Utils/Util";
 import { initialState } from "../../hooks/useDrag";
 import { PuzzlePiece } from "./PuzzlePiece";
@@ -19,6 +18,24 @@ import { useJpg } from "./images/luffy/useJpg";
 // if You want determine the left side just take "pos.x >= 0"
 // These two conditions for x will keep it in the width of the board. 
 // Need to create this same equation for Y-axis. 
+
+/* :root {
+    --clr-pink1: #AAF5EC;
+}
+
+.board {
+    border: 1px solid black;
+    width: 456px;
+    height: 606px;
+    top: 50px;
+    margin:auto;
+}
+
+.pz {
+    background-color: var(--clr-pink1);
+    width: 149px;
+    height: 149px;
+} */
 
 export const baseSquare = [
     [ "blue", "green", "pink" ],
@@ -94,8 +111,10 @@ export const PuzzleDrag = (props:any) => {
     return (
         <div className="board" 
         style={{
+            border: "1px solid black",
+            width: "456px",
+            height: "606px",
             position: "absolute",
-            left: "40%"
         }} ref={boardRef}>
             {squares.map((i, idx) => {
                 return (<PuzzlePiece 

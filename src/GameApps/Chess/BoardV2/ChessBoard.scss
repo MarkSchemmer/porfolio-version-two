@@ -1,0 +1,35 @@
+body {
+      margin: 0;
+      background: #212121;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      max-width: 90vmin; /* scales responsively */
+      width: 100%;
+      border: 10px solid #666;
+    }
+    .grid__item {
+      position: relative;
+    }
+    .grid__item::before {
+      content: "";
+      display: block;
+      padding-top: 100%; /* forces square shape */
+    }
+    /* light/cream and dark/green style board */
+    .grid__item:nth-child(odd) {
+      background-color: #eeedd3;
+    }
+    .grid__item:nth-child(even) {
+      background-color: #779558;
+    }
+    /* flip colors each row */
+    .grid:nth-child(odd) .grid__item:nth-child(even),
+    .grid:nth-child(even) .grid__item:nth-child(odd) {
+      background-color: #779558;
+    }
