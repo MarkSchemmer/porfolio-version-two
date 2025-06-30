@@ -76,12 +76,16 @@ const WastePile = ({ activeId }: { activeId: string | null }) => (
 const FoundationPile = ({
   cards,
   activeId,
+  fpId,
 }: {
   cards: Card[];
   activeId: string | null;
+  fpId: string;
 }) => {
+  const { setNodeRef, isOver } = useDroppable({ id: fpId });
   return (
     <div
+      ref={setNodeRef}
       style={{
         ...pileBase,
         position: "relative",
@@ -122,10 +126,11 @@ const TableauPile = ({
   idx: number;
   activeId: string | null;
 }) => {
-  const { setNodeRef, isOver } = useDroppable({ id: "tableau-pile" });
+  const { setNodeRef, isOver } = useDroppable({ id: "tableau-pile-" + idx });
 
   return (
     <div
+      ref={setNodeRef}
       style={{
         ...pileBase,
         position: "relative", // enables absolute stacking
@@ -140,7 +145,6 @@ const TableauPile = ({
       {cards.map((card, index) => {
         return (
           <div
-            ref={setNodeRef}
             key={index}
             style={{
               position: "absolute",
@@ -163,7 +167,7 @@ const TableauPile = ({
 export const SolitaireApp = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log(event);
+    console.log("hello");
     setActiveId(null);
     const { active, over } = event;
     if (over && active) {
@@ -177,7 +181,7 @@ export const SolitaireApp = () => {
       onDragStart={(event) => {
         setActiveId((event?.active?.id as string) || null);
       }}
-      onDragEnd={handleDragEnd}
+      onDragEnd={(event) => handleDragEnd(event)}
     >
       <div
         style={{
@@ -209,10 +213,26 @@ export const SolitaireApp = () => {
 
           {/* Foundation piles (4) */}
           <div style={{ display: "flex", gap: "1vw" }}>
-            <FoundationPile cards={[card3, card4]} activeId={activeId} />
-            <FoundationPile cards={[]} activeId={activeId} />
-            <FoundationPile cards={[]} activeId={activeId} />
-            <FoundationPile cards={[]} activeId={activeId} />
+            <FoundationPile
+              cards={[card3, card4]}
+              activeId={activeId}
+              fpId={"foundation-pile-1"}
+            />
+            <FoundationPile
+              cards={[]}
+              activeId={activeId}
+              fpId={"foundation-pile-1"}
+            />
+            <FoundationPile
+              cards={[]}
+              activeId={activeId}
+              fpId={"foundation-pile-1"}
+            />
+            <FoundationPile
+              cards={[]}
+              activeId={activeId}
+              fpId={"foundation-pile-1"}
+            />
           </div>
         </div>
 
