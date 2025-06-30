@@ -19,6 +19,8 @@ Ascending above final panel -> 4 top row piles
 */
 import { CSSProperties } from "react";
 import backgroundImage from "../SolitaireApp/utils/gameImages/background.png";
+import { Card } from "./Card";
+import { CardBaseColor, cardImages, CardValues, Suits } from "./utils/Utils";
 
 const pileBase: CSSProperties = {
   border: "2px solid black",
@@ -29,31 +31,109 @@ const pileBase: CSSProperties = {
   backgroundColor: "rgba(255, 255, 255, 0.1)",
 };
 
+const aceSpades = new Card(
+  cardImages.sa,
+  Suits.SPADES,
+  CardBaseColor.BLACK,
+  CardValues.a,
+  true
+);
+
 // Draw and Waste Piles
-const DrawPile = () => <div style={{ ...pileBase, backgroundColor: "navy" }} />;
-const WastePile = () => (
-  <div style={{ ...pileBase, backgroundColor: "gray" }} />
-);
-
-// Foundation Piles (Ace piles)
-const FoundationPile = () => (
-  <div style={{ ...pileBase, backgroundColor: "crimson" }} />
-);
-
-// Tableau Piles
-const TableauPile = () => (
+const DrawPile = () => (
   <div
     style={{
       ...pileBase,
-      flexGrow: 1, // allow pile to expand
-      flexBasis: "0", // base width is zero, evenly divides space
-      minWidth: "6vw",
-      maxWidth: "12vw",
-      height: "100%",
-      backgroundColor: "green",
+      padding: "0.5vh",
+      backgroundColor: "navy",
     }}
-  />
+  >
+    {aceSpades.draw("draw")}
+  </div>
 );
+
+const WastePile = () => (
+  <div
+    style={{
+      ...pileBase,
+      padding: "0.5vh",
+      backgroundColor: "navy",
+    }}
+  >
+    {aceSpades.draw("waste")}
+  </div>
+);
+
+// Foundation Piles (Ace piles)
+const FoundationPile = ({ cards }: { cards: Card[] }) => {
+  return (
+    <div
+      style={{
+        ...pileBase,
+        position: "relative",
+        border: "2px solid black",
+        borderRadius: "8px",
+        backgroundColor: "crimson",
+        overflow: "hidden", // hides underlying cards
+      }}
+    >
+      {cards.map((card, index) => (
+        <div
+          key={index}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            margin: "auto",
+            width: "100%",
+            height: "100%",
+            zIndex: index, // optional: ensures correct top layer
+          }}
+        >
+          {card.draw("foundation")}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Tableau Piles
+const TableauPile = ({ cards }: { cards: Card[] }) => {
+  return (
+    <div
+      style={{
+        ...pileBase,
+        position: "relative", // enables absolute stacking
+        width: "8vw",
+        height: `${cards.length * 3.5}vh`, // dynamically grow height
+        minHeight: "120px",
+        backgroundColor: "green",
+        border: "2px solid black",
+        borderRadius: "8px",
+      }}
+    >
+      {cards.map((card, index) => (
+        <div
+          key={index}
+          style={{
+            position: "absolute",
+            top: `${index * 2.5}vh`, // vertical offset per card
+            left: 0,
+            right: 0,
+            margin: "0 auto", // center the card horizontally
+            width: "90%", // leave padding for stack look
+            height: "10vh",
+          }}
+        >
+          {card.draw("tableau")}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 
 export const SolitaireApp = () => {
   return (
@@ -87,10 +167,10 @@ export const SolitaireApp = () => {
 
         {/* Foundation piles (4) */}
         <div style={{ display: "flex", gap: "1vw" }}>
-          <FoundationPile />
-          <FoundationPile />
-          <FoundationPile />
-          <FoundationPile />
+          <FoundationPile cards={[aceSpades, aceSpades]} />
+          <FoundationPile cards={[]} />
+          <FoundationPile cards={[]} />
+          <FoundationPile cards={[]} />
         </div>
       </div>
 
@@ -106,7 +186,9 @@ export const SolitaireApp = () => {
         }}
       >
         {Array.from({ length: 7 }).map((_, idx) => (
-          <TableauPile key={idx} />
+          <TableauPile key={idx} cards={[
+            aceSpades, aceSpades, aceSpades
+          ]} />
         ))}
       </div>
     </div>
