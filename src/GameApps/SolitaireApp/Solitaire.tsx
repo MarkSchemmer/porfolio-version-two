@@ -17,10 +17,13 @@ Ascending above final panel -> 4 top row piles
 
 
 */
-import { CSSProperties } from "react";
+import { CSSProperties, useState } from "react";
 import backgroundImage from "../SolitaireApp/utils/gameImages/background.png";
 import { Card } from "./Card";
 import { CardBaseColor, cardImages, CardValues, Suits } from "./utils/Utils";
+import Deck from "../SolitaireApp/Deck";
+
+import { DndContext, DragEndEvent, useDroppable } from "@dnd-kit/core";
 
 const pileBase: CSSProperties = {
   border: "2px solid black",
@@ -31,41 +34,52 @@ const pileBase: CSSProperties = {
   backgroundColor: "rgba(255, 255, 255, 0.1)",
 };
 
-const aceSpades = new Card(
-  cardImages.sa,
-  Suits.SPADES,
-  CardBaseColor.BLACK,
-  CardValues.a,
-  true
-);
+const card1 = Deck?.draw();
+const card2 = Deck?.draw();
+const card3 = Deck?.draw();
+const card4 = Deck?.draw();
+const card5 = Deck?.draw();
+const card6 = Deck?.draw();
+
+const tablueSets: Card[][] = [[], [card5, card6], [], [], [], [], []];
 
 // Draw and Waste Piles
-const DrawPile = () => (
+const DrawPile = ({ activeId }: { activeId: string | null }) => (
   <div
     style={{
       ...pileBase,
-      padding: "0.5vh",
+      position: "relative",
+      border: "2px solid black",
+      borderRadius: "8px",
       backgroundColor: "navy",
     }}
   >
-    {aceSpades.draw("draw")}
+    {card1?.draw("draw", card1.uniqueId, activeId)}
   </div>
 );
 
-const WastePile = () => (
+const WastePile = ({ activeId }: { activeId: string | null }) => (
   <div
     style={{
       ...pileBase,
-      padding: "0.5vh",
+      position: "relative",
+      border: "2px solid black",
+      borderRadius: "8px",
       backgroundColor: "navy",
     }}
   >
-    {aceSpades.draw("waste")}
+    {card2?.draw("waste", card2.uniqueId, activeId)}
   </div>
 );
 
 // Foundation Piles (Ace piles)
-const FoundationPile = ({ cards }: { cards: Card[] }) => {
+const FoundationPile = ({
+  cards,
+  activeId,
+}: {
+  cards: Card[];
+  activeId: string | null;
+}) => {
   return (
     <div
       style={{
@@ -74,7 +88,6 @@ const FoundationPile = ({ cards }: { cards: Card[] }) => {
         border: "2px solid black",
         borderRadius: "8px",
         backgroundColor: "crimson",
-        overflow: "hidden", // hides underlying cards
       }}
     >
       {cards.map((card, index) => (
@@ -92,7 +105,7 @@ const FoundationPile = ({ cards }: { cards: Card[] }) => {
             zIndex: index, // optional: ensures correct top layer
           }}
         >
-          {card.draw("foundation")}
+          {card?.draw("foundation", card.uniqueId, activeId)}
         </div>
       ))}
     </div>
@@ -100,7 +113,17 @@ const FoundationPile = ({ cards }: { cards: Card[] }) => {
 };
 
 // Tableau Piles
-const TableauPile = ({ cards }: { cards: Card[] }) => {
+const TableauPile = ({
+  cards,
+  idx,
+  activeId,
+}: {
+  cards: Card[];
+  idx: number;
+  activeId: string | null;
+}) => {
+  const { setNodeRef, isOver } = useDroppable({ id: "tableau-pile" });
+
   return (
     <div
       style={{
@@ -114,83 +137,106 @@ const TableauPile = ({ cards }: { cards: Card[] }) => {
         borderRadius: "8px",
       }}
     >
-      {cards.map((card, index) => (
-        <div
-          key={index}
-          style={{
-            position: "absolute",
-            top: `${index * 2.5}vh`, // vertical offset per card
-            left: 0,
-            right: 0,
-            margin: "0 auto", // center the card horizontally
-            width: "90%", // leave padding for stack look
-            height: "10vh",
-          }}
-        >
-          {card.draw("tableau")}
-        </div>
-      ))}
+      {cards.map((card, index) => {
+        return (
+          <div
+            ref={setNodeRef}
+            key={index}
+            style={{
+              position: "absolute",
+              top: `${index * 2.5}vh`, // vertical offset per card
+              left: 0,
+              right: 0,
+              margin: "0 auto", // center the card horizontally
+              width: "90%", // leave padding for stack look
+              height: "12vh",
+            }}
+          >
+            {card.draw("tableau", card.uniqueId, activeId)}
+          </div>
+        );
+      })}
     </div>
   );
 };
 
-
 export const SolitaireApp = () => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const handleDragEnd = (event: DragEndEvent) => {
+    console.log(event);
+    setActiveId(null);
+    const { active, over } = event;
+    if (over && active) {
+      console.log(`Dropped ${active.id} on ${over.id}`);
+      // You'll implement game logic here later
+    }
+  };
+
   return (
-    <div
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        width: "70vw",
-        height: "70vh",
-        padding: "2vh",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        gap: "2vh",
+    <DndContext
+      onDragStart={(event) => {
+        setActiveId((event?.active?.id as string) || null);
       }}
+      onDragEnd={handleDragEnd}
     >
-      {/* Top Row: Draw/Waste and Foundation piles */}
       <div
         style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          width: "70vw",
+          height: "70vh",
+          padding: "2vh",
+          boxSizing: "border-box",
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
+          flexDirection: "column",
+          gap: "2vh",
         }}
       >
-        {/* Draw & Waste */}
-        <div style={{ display: "flex", gap: "1vw" }}>
-          <DrawPile />
-          <WastePile />
+        {/* Top Row: Draw/Waste and Foundation piles */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
+          {/* Draw & Waste */}
+          <div style={{ display: "flex", gap: "1vw" }}>
+            <DrawPile activeId={activeId} />
+            <WastePile activeId={activeId} />
+          </div>
+
+          {/* Foundation piles (4) */}
+          <div style={{ display: "flex", gap: "1vw" }}>
+            <FoundationPile cards={[card3, card4]} activeId={activeId} />
+            <FoundationPile cards={[]} activeId={activeId} />
+            <FoundationPile cards={[]} activeId={activeId} />
+            <FoundationPile cards={[]} activeId={activeId} />
+          </div>
         </div>
 
-        {/* Foundation piles (4) */}
-        <div style={{ display: "flex", gap: "1vw" }}>
-          <FoundationPile cards={[aceSpades, aceSpades]} />
-          <FoundationPile cards={[]} />
-          <FoundationPile cards={[]} />
-          <FoundationPile cards={[]} />
+        {/* Bottom Row: 7 Tableau piles */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "space-evenly", // spreads more evenly when small
+            alignItems: "stretch",
+            gap: "clamp(0.5vw, 1vw, 2vw)", // auto-gap that grows with screen
+            padding: "1vh 1vw",
+          }}
+        >
+          {Array.from({ length: 7 }).map((_, idx) => (
+            <TableauPile
+              key={idx}
+              cards={tablueSets[idx]}
+              idx={idx}
+              activeId={activeId}
+            />
+          ))}
         </div>
       </div>
-
-      {/* Bottom Row: 7 Tableau piles */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "space-evenly", // spreads more evenly when small
-          alignItems: "stretch",
-          gap: "clamp(0.5vw, 1vw, 2vw)", // auto-gap that grows with screen
-          padding: "1vh 1vw",
-        }}
-      >
-        {Array.from({ length: 7 }).map((_, idx) => (
-          <TableauPile key={idx} cards={[
-            aceSpades, aceSpades, aceSpades
-          ]} />
-        ))}
-      </div>
-    </div>
+    </DndContext>
   );
 };

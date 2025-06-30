@@ -1,11 +1,17 @@
 import { CardBaseColor, Suits } from "./utils/Utils";
 
+import React from "react";
+import { CSS } from "@dnd-kit/utilities";
+
+import { useDraggable } from "@dnd-kit/core";
+
 export class Card {
   public showing: boolean = false;
   public cardImg: string;
   public suit: Suits;
   public baseColor: CardBaseColor;
   public cardWeight: number;
+  public uniqueId: string;
 
   constructor(
     cardImg: string,
@@ -19,34 +25,46 @@ export class Card {
     this.suit = suit;
     this.baseColor = baseColor;
     this.cardWeight = cardWeight;
+    this.uniqueId = `${this.suit}-${this.cardWeight}-${this.baseColor}`
   }
 
-  public draw = (context: "foundation" | "draw" | "waste" | "tableau") => {
-    const isTall = context === "tableau";
+public draw = (context: "foundation" | "draw" | "waste" | "tableau", id: string, activeId?: string | null) => {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id,
+  });
 
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: isTall ? "120px" : "100%", // fixed height for tableau
-          boxSizing: "border-box",
-        }}
-      >
-        <img
-          src={this.cardImg}
-          alt={`card-${this.suit}${this.cardWeight}`}
-          style={{
-            width: isTall ? "auto" : "100%", // match width unless in tableau
-            height: isTall ? "100%" : "auto", // fill height in tableau
-            objectFit: "contain",
-            maxHeight: "100%",
-            maxWidth: "100%",
-          }}
-        />
-      </div>
-    );
+  const isDragging = activeId === id;
+
+  const style: React.CSSProperties = {
+    transform: transform
+      ? `translate(${transform.x}px, ${transform.y}px)`
+      : undefined,
+    touchAction: "none", // better mobile behavior
+    width: "100%",
+    height: "100%",
+    cursor: "grab",
+        position: isDragging ? "absolute" : "relative",
+    zIndex: isDragging ? 9999 : "auto",
+    pointerEvents: isDragging ? "none" : "auto",
   };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+    >
+      <img
+        src={this.cardImg}
+        alt={`card-${this.suit}${this.cardWeight}`}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+        }}
+      />
+    </div>
+  );
+};
 }
