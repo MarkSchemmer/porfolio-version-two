@@ -34,43 +34,41 @@ const pileBase: CSSProperties = {
   backgroundColor: "rgba(255, 255, 255, 0.1)",
 };
 
-const card1 = Deck?.draw();
-const card2 = Deck?.draw();
-const card3 = Deck?.draw();
-const card4 = Deck?.draw();
-const card5 = Deck?.draw();
-const card6 = Deck?.draw();
-
-const tablueSets: Card[][] = [[], [card5, card6], [], [], [], [], []];
-
 // Draw and Waste Piles
-const DrawPile = ({ activeId }: { activeId: string | null }) => (
-  <div
-    style={{
-      ...pileBase,
-      position: "relative",
-      border: "2px solid black",
-      borderRadius: "8px",
-      backgroundColor: "navy",
-    }}
-  >
-    {card1?.draw("draw", card1.uniqueId, activeId)}
-  </div>
-);
+const DrawPile = ({ activeId }: { activeId: string | null }) => {
+  // random card to show back on the boolean of there are cards still in the deck and not empty...
+  const card = new Card("", Suits.SPADES, CardBaseColor.BLACK, 14, false);
+  const cardDisplay = Deck.drawWastePile[0].length > 0 ? card.draw("waste", "") : null; 
+  return (
+    <div
+      style={{
+        ...pileBase,
+        position: "relative",
+        border: "2px solid black",
+        borderRadius: "8px",
+        backgroundColor: "navy",
+      }}
+    >
+      {cardDisplay}
+    </div>
+  );
+};
 
-const WastePile = ({ activeId }: { activeId: string | null }) => (
-  <div
-    style={{
-      ...pileBase,
-      position: "relative",
-      border: "2px solid black",
-      borderRadius: "8px",
-      backgroundColor: "navy",
-    }}
-  >
-    {card2?.draw("waste", card2.uniqueId, activeId)}
-  </div>
-);
+const WastePile = ({ activeId }: { activeId: string | null }) => {
+  return (
+    <div
+      style={{
+        ...pileBase,
+        position: "relative",
+        border: "2px solid black",
+        borderRadius: "8px",
+        backgroundColor: "navy",
+      }}
+    >
+      {/* {card2?.draw("waste", card2.uniqueId, activeId)} */}
+    </div>
+  );
+};
 
 // Foundation Piles (Ace piles)
 const FoundationPile = ({
@@ -127,7 +125,6 @@ const TableauPile = ({
   activeId: string | null;
 }) => {
   const { setNodeRef, isOver } = useDroppable({ id: "tableau-pile-" + idx });
-
   return (
     <div
       ref={setNodeRef}
@@ -176,9 +173,14 @@ export const SolitaireApp = () => {
     }
   };
 
+  const [asc1, asc2, asc3, asc4] = Deck.ascendingPiles;
+
   return (
     <DndContext
       onDragStart={(event) => {
+        // write logic for if it's a tabluea event
+        // then func the design to know if it has descendants
+        console.log(event.active);
         setActiveId((event?.active?.id as string) || null);
       }}
       onDragEnd={(event) => handleDragEnd(event)}
@@ -214,22 +216,22 @@ export const SolitaireApp = () => {
           {/* Foundation piles (4) */}
           <div style={{ display: "flex", gap: "1vw" }}>
             <FoundationPile
-              cards={[card3, card4]}
+              cards={asc1}
               activeId={activeId}
               fpId={"foundation-pile-1"}
             />
             <FoundationPile
-              cards={[]}
+              cards={asc2}
               activeId={activeId}
               fpId={"foundation-pile-1"}
             />
             <FoundationPile
-              cards={[]}
+              cards={asc3}
               activeId={activeId}
               fpId={"foundation-pile-1"}
             />
             <FoundationPile
-              cards={[]}
+              cards={asc4}
               activeId={activeId}
               fpId={"foundation-pile-1"}
             />
@@ -250,7 +252,7 @@ export const SolitaireApp = () => {
           {Array.from({ length: 7 }).map((_, idx) => (
             <TableauPile
               key={idx}
-              cards={tablueSets[idx]}
+              cards={Deck.tableauSets[idx]}
               idx={idx}
               activeId={activeId}
             />

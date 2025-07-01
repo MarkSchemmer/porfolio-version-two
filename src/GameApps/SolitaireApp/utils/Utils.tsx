@@ -53,7 +53,7 @@ import dj from "../utils/gameImages/dj.png";
 import dq from "../utils/gameImages/dq.png";
 import dk from "../utils/gameImages/dk.png";
 import da from "../utils/gameImages/da.png";
-import backGroundImage from "../utils/gameImages/background.png";
+import backGroundImage from "../utils/gameImages/card_background.png";
 
 export const cardImages = {
   c2, c3, c4, c5, c6, c7, c8, c9, c10, cj, cq, ck, ca,

@@ -4,10 +4,12 @@ import React from "react";
 import { CSS } from "@dnd-kit/utilities";
 
 import { useDraggable } from "@dnd-kit/core";
+import { cardImages } from "./utils/Utils";
 
 export class Card {
   public showing: boolean = false;
   public cardImg: string;
+  public backgroundImg: string = cardImages.backGroundImage;
   public suit: Suits;
   public baseColor: CardBaseColor;
   public cardWeight: number;
@@ -25,46 +27,54 @@ export class Card {
     this.suit = suit;
     this.baseColor = baseColor;
     this.cardWeight = cardWeight;
-    this.uniqueId = `${this.suit}-${this.cardWeight}-${this.baseColor}`
+    this.uniqueId = `${this.suit}-${this.cardWeight}-${this.baseColor}`;
   }
 
-public draw = (context: "foundation" | "draw" | "waste" | "tableau", id: string, activeId?: string | null) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id,
-  });
-
-  const isDragging = activeId === id;
-
-  const style: React.CSSProperties = {
-    transform: transform
-      ? `translate(${transform.x}px, ${transform.y}px)`
-      : undefined,
-    touchAction: "none", // better mobile behavior
-    width: "100%",
-    height: "100%",
-    cursor: "grab",
-        position: isDragging ? "absolute" : "relative",
-    zIndex: isDragging ? 9999 : "auto",
-    pointerEvents: isDragging ? "none" : "auto",
+  public makeShow = () => {
+    this.showing = true;
   };
 
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-    >
-      <img
-        src={this.cardImg}
-        alt={`card-${this.suit}${this.cardWeight}`}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "contain",
-        }}
-      />
-    </div>
-  );
-};
+  public makeHidden = () => {
+    this.showing = false;
+  };
+
+  public draw = (
+    context: "foundation" | "draw" | "waste" | "tableau",
+    id: string,
+    activeId?: string | null
+  ) => {
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+      id,
+    });
+
+    const isDragging = activeId === id;
+    const isTableau = context === "tableau";
+
+    const style: React.CSSProperties = {
+      transform: transform
+        ? `translate(${transform.x}px, ${transform.y}px)`
+        : undefined,
+      touchAction: "none", // better mobile behavior
+      width: "100%",
+      height: "100%",
+      cursor: "grab",
+      position: isDragging ? "absolute" : "relative",
+      zIndex: isDragging ? 9999 : "auto",
+      pointerEvents: isDragging ? "none" : "auto",
+    };
+
+    return (
+      <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+        <img
+          src={this.showing ? this.cardImg : this.backgroundImg}
+          alt={`card-${this.suit}${this.cardWeight}`}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+          }}
+        />
+      </div>
+    );
+  };
 }
