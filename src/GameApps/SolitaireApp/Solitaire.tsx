@@ -21,9 +21,11 @@ import { CSSProperties, useState } from "react";
 import backgroundImage from "../SolitaireApp/utils/gameImages/background.png";
 import { Card } from "./Card";
 import { CardBaseColor, cardImages, CardValues, Suits } from "./utils/Utils";
-import Deck from "../SolitaireApp/Deck";
 
 import { DndContext, DragEndEvent, useDroppable } from "@dnd-kit/core";
+import { useDispatch, useSelector } from "react-redux";
+import { getDeck, UpdateDeck } from "../../store/slices/solitaireSlice";
+import { Deck } from "./Deck";
 
 const pileBase: CSSProperties = {
   border: "2px solid black",
@@ -35,10 +37,18 @@ const pileBase: CSSProperties = {
 };
 
 // Draw and Waste Piles
-const DrawPile = ({ activeId }: { activeId: string | null }) => {
+const DrawPile = ({
+  activeId,
+  deck,
+}: {
+  activeId: string | null;
+  deck: Deck;
+}) => {
+  const dispatch = useDispatch();
   // random card to show back on the boolean of there are cards still in the deck and not empty...
   const card = new Card("", Suits.SPADES, CardBaseColor.BLACK, 14, false);
-  const cardDisplay = Deck.drawWastePile[0].length > 0 ? card.draw("waste", "") : null; 
+  const cardDisplay =
+    deck.drawWastePile[0].length > 0 ? card.draw("waste", "") : null;
   return (
     <div
       style={{
@@ -47,6 +57,10 @@ const DrawPile = ({ activeId }: { activeId: string | null }) => {
         border: "2px solid black",
         borderRadius: "8px",
         backgroundColor: "navy",
+      }}
+      onClick={(event: any) => {
+        deck.handleDrawPileClick(); // flip 3 cards to waste pile
+        dispatch(UpdateDeck(deck));
       }}
     >
       {cardDisplay}
@@ -54,7 +68,31 @@ const DrawPile = ({ activeId }: { activeId: string | null }) => {
   );
 };
 
-const WastePile = ({ activeId }: { activeId: string | null }) => {
+/*
+  get the last the items on the waste pile 
+  and then add some styles so they are properly displayed 
+*/
+const WastePile = ({
+  activeId,
+  deck,
+}: {
+  activeId: string | null;
+  deck: Deck;
+}) => {
+  const [_, wastePile] = deck.drawWastePile;
+  let c1 = wastePile[wastePile.length - 1];
+  let c2 = wastePile[wastePile.length - 2];
+  let c3 = wastePile[wastePile.length - 3];
+
+  const toDrawFrom = [c1, c2, c3].filter(
+    (c: Card) => c !== null && c !== undefined
+  ).map(c => {
+    c.makeShow();
+    return c;
+  }).map((c, idx, arr) => {
+    return () => c.draw( idx === arr.length - 1 ? "lastCardOnWaste": "waste", c.uniqueId);
+  })
+
   return (
     <div
       style={{
@@ -65,7 +103,21 @@ const WastePile = ({ activeId }: { activeId: string | null }) => {
         backgroundColor: "navy",
       }}
     >
-      {/* {card2?.draw("waste", card2.uniqueId, activeId)} */}
+      {toDrawFrom.map((c: any, index) => (
+        <div
+          key={c.uniqueId}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: `${index * 1.2}vw`,
+            width: "100%",
+            height: "100%",
+            zIndex: index,
+          }}
+        >
+          {c()}
+        </div>
+      ))}
     </div>
   );
 };
@@ -162,6 +214,7 @@ const TableauPile = ({
 };
 
 export const SolitaireApp = () => {
+  const deck = useSelector(getDeck) as Deck;
   const [activeId, setActiveId] = useState<string | null>(null);
   const handleDragEnd = (event: DragEndEvent) => {
     console.log("hello");
@@ -173,7 +226,7 @@ export const SolitaireApp = () => {
     }
   };
 
-  const [asc1, asc2, asc3, asc4] = Deck.ascendingPiles;
+  const [asc1, asc2, asc3, asc4] = deck.ascendingPiles;
 
   return (
     <DndContext
@@ -209,8 +262,8 @@ export const SolitaireApp = () => {
         >
           {/* Draw & Waste */}
           <div style={{ display: "flex", gap: "1vw" }}>
-            <DrawPile activeId={activeId} />
-            <WastePile activeId={activeId} />
+            <DrawPile activeId={activeId} deck={deck} />
+            <WastePile activeId={activeId} deck={deck} />
           </div>
 
           {/* Foundation piles (4) */}
@@ -252,7 +305,7 @@ export const SolitaireApp = () => {
           {Array.from({ length: 7 }).map((_, idx) => (
             <TableauPile
               key={idx}
-              cards={Deck.tableauSets[idx]}
+              cards={deck.tableauSets[idx]}
               idx={idx}
               activeId={activeId}
             />

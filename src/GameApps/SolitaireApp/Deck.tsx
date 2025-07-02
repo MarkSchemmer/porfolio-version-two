@@ -5,51 +5,32 @@ import { Card } from "./Card";
 import { CardBaseColor, cardImages, CardValues, Suits } from "./utils/Utils";
 
 // generateDeck
-class Deck {
+export class Deck {
   public deck: Card[] = [];
 
-  public tableauSets: Card[][] = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-  ];
+  public tableauSets: Card[][] = [[], [], [], [], [], [], []];
 
-  public ascendingPiles: Card[][] = [
-    [],
-    [],
-    [],
-    []
-  ];
+  public ascendingPiles: Card[][] = [[], [], [], []];
 
-  public drawWastePile: Card[][] = [
-    [],
-    []
-  ]
+  public drawWastePile: Card[][] = [[], []];
 
   constructor() {
     this.boardAndDeckSetup();
   }
 
   public boardAndDeckSetup = () => {
-      this.deck = this.generateDeck();
+    this.deck = this.generateDeck();
 
+    this.tableauSets = this.tableauSets.map((c: Card[], idx: number) => {
+      const amountOfCards = idx + 1;
+      c = this.drawAmount(amountOfCards);
+      let last = c[c.length - 1];
+      last.makeShow();
+      return c;
+    });
 
-      this.tableauSets = this.tableauSets.map((c:Card[], idx: number) => {
-          const amountOfCards = idx + 1;
-          c = this.drawAmount(amountOfCards);
-          let last = c[c.length - 1];
-          last.makeShow();
-          return c;
-      });
-
-
-      this.drawWastePile[0] = this.deck
-
-  }
+    this.drawWastePile[0] = this.deck;
+  };
 
   public generateDeck = (): Card[] => {
     const spades = Object.entries(CardValues).map(([k, v], idx) => {
@@ -88,11 +69,37 @@ class Deck {
     }
 
     return cards;
-  }
+  };
+
+  public makeSetHidden = (cards: Card[]) => {
+    cards.forEach((c) => {
+      c.makeHidden();
+    });
+  };
 
   public draw = (): Card => {
     const card = this.deck.pop();
     return card as Card;
+  };
+
+  public handleDrawPileClick = () => {
+    console.log("handling click");
+    let [drawPile, wastePile] = this.drawWastePile;
+
+    if (drawPile.length > 0) {
+      const [c1, c2, c3, ...rest] = drawPile;
+
+      const cardsToAdd = [c1, c2, c3].filter(
+        (c) => c !== undefined && c !== null
+      );
+
+      wastePile = [...wastePile, ...cardsToAdd];
+
+      this.drawWastePile = [rest, wastePile];
+    } else {
+      this.makeSetHidden(wastePile);
+      this.drawWastePile = [wastePile.slice(), []];
+    }
   };
 
   private shuffle = (arr: any) => {
@@ -106,5 +113,3 @@ class Deck {
     return arr;
   };
 }
-
-export default new Deck();

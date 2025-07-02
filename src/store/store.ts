@@ -4,6 +4,8 @@ import todoFilterReducer from '../store/slices/todoFilterSlice';
 import ticTacToeReducer from '../../src/GameApps/TicTacToe/slices/TicTacToeSlice';
 import ChessReducer  from '../store/slices/chessSlice';
 
+import SolReducer from "../store/slices/solitaireSlice";
+
 
 // import {
 //   createSerializableStateInvariantMiddleware,
@@ -47,7 +49,8 @@ export default configureStore({
     todoList: todoListReducer,
     todoFilter: todoFilterReducer,
     TicTacToeState: ticTacToeReducer,
-    chessState: ChessReducer
+    chessState: ChessReducer,
+    solState: SolReducer
   },
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({

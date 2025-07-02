@@ -39,7 +39,7 @@ export class Card {
   };
 
   public draw = (
-    context: "foundation" | "draw" | "waste" | "tableau",
+    context: "foundation" | "draw" | "waste" | "tableau" | "lastCardOnWaste",
     id: string,
     activeId?: string | null
   ) => {
@@ -63,18 +63,34 @@ export class Card {
       pointerEvents: isDragging ? "none" : "auto",
     };
 
-    return (
-      <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-        <img
-          src={this.showing ? this.cardImg : this.backgroundImg}
-          alt={`card-${this.suit}${this.cardWeight}`}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-          }}
-        />
-      </div>
-    );
+    const finalCard =
+      context === "waste" ? (
+        <div ref={setNodeRef} style={style}>
+          <img
+            src={this.showing ? this.cardImg : this.backgroundImg}
+            alt={`card-${this.suit}${this.cardWeight}`}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+            }}
+          />
+        </div>
+      ) : (
+        <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+          <img
+            src={this.showing ? this.cardImg : this.backgroundImg}
+            alt={`card-${this.suit}${this.cardWeight}`}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+            }}
+          />
+        </div>
+      );
+
+    return finalCard;
+    
   };
 }
