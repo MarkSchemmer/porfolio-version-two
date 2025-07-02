@@ -64,7 +64,7 @@ export class Card {
     };
 
     const finalCard =
-      context === "waste" ? (
+      context === "waste" || this.showing === false ? (
         <div ref={setNodeRef} style={style}>
           <img
             src={this.showing ? this.cardImg : this.backgroundImg}

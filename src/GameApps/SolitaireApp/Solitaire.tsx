@@ -109,7 +109,7 @@ const WastePile = ({
           style={{
             position: "absolute",
             top: 0,
-            left: `${index * 1.2}vw`,
+            left: `${index * 1.4}vw`,
             width: "100%",
             height: "100%",
             zIndex: index,
