@@ -38,6 +38,52 @@ export class Card {
     this.showing = false;
   };
 
+  public IsIncomingCardMore = (incomingCard: Card) => {
+    // check if current card is ace...
+
+    const currentCardAce = this.IsAce();
+
+    if (currentCardAce) {
+      return incomingCard.cardWeight === 2;
+    } else {
+      return this.cardWeight + 1 === incomingCard.cardWeight;
+    }
+  }
+
+  public IsIncomingCardLess = (incomingCard: Card) => {
+    return this.cardWeight - 1 === incomingCard.cardWeight;
+  };
+
+  public IsIncomingCardOppositeColor = (incomingCard: Card) => {
+    return this.baseColor !== incomingCard.baseColor;
+  };
+
+  public IsIncomingCardSameSuite = (incomingCard: Card) => {
+    return this.suit === incomingCard.suit;
+  };
+
+  public canStackOnTableau = (incomingCard: Card) => {
+    return (
+      this.IsIncomingCardLess(incomingCard) &&
+      this.IsIncomingCardOppositeColor(incomingCard)
+    );
+  };
+
+  public canStackOnFoundation = (incomingCard: Card) => {
+    return (
+      this.IsIncomingCardMore(incomingCard) &&
+      this.IsIncomingCardSameSuite(incomingCard)
+    );
+  };
+
+  public IsKing = () => {
+    return this.cardWeight === 13;
+  };
+
+  public IsAce = () => {
+    return this.cardWeight === 14;
+  };
+
   public draw = (
     context: "foundation" | "draw" | "waste" | "tableau" | "lastCardOnWaste",
     id: string,
@@ -91,6 +137,5 @@ export class Card {
       );
 
     return finalCard;
-    
   };
 }
