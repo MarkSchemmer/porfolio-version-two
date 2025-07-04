@@ -20,6 +20,8 @@ export class Deck {
 
   public drawWastePile: Card[][] = [[], []];
 
+  public privateCachePile: Card[] = [];
+
   constructor() {
     this.boardAndDeckSetup();
   }
@@ -102,8 +104,9 @@ export class Deck {
 
       this.drawWastePile = [rest, wastePile];
     } else {
+      this.privateCachePile = [...wastePile];
       this.makeSetHidden(wastePile);
-      this.drawWastePile = [wastePile.slice(), []];
+      this.drawWastePile = [this.privateCachePile.slice(), []];
     }
   };
 
@@ -159,6 +162,60 @@ export class Deck {
     if (inDraw) return { fromPile: Pile.WASTEPILE, card: inDraw };
 
     return null;
+  };
+
+  public handleWasteToTableauDrop = (
+    fromInfo: {
+      fromPile: Pile;
+      card: Card;
+      pileIndex?: number;
+      cardIndex?: number;
+    },
+    toIndex: number
+  ) => {
+    const toTable = this.tableauSets[toIndex];
+
+    if (toTable.length === 0) {
+      // has to be king only
+      if (fromInfo.card.IsKing()) {
+        toTable.push(fromInfo.card);
+        this.removeCardFromWaste(fromInfo.card.uniqueId);
+      }
+    } else {
+      const lastCard = toTable[toTable.length - 1];
+
+      if (lastCard.canStackOnTableau(fromInfo.card)) {
+        toTable.push(fromInfo.card);
+        this.removeCardFromWaste(fromInfo.card.uniqueId);
+      }
+    }
+  };
+
+  public handleWasteToFoundationDrop = (
+    fromInfo: {
+      fromPile: Pile;
+      card: Card;
+      pileIndex?: number;
+      cardIndex?: number;
+    },
+    toIndex: number
+  ) => {
+    const toFoundation = this.ascendingPiles[toIndex];
+
+    if (toFoundation.length === 0) {
+      // has to be king only
+      if (fromInfo.card.IsAce()) {
+        toFoundation.push(fromInfo.card);
+        this.removeCardFromWaste(fromInfo.card.uniqueId);
+      }
+    } else {
+      const lastCard = toFoundation[toFoundation.length - 1];
+      const res = lastCard.canStackOnFoundation(fromInfo.card);
+      if (res) {
+        toFoundation.push(fromInfo.card);
+        this.removeCardFromWaste(fromInfo.card.uniqueId);
+      }
+    }
   };
 
   public handleTableuaToTableauDrop = (
@@ -229,6 +286,12 @@ export class Deck {
 
   public removeCardFromTable = (tabIdx: number, id: string) => {
     this.tableauSets[tabIdx] = this.tableauSets[tabIdx].filter(
+      (c) => c.uniqueId !== id
+    );
+  };
+
+  public removeCardFromWaste = (id: string) => {
+    this.drawWastePile[1] = this.drawWastePile[1].filter(
       (c) => c.uniqueId !== id
     );
   };

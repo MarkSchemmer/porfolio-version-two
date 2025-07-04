@@ -15,6 +15,7 @@ export const solSlice = createSlice({
       deck.tableauSets = action.payload.tableauSets;
       deck.ascendingPiles = action.payload.ascendingPiles;
       deck.drawWastePile = action.payload.drawWastePile;
+      deck.privateCachePile = action.payload.privateCachePile;
 
       state.deck = deck;
     },

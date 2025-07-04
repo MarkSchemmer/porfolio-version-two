@@ -80,12 +80,10 @@ const WastePile = ({
   activeId: string[] | null;
   deck: Deck;
 }) => {
-  const [_, wastePile] = deck.drawWastePile;
-  let c1 = wastePile[wastePile.length - 1];
-  let c2 = wastePile[wastePile.length - 2];
-  let c3 = wastePile[wastePile.length - 3];
 
-  const toDrawFrom = [c1, c2, c3].filter(
+  const [_, wastePile] = deck.drawWastePile;
+
+  const toDrawFrom = wastePile.slice(-3).filter(
     (c: Card) => c !== null && c !== undefined
   ).map(c => {
     c.makeShow();
@@ -237,12 +235,16 @@ export const SolitaireApp = () => {
       const {fromPile, card} = fromInfo;
 
       const fromTableau = fromPile === Pile.TABLEAU;
-      const toTableau = toPile === Pile.TABLEAU;
+      const fromWastePile = fromPile === Pile.WASTEPILE;
 
+      const toTableau = toPile === Pile.TABLEAU;
       const toFoundation = toPile === Pile.FOUNDATION;
 
       const tableauToTableau = fromTableau && toTableau;
       const tableauToFoundation = fromTableau && toFoundation;
+
+      const wasteToTableau = fromWastePile && toTableau;
+      const wasteToFoundation = fromWastePile && toFoundation;
 
       if (tableauToTableau) {
         deck.handleTableuaToTableauDrop(fromInfo, toIdx);
@@ -252,6 +254,18 @@ export const SolitaireApp = () => {
 
       if (tableauToFoundation) {
         deck.handleTableuaToFoundationDrop(fromInfo, toIdx - 1);
+        dispatch(UpdateDeck(deck));
+        return;
+      }
+
+      if (wasteToTableau) {
+        deck.handleWasteToTableauDrop(fromInfo, toIdx);
+        dispatch(UpdateDeck(deck));
+        return;
+      }
+
+      if (wasteToFoundation) {
+        deck.handleWasteToFoundationDrop(fromInfo, toIdx - 1);
         dispatch(UpdateDeck(deck));
         return;
       }
