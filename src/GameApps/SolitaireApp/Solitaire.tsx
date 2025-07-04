@@ -22,7 +22,12 @@ import backgroundImage from "../SolitaireApp/utils/gameImages/background.png";
 import { Card } from "./Card";
 import { CardBaseColor, cardImages, CardValues, Suits } from "./utils/Utils";
 
-import { DndContext, DragEndEvent, DragOverlay, useDroppable } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  useDroppable,
+} from "@dnd-kit/core";
 import { useDispatch, useSelector } from "react-redux";
 import { getDeck, UpdateDeck } from "../../store/slices/solitaireSlice";
 import { Deck, Pile } from "./Deck";
@@ -49,7 +54,9 @@ const DrawPile = ({
   // random card to show back on the boolean of there are cards still in the deck and not empty...
   const card = new Card("", Suits.SPADES, CardBaseColor.BLACK, 1200, false);
   const cardDisplay =
-    deck.drawWastePile[0].length > 0 ? <DraggableCard card={card} context="waste" isOverLay={false} />: null;
+    deck.drawWastePile[0].length > 0 ? (
+      <DraggableCard card={card} context="waste" isOverLay={false} />
+    ) : null;
   return (
     <div
       style={{
@@ -80,18 +87,23 @@ const WastePile = ({
   activeId: string[] | null;
   deck: Deck;
 }) => {
-
   const [_, wastePile] = deck.drawWastePile;
 
-  const toDrawFrom = wastePile.slice(-3).filter(
-    (c: Card) => c !== null && c !== undefined
-  ).map(c => {
-    c.makeShow();
-    return c;
-  }).map((c, idx, arr) => {
-    // return { func: () => c.draw( idx === arr.length - 1 ? "lastCardOnWaste": "waste", c.uniqueId), key: c.uniqueId }
-    return { card: c, context: idx === arr.length - 1 ? "lastCardOnWaste": "waste", key: c.uniqueId} 
-  })
+  const toDrawFrom = wastePile
+    .slice(-3)
+    .filter((c: Card) => c !== null && c !== undefined)
+    .map((c) => {
+      c.makeShow();
+      return c;
+    })
+    .map((c, idx, arr) => {
+      // return { func: () => c.draw( idx === arr.length - 1 ? "lastCardOnWaste": "waste", c.uniqueId), key: c.uniqueId }
+      return {
+        card: c,
+        context: idx === arr.length - 1 ? "lastCardOnWaste" : "waste",
+        key: c.uniqueId,
+      };
+    });
 
   return (
     <div
@@ -115,7 +127,7 @@ const WastePile = ({
             zIndex: index,
           }}
         >
-          <DraggableCard card={c.card} context={c.context} isOverLay={false}/>
+          <DraggableCard card={c.card} context={c.context} isOverLay={false} />
         </div>
       ))}
     </div>
@@ -160,7 +172,12 @@ const FoundationPile = ({
           }}
         >
           {/* {card?.draw("foundation", card.uniqueId, activeId)} */}
-          <DraggableCard card={card} context={"foundation"} activeId={activeId} isOverLay={false} /> 
+          <DraggableCard
+            card={card}
+            context={"foundation"}
+            activeId={activeId}
+            isOverLay={false}
+          />
         </div>
       ))}
     </div>
@@ -181,6 +198,9 @@ const TableauPile = ({
   const { setNodeRef, isOver } = useDroppable({ id: "tableau-pile-" + idx });
   return (
     <div
+      onDragStart={() => {
+        console.log("hello world ");
+      }}
       ref={setNodeRef}
       style={{
         ...pileBase,
@@ -193,24 +213,28 @@ const TableauPile = ({
         borderRadius: "8px",
       }}
     >
-      {cards
-      .map((card, index) => {
-        // if (activeId?.includes(card.uniqueId)) return null; // Skip rendering while dragging
+      {cards.map((card, index) => {
+        const isBeingDragged = activeId?.includes(card.uniqueId);
         return (
           <div
             key={index}
             style={{
               position: "absolute",
-              top: `${index * 2.5}vh`, // vertical offset per card
+              top: `${index * 2.5}vh`,
               left: 0,
               right: 0,
-              margin: "0 auto", // center the card horizontally
-              width: "90%", // leave padding for stack look
+              margin: "0 auto",
+              width: "90%",
               height: "12vh",
+              visibility: isBeingDragged ? "hidden" : "visible", // 👈 Hide if it's being dragged
             }}
           >
-            {/* {card.draw("tableau", card.uniqueId, activeId)} */}
-            <DraggableCard context={"tableau"} card={card} activeId={activeId} isOverLay={false} />
+            <DraggableCard
+              context={"tableau"}
+              card={card}
+              activeId={activeId}
+              isOverLay={false}
+            />
           </div>
         );
       })}
@@ -220,8 +244,8 @@ const TableauPile = ({
 
 export const SolitaireApp = () => {
   const deck = useSelector(getDeck) as Deck;
-  const dispatch  = useDispatch();
-  const [activeId, setActiveId] = useState<string[] | null>(null);
+  const dispatch = useDispatch();
+  const [activeId, setActiveId] = useState<Card[] | null>(null);
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveId(null);
@@ -230,9 +254,9 @@ export const SolitaireApp = () => {
     if (over && active && fromInfo) {
       console.log(`Dropped ${active.id} on ${over.id}`);
       console.log(fromInfo);
-      const toPile: Pile = over.id.toString().split('-')[0] as Pile;
-      const toIdx: number = parseInt(over.id.toString().split('-')[2]);
-      const {fromPile, card} = fromInfo;
+      const toPile: Pile = over.id.toString().split("-")[0] as Pile;
+      const toIdx: number = parseInt(over.id.toString().split("-")[2]);
+      const { fromPile, card } = fromInfo;
 
       const fromTableau = fromPile === Pile.TABLEAU;
       const fromWastePile = fromPile === Pile.WASTEPILE;
@@ -240,11 +264,19 @@ export const SolitaireApp = () => {
       const toTableau = toPile === Pile.TABLEAU;
       const toFoundation = toPile === Pile.FOUNDATION;
 
-      const tableauToTableau = fromTableau && toTableau;
+      const tableauToTableau = fromTableau && toTableau && (activeId || [])?.length === 1;
+
+      const tableauToTableauMany = fromTableau && toTableau && (activeId || [])?.length > 1;
       const tableauToFoundation = fromTableau && toFoundation;
 
       const wasteToTableau = fromWastePile && toTableau;
       const wasteToFoundation = fromWastePile && toFoundation;
+
+      if (tableauToTableauMany) {
+        deck.handleTableuaToTableauManyDrop({...fromInfo, card: activeId as Card[]}, toIdx);
+        dispatch(UpdateDeck(deck));
+        return;
+      }
 
       if (tableauToTableau) {
         deck.handleTableuaToTableauDrop(fromInfo, toIdx);
@@ -299,25 +331,24 @@ export const SolitaireApp = () => {
 
         // store id
         // find where we are dragging
-        const fromId = event?.active?.id as string || null;
+        const fromId = (event?.active?.id as string) || null;
 
         if (fromId) {
-             const fromInfo = deck.findWhereCardLives(fromId);
+          const fromInfo = deck.findWhereCardLives(fromId);
 
-             if (fromInfo?.fromPile === Pile.TABLEAU) {
-                const tabIdx = fromInfo.pileIndex as number;
-                const tabIdxLen = deck.tableauSets[tabIdx].length;
-                const sliceOfCards = deck.tableauSets[tabIdx].slice(fromInfo.cardIndex, tabIdxLen);
-                console.log(sliceOfCards)
-                setActiveId(sliceOfCards.map(c => c.uniqueId))
-             }
-             
+          if (fromInfo?.fromPile === Pile.TABLEAU) {
+            const tabIdx = fromInfo.pileIndex as number;
+            const tabIdxLen = deck.tableauSets[tabIdx].length;
+            const sliceOfCards = deck.tableauSets[tabIdx].slice(
+              fromInfo.cardIndex,
+              tabIdxLen
+            );
+            console.log(sliceOfCards);
+            setActiveId(sliceOfCards);
+          }
         } else {
-            setActiveId([event?.active?.id as string]);
+          setActiveId(null);
         }
-        
-
-        
       }}
       onDragEnd={(event) => handleDragEnd(event)}
     >
@@ -345,30 +376,30 @@ export const SolitaireApp = () => {
         >
           {/* Draw & Waste */}
           <div style={{ display: "flex", gap: "1vw" }}>
-            <DrawPile activeId={activeId} deck={deck} />
-            <WastePile activeId={activeId} deck={deck} />
+            <DrawPile activeId={activeId?.map(c => c.uniqueId) || null} deck={deck} />
+            <WastePile activeId={activeId?.map(c => c.uniqueId) || null} deck={deck} />
           </div>
 
           {/* Foundation piles (4) */}
           <div style={{ display: "flex", gap: "1vw" }}>
             <FoundationPile
               cards={asc1}
-              activeId={activeId}
+              activeId={activeId?.map(c => c.uniqueId) || null}
               fpId={"foundation-pile-1"}
             />
             <FoundationPile
               cards={asc2}
-              activeId={activeId}
+              activeId={activeId?.map(c => c.uniqueId) || null}
               fpId={"foundation-pile-2"}
             />
             <FoundationPile
               cards={asc3}
-              activeId={activeId}
+              activeId={activeId?.map(c => c.uniqueId) || null}
               fpId={"foundation-pile-3"}
             />
             <FoundationPile
               cards={asc4}
-              activeId={activeId}
+              activeId={activeId?.map(c => c.uniqueId) || null}
               fpId={"foundation-pile-4"}
             />
           </div>
@@ -390,41 +421,47 @@ export const SolitaireApp = () => {
               key={idx}
               cards={deck.tableauSets[idx]}
               idx={idx}
-              activeId={activeId}
+              activeId={activeId?.map(c => c.uniqueId) || null}
             />
           ))}
         </div>
       </div>
-{/* 
-       <DragOverlay>
-            {activeId?.length ? (
-              <div style={{ position: "relative", width: "8vw" }}>
-                {activeId.map((id, index) => {
-                  const cardObj = deck.findWhereCardLives(id)?.card;
-                  if (!cardObj) return null;
-                  return (
-                    <div
-                      key={id}
-                      style={{
-                        position: "absolute",
-                        top: `${index * 2.5}vh`,
-                        width: "100%",
-                        zIndex: index,
-                      }}
-                    >
-                      <DraggableCard
-                        card={cardObj}
-                        context="tableau"
-                        isOverLay={true}
-                        activeId={activeId}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ) : null}
-  </DragOverlay> */}
 
+      <DragOverlay>
+        {activeId?.length ? (
+          <div
+            style={{
+              position: "relative",
+              width: "8vw", // match Tableau width
+              height: `${activeId.length * 3.5}vh`, // match dynamic height
+            }}
+          >
+            {(activeId?.map(c => c.uniqueId) || null)?.map((id, index) => {
+              const cardObj = deck.findWhereCardLives(id)?.card;
+              if (!cardObj) return null;
+              return (
+                <div
+                  key={id}
+                  style={{
+                    position: "absolute",
+                    top: `${index * 2.5}vh`, // match Tableau vertical offset
+                    width: "100%",
+                    height: "12vh", // same height as each card
+                    zIndex: index,
+                  }}
+                >
+                  <DraggableCard
+                    card={cardObj}
+                    context="tableau"
+                    isOverLay={true} // This lets you apply lighter styles if needed
+                    activeId={activeId?.map(c => c.uniqueId) || null}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 };
