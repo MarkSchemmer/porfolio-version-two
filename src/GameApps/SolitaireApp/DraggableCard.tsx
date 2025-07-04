@@ -16,13 +16,15 @@ export const DraggableCard = ({
   activeId?: string[] | null;
   isOverLay: boolean;
 }) => {
-    const deck = useSelector(getDeck) as Deck;
-    const dispatch = useDispatch();
+  const deck = useSelector(getDeck) as Deck;
+  const dispatch = useDispatch();
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: card.uniqueId,
   });
 
-  const isDragging = activeId?.some((i) => i === card.uniqueId);
+  const isDragging = activeId?.[0] === card.uniqueId;
+
+  // some((i) => i === card.uniqueId);
   const isTableau = context === "tableau";
 
   const style: React.CSSProperties = {
@@ -39,22 +41,24 @@ export const DraggableCard = ({
   };
 
   const finalCard =
-    context === "waste" || card.showing === false ? (
-      <div ref={setNodeRef} style={style} onClick={() => {
+    context === "waste" || card.showing === false || isOverLay === true ? (
+      <div
+        ref={setNodeRef}
+        style={style}
+        onClick={() => {
+          const fromInfo = deck.findWhereCardLives(card.uniqueId);
 
-        const fromInfo = deck.findWhereCardLives(card.uniqueId);
-        
-        if (fromInfo && fromInfo.fromPile === Pile.TABLEAU) {
+          if (fromInfo && fromInfo.fromPile === Pile.TABLEAU) {
             const tabLen = fromInfo.pileIndex as number;
             const len = deck.tableauSets[tabLen].length - 1;
             console.log(deck.tableauSets[tabLen][len]);
             if (deck.tableauSets[tabLen][len].uniqueId === card.uniqueId) {
-                card.makeShow();
-                dispatch(UpdateDeck(deck));
+              card.makeShow();
+              dispatch(UpdateDeck(deck));
             }
-        }
-
-      }}>
+          }
+        }}
+      >
         <img
           src={card.showing ? card.cardImg : card.backgroundImg}
           alt={`card-${card.suit}${card.cardWeight}`}
@@ -78,6 +82,30 @@ export const DraggableCard = ({
         />
       </div>
     );
+
+  if (isOverLay) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          // boxShadow: "0 4px 12px rgba(0, 0, 0, 0.4)",
+          pointerEvents: "none", // overlay should not be interactive
+        }}
+      >
+        <img
+          src={card.cardImg}
+          alt={`card-${card.suit}${card.cardWeight}`}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            opacity: 1, // slight transparency if you want
+          }}
+        />
+      </div>
+    );
+  }
 
   return finalCard;
 };

@@ -251,6 +251,39 @@ export class Deck {
     }
   };
 
+    public handleTableuaToTableauManyDrop = (
+    fromInfo: {
+      fromPile: Pile;
+      card: Card[];
+      pileIndex?: number;
+      cardIndex?: number;
+    },
+    toIndex: number
+  ) => {
+    const toTable = this.tableauSets[toIndex];
+
+    if (toTable.length === 0) {
+      // has to be king only
+      if (fromInfo.card[0].IsKing()) {
+        toTable.push(...fromInfo.card);
+        this.removeCardFromTableMany(
+          fromInfo.pileIndex as number,
+          fromInfo.card.map(c => c.uniqueId)
+        );
+      }
+    } else {
+      const lastCard = toTable[toTable.length - 1];
+
+      if (lastCard.canStackOnTableau(fromInfo.card[0])) {
+        toTable.push(...fromInfo.card);
+        this.removeCardFromTableMany(
+          fromInfo.pileIndex as number,
+          fromInfo.card.map(c => c.uniqueId)
+        );
+      }
+    }
+  };
+
   public handleTableuaToFoundationDrop = (
     fromInfo: {
       fromPile: Pile;
@@ -287,6 +320,12 @@ export class Deck {
   public removeCardFromTable = (tabIdx: number, id: string) => {
     this.tableauSets[tabIdx] = this.tableauSets[tabIdx].filter(
       (c) => c.uniqueId !== id
+    );
+  };
+
+    public removeCardFromTableMany = (tabIdx: number, id: string[]) => {
+    this.tableauSets[tabIdx] = this.tableauSets[tabIdx].filter(
+      (c) => id.includes(c.uniqueId) === false
     );
   };
 
