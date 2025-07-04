@@ -6,6 +6,7 @@ import Iframe from "../../components/IFrame/Iframe";
 import { SolarComponent } from "../../GameApps/Solar/SolarComponent";
 import { PongComponent } from "../../GameApps/Pong/PongComponent";
 import { MouseCurserComponent } from "../../GameApps/MouseCurserGame/MouseCurser";
+import { SnakeComponent } from "../../GameApps/Snake/SnakeComponent";
 
 const gameApps = {
     "Puzzle Drag" : {
@@ -28,6 +29,10 @@ const gameApps = {
         Src: PongComponent,
         useIframe: false
     },
+    "Snake": {
+        Src: SnakeComponent,
+        useIframe: false
+    }
     // "Mouse Game": {
     //     Src: MouseCurserComponent,
     //     useIframe: true

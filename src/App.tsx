@@ -21,6 +21,7 @@ import { GameApps } from './Pages/GameApps/GameApps';
 import { LeetCode } from './Pages/LeetCode/LeetCode';
 import { PuzzleDrag } from './GameApps/puzzleDrag/PuzzleDrag';
 import { ChessApp } from './GameApps/Chess/Chess';
+import { SolitaireApp } from './GameApps/SolitaireApp/Solitaire';
 
 const Layout = () => {
   return (
@@ -53,6 +54,7 @@ function App() {
                   <Route path="leet" element={<LeetCode />}></Route>
                   <Route path="puz" element={<PuzzleDrag />}></Route>
                   <Route path="chess" element={<ChessApp />}></Route>
+                  <Route path="solitaire" element={<SolitaireApp />}></Route>
               </Route>
           </Routes>
       </BrowserRouter>

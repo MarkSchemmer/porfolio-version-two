@@ -9,7 +9,8 @@ let menuItemList = [
   {display: "Game Apps", path: "apps"}, 
   {display: "LeetCode", path: "leet"}, 
   {display: "Contact", path: "contact"},
-  {display: "Chess App", path: "chess"}
+  {display: "Chess App", path: "chess"},
+  {display: "Solitaire", path: "solitaire"}
 ];
 
 const DropDownMenu = () => {
