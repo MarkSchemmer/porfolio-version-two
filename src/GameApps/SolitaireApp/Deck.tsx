@@ -216,8 +216,8 @@ export class Deck {
       }
     } else {
       const lastCard = toFoundation[toFoundation.length - 1];
-
-      if (lastCard.canStackOnTableau(fromInfo.card)) {
+      const res = lastCard.canStackOnFoundation(fromInfo.card);
+      if (res) {
         toFoundation.push(fromInfo.card);
         this.removeCardFromTable(
           fromInfo.pileIndex as number,
